@@ -1,0 +1,10 @@
+.annotation-list {
+  display: flex;
+  flex-direction: column;
+  &__toolbar {
+    height: 60px;
+  }
+  &__content {
+    flex: 1;
+  }
+}

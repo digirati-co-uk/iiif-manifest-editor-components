@@ -1,0 +1,30 @@
+{
+  "name": "@IIIF-MEC/core",
+  "version": "0.0.0",
+  "description": "Core components for manifest editing",
+  "author": "Adam Meszaros<adam.meszaros@digirati.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "fesk-start",
+    "build": "NODE_ENV=production fesk-build && docz build",
+    "watch": "fesk-watch",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@fesk/scripts": "1.2.0-pr.9227ce83",
+    "@fesk/webpack-config": "1.2.0-pr.9227ce83",
+    "@reach/component-component": "^0.1.1",
+    "babel-core": "^7.0.0-bridge",
+    "docz": "0.11.1",
+    "docz-theme-default": "^0.11.1",
+    "webpack-config": "^7.5.0"
+  },
+  "dependencies": {
+    "prop-types": "^15.6.2",
+    "react": "16.6.3",
+    "react-dom": "16.6.3"
+  }
+}

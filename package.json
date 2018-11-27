@@ -1,0 +1,48 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "name": "iiif-manifest-editor-components",
+  "version": "1.0.0",
+  "description": "Common components for editing IIIF manifests",
+  "devEngines": {
+    "node": "8.x"
+  },
+  "scripts": {
+    "build": "lerna run build && lerna link",
+    "build-all": "lerna run build",
+    "build-ci": "npm-run-all build build-docs",
+    "link": "lerna link",
+    "postinstall": "lerna link"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digirati-co-uk/iiif-manifest-editor-components.git"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{js,json,scss,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "keywords": [
+    "IIIF",
+    "manifest",
+    "editor",
+    "components"
+  ],
+  "author": "Adam Meszaros <adam.meszaros@digirati.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/digirati-co-uk/iiif-manifest-editor-components/issues"
+  },
+  "homepage": "https://github.com/digirati-co-uk/iiif-manifest-editor-components#readme",
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  }
+}
