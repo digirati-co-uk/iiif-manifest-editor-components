@@ -8,4 +8,109 @@ import AnnotationList from './AnnotationList';
 
 # Annotation List
 
+Component that lists annotations from a specific path.
+
 <PropsTable of={AnnotationList} />
+
+
+## Requirements
+
+- [ ] add drag and drop list using the same drag drop manager as all the other components
+- [ ] add selectable state for annotations
+- [ ] use fesk-bem for themeability
+- [ ] use the global selected resources
+- [x] make sure that it is able to work as an idividual component
+- [ ] being able to specify that where the displayed annotations coming form [items/annotations]
+- [x] being able to override the default annotation renderer
+- [ ] create default toolbar component
+- [ ] add delete button for the individual annotations
+
+
+## Demo as an individual Component
+
+<Playground>
+  <div 
+    style={{
+      display: 'flex',
+      alignItems: 'stretch',   
+      justifyContent: 'stretch',
+      width: 250,
+      height: 100,
+      background: 'green',
+    }}
+  >
+    <AnnotationList
+      annotations={[
+        {
+          id: 'test-1'
+        },
+        {
+          id: 'test-2'
+        },
+        {
+          id: 'test-3'
+        },
+        {
+          id: 'test-4'
+        },
+        {
+          id: 'test-5'
+        }
+        ,
+        {
+          id: 'test-6'
+        }
+      ]}
+    />
+  </div>
+</Playground>
+
+
+## TODO: Two annotation lists linking Drag and drop tests.
+
+<Playground>
+  <div>
+    <AnnotationList
+      source='items'
+      annotations={[
+        {
+          id: 'test-1'
+        },
+        {
+          id: 'test-2'
+        }
+      ]}
+    />
+    <AnnotationList
+      source='annotations'
+      annotations={[
+        {
+          id: 'test-3'
+        },
+        {
+          id: 'test-4'
+        }
+      ]}
+    />
+  </div>
+</Playground>
+
+
+## Override the default annotation renderer
+
+<Playground>
+  <AnnotationList
+    annotations={[
+      {
+        id: 'test-1'
+      },
+      {
+        id: 'test-2'
+      }
+    ]}
+  >
+    {(annotation, deleteAction, toggleSelectAction)=> (
+      <div>Custom annotation renderer {annotation.id}</div>
+    )}
+  </AnnotationList>
+</Playground>

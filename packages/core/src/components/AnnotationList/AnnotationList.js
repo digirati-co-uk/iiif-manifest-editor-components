@@ -1,20 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Panel from '../Panel/Panel';
 
-import './AnnotationList.scss';
-
-const AnnotationList = ({ annotations, toolbar, selectedAnnotations }) => (
-  <div className="annotation-list">
-    <div className="annotation-list__toobar">{toolbar}</div>
-    <div className="annotation-list__content">
-      {annotations.map(annotation => (
-        <div key={annotation.id}>{annotation.id}</div>
-      ))}
-    </div>
-  </div>
+const AnnotationList = ({
+  children,
+  annotations,
+  toolbar,
+  selectedAnnotations,
+}) => (
+  <Panel>
+    <Panel.Toolbar>{toolbar}</Panel.Toolbar>
+    <Panel.Content>
+      {annotations.map(annotation =>
+        typeof children === 'function' ? (
+          children(annotation, null, null)
+        ) : (
+          <div key={annotation.id}>{annotation.id}</div>
+        )
+      )}
+    </Panel.Content>
+  </Panel>
 );
 
 AnnotationList.propTypes = {
+  children: PropTypes.any,
   annotations: PropTypes.array,
   toolbar: PropTypes.any,
   selectedAnnotations: PropTypes.array,

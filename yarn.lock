@@ -998,6 +998,10 @@
     babel-plugin-module-resolver "^3.1.1"
     babel-preset-react-app "^6.1.0"
 
+"@fesk/bem-js@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@fesk/bem-js/-/bem-js-1.0.1.tgz#ac7c74351e34835274aef0506146709d3046cef1"
+
 "@fesk/eslint-config-standard@1.2.0-pr.9227ce83":
   version "1.2.0-pr.9227ce83"
   resolved "https://registry.yarnpkg.com/@fesk/eslint-config-standard/-/eslint-config-standard-1.2.0-pr.9227ce83.tgz#d56c0ff758d55b296644d60571aa4e3a40e1880c"
@@ -1113,6 +1117,13 @@
     metalsmith-plugin-kit "^1.0.1"
     metalsmith-twig-transform "1.2.0-pr.9227ce83"
     metalsmith-view-model "1.2.0-pr.9227ce83"
+
+"@fesk/react-bem@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@fesk/react-bem/-/react-bem-1.1.2.tgz#c27456651e8f3531ebd5ee25e4a9fee1e01da789"
+  dependencies:
+    create-react-context "^0.2.1"
+    prop-types "^15.0.0"
 
 "@fesk/scripts@1.2.0-pr.9227ce83":
   version "1.2.0-pr.9227ce83"
@@ -4255,7 +4266,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-context@^0.2.2, create-react-context@^0.2.3:
+create-react-context@^0.2.1, create-react-context@^0.2.2, create-react-context@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.2.3.tgz#9ec140a6914a22ef04b8b09b7771de89567cb6f3"
   dependencies:
@@ -10836,7 +10847,7 @@ prompts@^0.1.10:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@15.6.2, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
+prop-types@15.6.2, prop-types@^15.0.0, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   dependencies:

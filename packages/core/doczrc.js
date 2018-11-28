@@ -10,6 +10,13 @@ module.exports = {
   debug: false,
   port: 5001,
   protocol: 'http',
+  themeConfig: {
+    styles: {
+      container: {
+        width: ['100%', '100%', '100%'],
+      },
+    },
+  },
   modifyBundlerConfig: config => {
     config.module.rules.push(sass);
     config.plugins.push(miniCss);
