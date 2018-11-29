@@ -2,3 +2,36 @@
 name: Configuration Reducer
 menu: Reducers
 ---
+
+# IIIF Resource Manipulation Reducer 
+
+Following actions are handled:
+
+`ADD_RESOURCE`:
+
+Calls the resource template provider which renders the requested resource `type` inserts 
+it into the passed `parent` position and `index` (if index is specified).
+
+`ADD_SPECIFIC_RESOURCE`:
+
+Copying resources from other manifests, receives existing @resource.
+Puts it into the passed @parent position and @index (if index is specified)
+
+`REMOVE_RESOURCE`:
+
+Removes the resource for the the passed `parent` position and `index` (index is
+mandatory in this case)
+
+`UPDATE_RESOURCE`:
+
+Updates the passed resource `id`
+
+**NOTE**: it is a property merge
+
+`UPDATE_RESOURCE_ORDER`:
+
+Move `id` to `index` in parent. (Normally drag and drop will trigger this)
+    
+`LOAD_MANIFEST`:
+
+Validates and converts manifest to *IIIF Presentation V3* and loads it into the state
