@@ -1,11 +1,13 @@
 //TODO: make it configurable
 const rootURL = 'http://digirati.com/iiif/v3/';
 
+// private
 const s4 = () =>
   Math.floor((1 + Math.random()) * 0x10000)
     .toString(16)
     .substring(1);
 
+// private
 const guid = (pattern = 'ss-s-s-s-sss') => pattern.replace(/s/g, s4);
 
 /**
@@ -14,11 +16,11 @@ const guid = (pattern = 'ss-s-s-s-sss') => pattern.replace(/s/g, s4);
  * @param {Object} parent - the parent resource if applicable
  * @return {Object} the resource with the id
  */
-const generateURI = (resource, parent = null, options) => {
+const generateURI = (resource, parent = null, options = {}) => {
   switch (resource.type) {
     case 'Manifest':
       //{scheme}://{host}/{prefix}/{identifier}/manifest
-      resource.id = `rootURL${options.id || guid()}/manifest`;
+      resource.id = `${rootURL}${options.id || guid()}/manifest`;
       break;
     case 'Canvas':
     // {scheme}://{host}/{prefix}/{identifier}/canvas/{name}
@@ -39,7 +41,7 @@ const generateURI = (resource, parent = null, options) => {
         if (parentId) {
           resource.id = parentId.replace(
             /\/(manifest|canvas|annotation|list|range)(\/.*)?$/,
-            `/${resource.type}/${options.id || guid()}`
+            `/${resource.type.toLowerCase()}/${options.id || guid()}`
           );
         }
       } // TODO: else { is this even possible }
