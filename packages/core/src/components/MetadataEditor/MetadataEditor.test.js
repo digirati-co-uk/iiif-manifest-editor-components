@@ -18,7 +18,7 @@ describe('MetadataEditor', () => {
         manifest={TEST_MANIFEST}
         canvas={TEST_CANVAS}
         annotation={TEST_ANNOTATION}
-        lang={en}
+        lang={'en'}
       />
     );
     expect(editableCanvas).toMatchSnapshot();

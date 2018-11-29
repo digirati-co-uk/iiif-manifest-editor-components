@@ -4,7 +4,11 @@ exports[`MetadataEditor renders the editable canvas unchanged 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <MetadataEditor
-    annotation={null}
+    annotation={
+      Object {
+        "id": "test-annotation-1",
+      }
+    }
     canvas={
       Object {
         "id": "test-canvas-1",
