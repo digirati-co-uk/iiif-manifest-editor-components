@@ -6,13 +6,15 @@ const CanvasList = ({ children, canvases, toolbar, selectedCanvases }) => (
   <Panel horizontal={true}>
     {toolbar && <Panel.Toolbar>{toolbar}</Panel.Toolbar>}
     <Panel.Content>
-      {canvases.map(canvas =>
-        typeof children === 'function' ? (
-          children(canvas, null, null)
-        ) : (
-          <div key={canvases.id}>{canvases.id}</div>
-        )
-      )}
+      {canvases
+        ? canvases.map(canvas =>
+            typeof children === 'function' ? (
+              children(canvas, null, null)
+            ) : (
+              <div key={canvases.id}>{canvases.id}</div>
+            )
+          )
+        : 'No canvases yet'}
     </Panel.Content>
   </Panel>
 );

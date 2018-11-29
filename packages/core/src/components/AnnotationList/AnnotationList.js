@@ -11,13 +11,15 @@ const AnnotationList = ({
   <Panel>
     <Panel.Toolbar>{toolbar}</Panel.Toolbar>
     <Panel.Content>
-      {annotations.map(annotation =>
-        typeof children === 'function' ? (
-          children(annotation, null, null)
-        ) : (
-          <div key={annotation.id}>{annotation.id}</div>
-        )
-      )}
+      {annotations
+        ? annotations.map(annotation =>
+            typeof children === 'function' ? (
+              children(annotation, null, null)
+            ) : (
+              <div key={annotation.id}>{annotation.id}</div>
+            )
+          )
+        : 'no annotations'}
     </Panel.Content>
   </Panel>
 );
