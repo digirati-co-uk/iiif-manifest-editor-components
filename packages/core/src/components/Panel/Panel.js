@@ -9,6 +9,5 @@ const Panel = bem('panel', panel => ({
   Toolbar: panel.element('toolbar'),
   Content: panel.element('content'),
 }));
-console.log('this is panel', Panel);
 
 export default Panel;

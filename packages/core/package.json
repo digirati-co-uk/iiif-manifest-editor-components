@@ -38,6 +38,9 @@
     "transform": {
       "^.+\\.jsx?$": "<rootDir>/jest.transform.js"
     },
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    },
     "setupTestFrameworkScriptFile": "<rootDir>/setup.jest.js",
     "coveragePathIgnorePatterns": [
       "/node_modules/",
