@@ -66,4 +66,41 @@ const renderResource = (type, options = { props: {} }) => {
   return resource;
 };
 
+/**
+ * Queries a resource form a given root
+ * @param {*} id - the resource id to find
+ * @param {*} resource - root of the query, in order to narrow down the results more quickly
+ */
+export const queryResourceById = (id, resource) => {
+  if (
+    id === null ||
+    typeof resource === 'string' ||
+    typeof resource === 'number' ||
+    typeof resource === 'boolean'
+  ) {
+    return null;
+  }
+  if (resource.id === id) {
+    return resource;
+  } else {
+    let subq = null;
+    if (Array.isArray(resource)) {
+      for (let subResource of resource) {
+        subq = queryResourceById(id, subResource);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    } else {
+      for (let key in resource) {
+        subq = queryResourceById(id, resource[key]);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    }
+  }
+  return null;
+};
+
 export default renderResource;

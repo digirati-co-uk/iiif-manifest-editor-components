@@ -5,11 +5,35 @@ import CollectionExplorer from '../components/CollectionExplorer/CollectionExplo
 import EditableCanvas from '../components/EditableCanvas/EditableCanvas';
 import MetadataEditor from '../components/MetadataEditor/MetadataEditor';
 import TabPanel from '../components/TabPanel/TabPanel';
+import { queryResourceById } from '../utils/IIIFResource';
 
 import './SimpleEditorUI.scss';
 
 class SimpleEditorUI extends React.Component {
+  state = {
+    rootResource: null,
+    selectedIdsByType: {
+      Canvas: null,
+      Annotation: null,
+    },
+  };
+
   render() {
+    const canvases = this.state.rootResource
+      ? this.state.rootResource.items
+      : [];
+    const selectedCanvas = queryResourceById(
+      this.state.selectedIdsByType.Canvas,
+      this.state.rootResource
+    );
+    const annotations =
+      selectedCanvas.items && selectedCanvas.items.length > 0
+        ? selectedCanvas.items[0].items || null
+        : null;
+    const selectedAnnotation = queryResourceById(
+      this.state.selectedIdsByType.Annotation,
+      selectedCanvas
+    );
     return (
       <div className="simple-manifest-editor">
         <div className="simple-manifest-editor__top-bar">
@@ -17,20 +41,24 @@ class SimpleEditorUI extends React.Component {
         </div>
         <div className="simple-manifest-editor__center">
           <div className="simple-manifest-editor__left-panel">
-            <AnnotationList annotations={[]} />
+            <AnnotationList annotations={annotations} />
           </div>
           <div className="simple-manifest-editor__canvas">
             <EditableCanvas />
           </div>
           <div className="simple-manifest-editor__right-panel">
             <TabPanel>
-              <MetadataEditor />
+              <MetadataEditor
+                manifest={this.state.rootResource}
+                canvas={selectedCanvas}
+                annotation={selectedAnnotation}
+              />
               <CollectionExplorer />
             </TabPanel>
           </div>
         </div>
         <div className="simple-manifest-editor__bottom">
-          <CanvasList canvases={[]} />
+          <CanvasList canvases={canvases} />
         </div>
       </div>
     );
