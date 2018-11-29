@@ -8,9 +8,7 @@ const defaultResourceRenderers = {
     ],
     type: 'Manifest',
     label: {
-      label: {
-        en: ['Untitled Manifest'],
-      },
+      en: ['Untitled Manifest'],
     },
     items: [],
     ...props,

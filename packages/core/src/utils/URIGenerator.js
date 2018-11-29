@@ -29,11 +29,19 @@ const generateURI = (resource, parent = null, options) => {
     case 'Range':
     // {scheme}://{host}/{prefix}/{identifier}/range/{name}
     default:
-      if (parent && parent.id) {
-        resource.id = parent.id.replace(
-          /\/(manifest|canvas|annotation|list|range)(\/.*)?$/,
-          `/${resource.type}/${options.id || guid()}`
-        );
+      if (parent) {
+        let parentId = null;
+        if (typeof parent.id === 'string') {
+          parentId = parent.id;
+        } else if (typeof parent === 'string') {
+          parentId = parent;
+        }
+        if (parentId) {
+          resource.id = parentId.replace(
+            /\/(manifest|canvas|annotation|list|range)(\/.*)?$/,
+            `/${resource.type}/${options.id || guid()}`
+          );
+        }
       } // TODO: else { is this even possible }
   }
   return resource;

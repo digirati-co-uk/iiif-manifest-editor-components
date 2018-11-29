@@ -9,7 +9,9 @@
     "build": "NODE_ENV=production fesk-build && docz build",
     "watch": "fesk-watch",
     "docz:dev": "docz dev",
-    "docz:build": "docz build"
+    "docz:build": "docz build",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -18,8 +20,12 @@
     "@fesk/webpack-config": "1.2.0-pr.9227ce83",
     "@reach/component-component": "^0.1.1",
     "babel-core": "^7.0.0-bridge",
+    "babel-jest": "^23.6.0",
     "docz": "0.11.1",
     "docz-theme-default": "^0.11.1",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "jest": "^23.6.0",
     "webpack-config": "^7.5.0"
   },
   "dependencies": {
@@ -27,5 +33,20 @@
     "prop-types": "^15.6.2",
     "react": "16.6.3",
     "react-dom": "16.6.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/jest.transform.js"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>/setup.jest.js",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/",
+      ".*\\.js\\.snap",
+      "jest.transform.js",
+      ".json",
+      "setup.jest.js",
+      "webpack.config.js"
+    ]
   }
 }

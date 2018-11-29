@@ -24,3 +24,5 @@ const IIIFReducer = (state, action) => {
       return state;
   }
 };
+
+export default IIIFReducer;
