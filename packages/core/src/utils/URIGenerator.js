@@ -39,9 +39,13 @@ const generateURI = (resource, parent = null, options = {}) => {
           parentId = parent;
         }
         if (parentId) {
+          const resourcePath =
+            resource.type === 'AnnotationPage'
+              ? 'list'
+              : resource.type.toLowerCase();
           resource.id = parentId.replace(
             /\/(manifest|canvas|annotation|list|range)(\/.*)?$/,
-            `/${resource.type.toLowerCase()}/${options.id || guid()}`
+            `/${resourcePath}/${options.id || guid()}`
           );
         }
       } // TODO: else { is this even possible }

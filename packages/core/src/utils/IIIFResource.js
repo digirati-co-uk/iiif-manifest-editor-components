@@ -74,6 +74,7 @@ const renderResource = (type, options = { props: {} }) => {
 export const queryResourceById = (id, resource) => {
   if (
     id === null ||
+    resource === null ||
     typeof resource === 'string' ||
     typeof resource === 'number' ||
     typeof resource === 'boolean'
@@ -94,6 +95,42 @@ export const queryResourceById = (id, resource) => {
     } else {
       for (let key in resource) {
         subq = queryResourceById(id, resource[key]);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    }
+  }
+  return null;
+};
+
+export const getPath = (id, resource, path = []) => {
+  if (
+    id === null ||
+    resource === null ||
+    typeof resource === 'string' ||
+    typeof resource === 'number' ||
+    typeof resource === 'boolean'
+  ) {
+    return null;
+  }
+  if (resource.id === id) {
+    return [].concat(path).concat([resource]);
+  } else {
+    let subq = null;
+    if (Array.isArray(resource)) {
+      for (let subResource of resource) {
+        subq = getPath(id, subResource, path);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    } else {
+      const nextPath = resource.hasOwnProperty('type')
+        ? [].concat(path).concat(resource)
+        : path;
+      for (let key in resource) {
+        subq = getPath(id, resource[key], nextPath);
         if (subq !== null) {
           return subq;
         }

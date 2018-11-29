@@ -98,7 +98,7 @@ describe('IIIF Reducer', () => {
           type: 'Manifest',
           props: {
             label: {
-              en: 'test manifest label',
+              en: ['test manifest label'],
             },
             metadata: [
               {
@@ -115,7 +115,7 @@ describe('IIIF Reducer', () => {
       });
 
       expect(newState.rootResource).not.toBe(null);
-      expect(newState.rootResource.label.en).toBe(['test manifest label']);
+      expect(newState.rootResource.label.en).toEqual(['test manifest label']);
       expect(newState.rootResource.metadata).toHaveLength(1);
       expect(newState.rootResource.metadata[0].label.en).toEqual(['Creator']);
       expect(newState.rootResource.metadata[0].value.en).toEqual([
@@ -180,7 +180,16 @@ describe('IIIF Reducer', () => {
           label: {
             en: ['Untitled Manifest'],
           },
-          items: [],
+          items: [
+            {
+              id: 'https://test.com/iiif/test/canvas/1',
+              type: 'Canvas',
+            },
+            {
+              id: 'https://test.com/iiif/test/canvas/2',
+              type: 'Canvas',
+            },
+          ],
         },
       };
       const newState = IIIFReducer(state, {

@@ -32,8 +32,12 @@ ShallowWrapper {
       "children": Array [
         undefined,
         <ComponentFromFactory>
-          <div />
-          <div />
+          <div>
+            test-canvas-1
+          </div>
+          <div>
+            test-canvas-2
+          </div>
         </ComponentFromFactory>,
       ],
       "horizontal": true,
@@ -47,32 +51,36 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <div />,
-            <div />,
+            <div>
+              test-canvas-1
+            </div>,
+            <div>
+              test-canvas-2
+            </div>,
           ],
         },
         "ref": null,
         "rendered": Array [
           Object {
             "instance": null,
-            "key": undefined,
+            "key": "canvas_list_test-canvas-1",
             "nodeType": "host",
             "props": Object {
-              "children": undefined,
+              "children": "test-canvas-1",
             },
             "ref": null,
-            "rendered": null,
+            "rendered": "test-canvas-1",
             "type": "div",
           },
           Object {
             "instance": null,
-            "key": undefined,
+            "key": "canvas_list_test-canvas-2",
             "nodeType": "host",
             "props": Object {
-              "children": undefined,
+              "children": "test-canvas-2",
             },
             "ref": null,
-            "rendered": null,
+            "rendered": "test-canvas-2",
             "type": "div",
           },
         ],
@@ -90,8 +98,12 @@ ShallowWrapper {
         "children": Array [
           undefined,
           <ComponentFromFactory>
-            <div />
-            <div />
+            <div>
+              test-canvas-1
+            </div>
+            <div>
+              test-canvas-2
+            </div>
           </ComponentFromFactory>,
         ],
         "horizontal": true,
@@ -105,32 +117,36 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <div />,
-              <div />,
+              <div>
+                test-canvas-1
+              </div>,
+              <div>
+                test-canvas-2
+              </div>,
             ],
           },
           "ref": null,
           "rendered": Array [
             Object {
               "instance": null,
-              "key": undefined,
+              "key": "canvas_list_test-canvas-1",
               "nodeType": "host",
               "props": Object {
-                "children": undefined,
+                "children": "test-canvas-1",
               },
               "ref": null,
-              "rendered": null,
+              "rendered": "test-canvas-1",
               "type": "div",
             },
             Object {
               "instance": null,
-              "key": undefined,
+              "key": "canvas_list_test-canvas-2",
               "nodeType": "host",
               "props": Object {
-                "children": undefined,
+                "children": "test-canvas-2",
               },
               "ref": null,
-              "rendered": null,
+              "rendered": "test-canvas-2",
               "type": "div",
             },
           ],

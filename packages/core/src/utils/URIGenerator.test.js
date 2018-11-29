@@ -82,7 +82,7 @@ describe('generateURI', () => {
   it('generates URI for AnnotationPage', () => {
     const annotationPageWithId = generateURI(
       {
-        type: 'AnnotationPange',
+        type: 'AnnotationPage',
       },
       {
         type: 'Canvas',
@@ -123,7 +123,7 @@ describe('generateURI', () => {
   it('generates URI for the given id on a Range', () => {
     const rangeWithId = generateURI(
       {
-        type: 'AnnotationPage',
+        type: 'Range',
       },
       'http://digirati.com/iiif/v3/test-human-readable-id/manifest',
       {
@@ -150,7 +150,7 @@ describe('generateURI', () => {
     // TODO: is this correct? Shouldn't it just pass the given id?
     const unkownTypeWithId = generateURI(
       {
-        type: 'AnnotationPage',
+        type: 'ImageService',
       },
       'http://digirati.com/iiif/v3/test-human-readable-id/manifest',
       {

@@ -5,13 +5,13 @@ import CollectionExplorer from '../components/CollectionExplorer/CollectionExplo
 import EditableCanvas from '../components/EditableCanvas/EditableCanvas';
 import MetadataEditor from '../components/MetadataEditor/MetadataEditor';
 import TabPanel from '../components/TabPanel/TabPanel';
-import { queryResourceById } from '../utils/IIIFResource';
+import renderResource, { queryResourceById } from '../utils/IIIFResource';
 
 import './SimpleEditorUI.scss';
 
 class SimpleEditorUI extends React.Component {
   state = {
-    rootResource: null,
+    rootResource: renderResource('Manifest'),
     selectedIdsByType: {
       Canvas: null,
       Annotation: null,
@@ -27,7 +27,7 @@ class SimpleEditorUI extends React.Component {
       this.state.rootResource
     );
     const annotations =
-      selectedCanvas.items && selectedCanvas.items.length > 0
+      selectedCanvas && selectedCanvas.items && selectedCanvas.items.length > 0
         ? selectedCanvas.items[0].items || null
         : null;
     const selectedAnnotation = queryResourceById(
