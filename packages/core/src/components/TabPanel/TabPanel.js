@@ -21,7 +21,6 @@ class TabPanel extends React.Component {
         <Panel.Toolbar>
           <div className="tab-toolbar">
             {children.map((child, idx) => {
-              console.log(child.type.displayName);
               return (
                 <a
                   className={
