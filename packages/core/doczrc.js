@@ -6,7 +6,7 @@ module.exports = {
   description: 'IIIF Manifest Editor Core Components',
   src: './src/',
   dest: './dist/docs',
-  base: '/docs/',
+  base: '/',
   debug: false,
   port: 5001,
   protocol: 'http',
