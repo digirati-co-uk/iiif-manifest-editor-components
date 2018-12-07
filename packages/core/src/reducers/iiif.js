@@ -1,8 +1,17 @@
 import produce from 'immer';
 import renderResource, {
   queryResourceById,
-  getPath,
+  getParentByChildId,
 } from '../utils/IIIFResource';
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 /**
  * Reducer to mutate iiif presentation v3 resources and W3c annotations.
@@ -16,6 +25,18 @@ const IIIFReducer = (state, action) => {
       case 'ADD_RESOURCE':
         // Calls the resource template provider which renders the requested resource @type
         // Puts it into the passed @parent position and @index (if index is specified)
+
+        // TODO: decide that we always use parent as an element or an id
+        // - if we keep parent as an element
+        //    - easier e element lookups
+        //    - but references may get out of sync
+        // - with ids
+        //    - we explicity refer to the object ergo we always get the freshest version
+        //    - the cost of this freshness is high, because every time we touch the object
+        //      the functions need to traverse through the document, and it's like a
+        //      dom traversal with all it's non linear characteristic.
+        //    - remember queryResourceById is a recursive function, which is extremely
+        //      dangerous if a circular reference accidentally created in the manifest.
         const parentId = !options.parent
           ? null
           : typeof options.parent === 'string'
@@ -23,10 +44,13 @@ const IIIFReducer = (state, action) => {
           : options.parent.id;
 
         const parent = queryResourceById(parentId, nextState.rootResource);
+
         const newResource = renderResource(options.type, {
           props: options.props || {},
           parent: parent,
         });
+
+        // this part is a bit of chaos, TODO: clean up
         if (parent) {
           let targetCollection = parent.items;
           if (parent.type === 'Manifest' && newResource.type === 'Rage') {
@@ -63,21 +87,39 @@ const IIIFReducer = (state, action) => {
       // Used for copying resources from other manifests, receives existing @resource.
       // Puts it into the passed @parent position and @index (if index is specified)
       case 'REMOVE_RESOURCE':
-        //const path = getPath(options.id, nextState);
-        //console.log('path', path);
+        const toRemoveFrom = getParentByChildId(
+          action.id,
+          nextState.rootResource
+        );
+        toRemoveFrom.items = toRemoveFrom.items.filter(
+          resource => resource.id !== action.id
+        );
+        Object.entries(nextState.selectedIdsByType).forEach(([type, id]) => {
+          if (id === action.id) {
+            nextState.selectedIdsByType[type] = null;
+          }
+        });
         break;
-      // Removes the resource for the the passed @parent position and @index (index is
-      // mandatory in this case)
       case 'UPDATE_RESOURCE':
         // Updates the passed resource @id, NOTE it is a property merge
         const toUpdate = queryResourceById(options.id, nextState.rootResource);
         Object.assign(toUpdate, options.props || {});
         break;
       case 'UPDATE_RESOURCE_ORDER':
-      // Move @resource_id to @index
+        const { startIndex, targetIndex, id } = action.options;
+        const parentToUpdate = getParentByChildId(id, nextState.rootResource);
+        parentToUpdate.items = reorder(
+          parentToUpdate.items,
+          startIndex,
+          targetIndex
+        );
+        break;
       case 'LOAD_MANIFEST':
-        // @jsonLd or @uri or resource template provider called
-        nextState.rootResource = options.manifest;
+        nextState.rootResource = action.manifest;
+        // This is wrong selection should be isolated this, maybe sagas
+        nextState.selectedIdsByType.Canvas =
+          action.manifest.items.length > 0 ? action.manifest.items[0].id : null;
+        nextState.selectedIdsByType.Annotation = null;
         break;
       default:
         break;

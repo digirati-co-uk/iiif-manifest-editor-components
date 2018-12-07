@@ -5,6 +5,7 @@ menu: Components
 
 import { Playground, PropsTable } from 'docz';
 import AnnotationList from './AnnotationList'; 
+import ManifestEditor from '../ManifestEditor/ManifestEditor.js';
 
 # Annotation List
 
@@ -15,18 +16,136 @@ Component that lists annotations from a specific path.
 
 ## Requirements
 
-- [ ] add drag and drop list using the same drag drop manager as all the other components
+- [x] add drag and drop list using the same drag drop manager as all the other components
 - [ ] add selectable state for annotations
 - [x] use fesk-bem for themeability
 - [x] use the global selected resources
 - [x] make sure that it is able to work as an idividual component
 - [ ] being able to specify that where the displayed annotations coming form [items/annotations]
 - [x] being able to override the default annotation renderer
-- [ ] create default toolbar component
-- [ ] add delete button for the individual annotations
+- [x] create default toolbar component
+- [x] add delete button for the individual annotations
 
 
 ## Demo as an individual Component
+
+<Playground>
+  <ManifestEditor>
+  <div 
+    style={{
+      display: 'flex',
+      alignItems: 'stretch',   
+      justifyContent: 'stretch',
+      width: 250,
+      height: 100,
+      height: 400,
+    }}
+  >
+    <AnnotationList
+      annotations={[
+        {
+          id: 'test-1',
+          body: {
+            type: 'Image',
+          }
+        },
+        {
+          id: 'test-2',
+          body: {
+            type: 'Video',
+          }
+        },
+        {
+          id: 'test-3',
+          body: {
+            type: 'Audio',
+          }
+        },
+        {
+          id: 'test-4',
+          body: {
+            type: 'TextualBody',
+          }
+        },
+        {
+          id: 'test-5',
+          body: {
+            type: 'Image',
+          }
+        }
+        ,
+        {
+          id: 'test-6',
+          body: {
+            type: 'Video',
+          }
+        }
+      ]}
+    />
+  </div>
+  </ManifestEditor>
+</Playground>
+
+
+## TODO: Two annotation lists linking Drag and drop tests.
+
+<Playground>
+  <ManifestEditor>
+  <div 
+    style={{
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',   
+      justifyContent: 'stretch',
+      width: 500,
+      height: 100,
+      height: 400,
+    }}
+  >
+    <div style={{ width: 250 }}>
+      <AnnotationList
+        source='items'
+        annotations={[
+          {
+            id: 'test-1',
+            body: {
+              type: 'Image',
+            }
+          },
+          {
+            id: 'test-2',
+            body: {
+              type: 'TextualBody',
+            }
+          }
+        ]}
+      />
+    </div>
+    <div style={{ width: 250 }}>
+      <AnnotationList
+        source='annotations'
+        annotations={[
+          {
+            id: 'test-3',
+            body: {
+              type: 'Video',
+            }
+          },
+          {
+            id: 'test-4',
+            body: {
+              type: 'Image',
+            }
+          }
+        ]}
+      />
+    </div>
+  </div>
+  </ManifestEditor>
+</Playground>
+
+
+## Override the default annotation renderer
 
 <Playground>
   <div 
@@ -36,80 +155,30 @@ Component that lists annotations from a specific path.
       justifyContent: 'stretch',
       width: 250,
       height: 100,
+      height: 400,
     }}
   >
-    <AnnotationList
-      annotations={[
-        {
-          id: 'test-1'
-        },
-        {
-          id: 'test-2'
-        },
-        {
-          id: 'test-3'
-        },
-        {
-          id: 'test-4'
-        },
-        {
-          id: 'test-5'
-        }
-        ,
-        {
-          id: 'test-6'
-        }
-      ]}
-    />
+    <ManifestEditor>
+      <AnnotationList
+        annotations={[
+          {
+            id: 'test-1',
+            body: {
+              type: 'Video',
+            }
+          },
+          {
+            id: 'test-2',
+            body: {
+              type: 'Video',
+            }
+          }
+        ]}
+      >
+        {(annotation, deleteAction, toggleSelectAction)=> (
+          <div>Custom annotation renderer {annotation.id}</div>
+        )}
+      </AnnotationList>
+    </ManifestEditor>
   </div>
-</Playground>
-
-
-## TODO: Two annotation lists linking Drag and drop tests.
-
-<Playground>
-  <div>
-    <AnnotationList
-      source='items'
-      annotations={[
-        {
-          id: 'test-1'
-        },
-        {
-          id: 'test-2'
-        }
-      ]}
-    />
-    <AnnotationList
-      source='annotations'
-      annotations={[
-        {
-          id: 'test-3'
-        },
-        {
-          id: 'test-4'
-        }
-      ]}
-    />
-  </div>
-</Playground>
-
-
-## Override the default annotation renderer
-
-<Playground>
-  <AnnotationList
-    annotations={[
-      {
-        id: 'test-1'
-      },
-      {
-        id: 'test-2'
-      }
-    ]}
-  >
-    {(annotation, deleteAction, toggleSelectAction)=> (
-      <div>Custom annotation renderer {annotation.id}</div>
-    )}
-  </AnnotationList>
 </Playground>

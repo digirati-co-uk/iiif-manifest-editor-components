@@ -3,7 +3,7 @@
 exports[`AnnotationList renders the annotations list unchanged 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <AnnotationList
+  Symbol(enzyme.__unrendered__): <WithStyles(AnnotationList)
     annotations={
       Array [
         Object {
@@ -14,8 +14,6 @@ ShallowWrapper {
         },
       ]
     }
-    selectedAnnotations={Array []}
-    toolbar="toolbar missing"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -28,154 +26,64 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "class",
+    "nodeType": "function",
     "props": Object {
-      "children": Array [
-        <ComponentFromFactory>
-          toolbar missing
-        </ComponentFromFactory>,
-        <ComponentFromFactory>
-          <div>
-            test-annotation-1
-          </div>
-          <div>
-            test-annotation-2
-          </div>
-        </ComponentFromFactory>,
+      "annotations": Array [
+        Object {
+          "id": "test-annotation-1",
+        },
+        Object {
+          "id": "test-annotation-2",
+        },
       ],
+      "classes": Object {
+        "annotationDraggable": "AnnotationList-annotationDraggable-2",
+        "defaultAnnotation": "AnnotationList-defaultAnnotation-3",
+        "defaultAnnotationText": "AnnotationList-defaultAnnotationText-4",
+        "defaultAnnotationTypo": "AnnotationList-defaultAnnotationTypo-5",
+        "defaultNoAnnotationIndicator": "AnnotationList-defaultNoAnnotationIndicator-6",
+        "list": "AnnotationList-list-1",
+      },
+      "iconProvider": [Function],
+      "invokeAction": [Function],
+      "remove": [Function],
+      "select": [Function],
+      "selected": null,
     },
     "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "children": "toolbar missing",
-        },
-        "ref": null,
-        "rendered": "toolbar missing",
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "children": Array [
-            <div>
-              test-annotation-1
-            </div>,
-            <div>
-              test-annotation-2
-            </div>,
-          ],
-        },
-        "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": "test-annotation-1",
-            "nodeType": "host",
-            "props": Object {
-              "children": "test-annotation-1",
-            },
-            "ref": null,
-            "rendered": "test-annotation-1",
-            "type": "div",
-          },
-          Object {
-            "instance": null,
-            "key": "test-annotation-2",
-            "nodeType": "host",
-            "props": Object {
-              "children": "test-annotation-2",
-            },
-            "ref": null,
-            "rendered": "test-annotation-2",
-            "type": "div",
-          },
-        ],
-        "type": [Function],
-      },
-    ],
+    "rendered": null,
     "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "class",
+      "nodeType": "function",
       "props": Object {
-        "children": Array [
-          <ComponentFromFactory>
-            toolbar missing
-          </ComponentFromFactory>,
-          <ComponentFromFactory>
-            <div>
-              test-annotation-1
-            </div>
-            <div>
-              test-annotation-2
-            </div>
-          </ComponentFromFactory>,
+        "annotations": Array [
+          Object {
+            "id": "test-annotation-1",
+          },
+          Object {
+            "id": "test-annotation-2",
+          },
         ],
+        "classes": Object {
+          "annotationDraggable": "AnnotationList-annotationDraggable-2",
+          "defaultAnnotation": "AnnotationList-defaultAnnotation-3",
+          "defaultAnnotationText": "AnnotationList-defaultAnnotationText-4",
+          "defaultAnnotationTypo": "AnnotationList-defaultAnnotationTypo-5",
+          "defaultNoAnnotationIndicator": "AnnotationList-defaultNoAnnotationIndicator-6",
+          "list": "AnnotationList-list-1",
+        },
+        "iconProvider": [Function],
+        "invokeAction": [Function],
+        "remove": [Function],
+        "select": [Function],
+        "selected": null,
       },
       "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "children": "toolbar missing",
-          },
-          "ref": null,
-          "rendered": "toolbar missing",
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "children": Array [
-              <div>
-                test-annotation-1
-              </div>,
-              <div>
-                test-annotation-2
-              </div>,
-            ],
-          },
-          "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": "test-annotation-1",
-              "nodeType": "host",
-              "props": Object {
-                "children": "test-annotation-1",
-              },
-              "ref": null,
-              "rendered": "test-annotation-1",
-              "type": "div",
-            },
-            Object {
-              "instance": null,
-              "key": "test-annotation-2",
-              "nodeType": "host",
-              "props": Object {
-                "children": "test-annotation-2",
-              },
-              "ref": null,
-              "rendered": "test-annotation-2",
-              "type": "div",
-            },
-          ],
-          "type": [Function],
-        },
-      ],
+      "rendered": null,
       "type": [Function],
     },
   ],

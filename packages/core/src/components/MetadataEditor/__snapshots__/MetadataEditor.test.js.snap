@@ -3,7 +3,7 @@
 exports[`MetadataEditor renders the editable canvas unchanged 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <MetadataEditor
+  Symbol(enzyme.__unrendered__): <WithStyles(MetadataEditor)
     annotation={
       Object {
         "id": "test-annotation-1",
@@ -32,25 +32,51 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "function",
     "props": Object {
-      "children": "MetadataEditor",
+      "annotation": Object {
+        "id": "test-annotation-1",
+      },
+      "canvas": Object {
+        "id": "test-canvas-1",
+      },
+      "classes": Object {
+        "label": "MetadataEditor-label-1",
+      },
+      "lang": "en",
+      "manifest": Object {
+        "id": "test-manifest-1",
+      },
+      "update": [Function],
     },
     "ref": null,
-    "rendered": "MetadataEditor",
-    "type": "div",
+    "rendered": null,
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "function",
       "props": Object {
-        "children": "MetadataEditor",
+        "annotation": Object {
+          "id": "test-annotation-1",
+        },
+        "canvas": Object {
+          "id": "test-canvas-1",
+        },
+        "classes": Object {
+          "label": "MetadataEditor-label-1",
+        },
+        "lang": "en",
+        "manifest": Object {
+          "id": "test-manifest-1",
+        },
+        "update": [Function],
       },
       "ref": null,
-      "rendered": "MetadataEditor",
-      "type": "div",
+      "rendered": null,
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {

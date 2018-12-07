@@ -451,7 +451,8 @@ describe('IIIF Reducer', () => {
         type: 'UPDATE_RESOURCE_ORDER',
         options: {
           id: 'https://test.com/iiif/test/canvas/2',
-          index: 0,
+          startIndex: 1,
+          targetIndex: 0,
         },
       });
       expect(newState.rootResource.items[0].id).toEqual(
@@ -490,7 +491,8 @@ describe('IIIF Reducer', () => {
         type: 'UPDATE_RESOURCE_ORDER',
         options: {
           id: 'https://test.com/iiif/test/canvas/1',
-          index: 3,
+          startIndex: 0,
+          targetIndex: 3,
         },
       });
       expect(newState.rootResource.items[0].id).toEqual(
@@ -528,7 +530,8 @@ describe('IIIF Reducer', () => {
         type: 'UPDATE_RESOURCE_ORDER',
         options: {
           id: 'https://test.com/iiif/test/canvas/2',
-          index: -2,
+          startIndex: 1,
+          targetIndex: -2,
         },
       });
       expect(newState.rootResource.items[0].id).toEqual(

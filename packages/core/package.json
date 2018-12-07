@@ -30,10 +30,14 @@
   },
   "dependencies": {
     "@fesk/react-bem": "^1.1.2",
+    "@material-ui/core": "^3.6.1",
+    "@material-ui/icons": "^3.0.1",
     "iiif-prezi2to3": "^1.0.8",
     "immer": "^1.8.0",
+    "langs": "^2.0.0",
     "prop-types": "^15.6.2",
     "react": "16.6.3",
+    "react-beautiful-dnd": "^10.0.2",
     "react-dom": "16.6.3"
   },
   "jest": {

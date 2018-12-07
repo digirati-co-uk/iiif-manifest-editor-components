@@ -1,13 +1,14 @@
 import React from 'react';
 import Panel from '../Panel/Panel';
 import './TabPanel.scss';
+import { AppBar, Tabs, Tab } from '@material-ui/core';
 
 class TabPanel extends React.Component {
   state = {
     activeIdx: 0,
   };
 
-  setActiveIndex = index => () => {
+  setActiveIndex = (ev, index) => {
     this.setState({
       activeIdx: index,
     });
@@ -18,23 +19,22 @@ class TabPanel extends React.Component {
     const { children } = this.props;
     return (
       <Panel>
-        <Panel.Toolbar>
-          <div className="tab-toolbar">
-            {children.map((child, idx) => {
-              return (
-                <a
-                  className={
-                    'tab-toolbar__item' +
-                    (idx === activeIdx ? ' tab-toolbar__item--active' : '')
-                  }
-                  onClick={this.setActiveIndex(idx)}
-                >
-                  {child.type.displayName}
-                </a>
-              );
-            })}
-          </div>
-        </Panel.Toolbar>
+        <Tabs
+          value={activeIdx}
+          onChange={this.setActiveIndex}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          {children.map((child, idx) => (
+            <Tab
+              key={`tab_${idx}`}
+              label={(child.type.displayName || '').replace(
+                /WithStyles\(([^)]+)\)/,
+                '$1'
+              )}
+            />
+          ))}
+        </Tabs>
         <Panel.Content>{children[activeIdx]}</Panel.Content>
       </Panel>
     );

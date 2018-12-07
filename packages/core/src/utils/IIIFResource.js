@@ -104,6 +104,40 @@ export const queryResourceById = (id, resource) => {
   return null;
 };
 
+export const getParentByChildId = (id, resource, parent = null) => {
+  if (
+    id === null ||
+    resource === null ||
+    typeof resource === 'string' ||
+    typeof resource === 'number' ||
+    typeof resource === 'boolean'
+  ) {
+    return null;
+  }
+  if (resource.id === id) {
+    return parent;
+  } else {
+    let subq = null;
+    if (Array.isArray(resource)) {
+      for (let subResource of resource) {
+        subq = getParentByChildId(id, subResource, parent);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    } else {
+      let newParent = resource.hasOwnProperty('type') ? resource : parent;
+      for (let key in resource) {
+        subq = getParentByChildId(id, resource[key], newParent);
+        if (subq !== null) {
+          return subq;
+        }
+      }
+    }
+  }
+  return null;
+};
+
 export const getPath = (id, resource, path = []) => {
   if (
     id === null ||
@@ -141,3 +175,23 @@ export const getPath = (id, resource, path = []) => {
 };
 
 export default renderResource;
+
+export const locale = (item, lang, fallback) => {
+  if (!item) {
+    return fallback || '';
+  }
+  if (!lang) {
+    const keys = Object.keys(item);
+    if (keys.length > 0) {
+      return item[keys[0]];
+    }
+
+    return fallback || '';
+  }
+
+  if (item[lang]) {
+    return item[lang].join('\n');
+  }
+
+  return fallback || '';
+};
