@@ -38,7 +38,11 @@
     "prop-types": "^15.6.2",
     "react": "16.6.3",
     "react-beautiful-dnd": "^10.0.2",
-    "react-dom": "16.6.3"
+    "react-container-dimensions": "^1.4.1",
+    "react-dom": "16.6.3",
+    "react-lazy-images": "^1.1.0",
+    "react-rnd": "^9.0.4",
+    "react-virtualized": "^9.21.0"
   },
   "jest": {
     "transform": {

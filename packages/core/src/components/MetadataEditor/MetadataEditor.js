@@ -46,7 +46,6 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
         }
         className={classes.textField}
         margin="dense"
-        multiline
         variant="outlined"
       />
       <TextField

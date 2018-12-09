@@ -19,7 +19,10 @@ const ManifestEditor = ({ children, dropConfig = SOUCE_DEST_TYPE }) => (
       }
 
       const sourceType = result.source.droppableId.replace(/(.*)(\-.*)?/, '$1');
-      const destType = result.source.droppableId.replace(/(.*)(\-.*)?/, '$1');
+      const destType = result.destination.droppableId.replace(
+        /(.*)(\-.*)?/,
+        '$1'
+      );
 
       if (dropConfig.hasOwnProperty(`${sourceType}->${destType}`)) {
         dropConfig[`${sourceType}->${destType}`](result);

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CollectionExplorer renders the collection explorer unchanged 1`] = `
+exports[`IIIFCollectionExplorer renders the collection explorer unchanged 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <CollectionExplorer
+  Symbol(enzyme.__unrendered__): <WithStyles(CollectionExplorer)
     url={null}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -17,25 +17,35 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
-      "children": "Collection explorer placeholder",
+      "classes": Object {
+        "head": "CollectionExplorer-head-2",
+        "headAddressLine": "CollectionExplorer-headAddressLine-3",
+        "root": "CollectionExplorer-root-1",
+      },
+      "url": null,
     },
     "ref": null,
-    "rendered": "Collection explorer placeholder",
-    "type": "div",
+    "rendered": null,
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
-        "children": "Collection explorer placeholder",
+        "classes": Object {
+          "head": "CollectionExplorer-head-2",
+          "headAddressLine": "CollectionExplorer-headAddressLine-3",
+          "root": "CollectionExplorer-root-1",
+        },
+        "url": null,
       },
       "ref": null,
-      "rendered": "Collection explorer placeholder",
-      "type": "div",
+      "rendered": null,
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {

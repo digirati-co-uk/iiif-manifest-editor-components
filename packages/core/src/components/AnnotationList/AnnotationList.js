@@ -1,28 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { IconButton, Typography, withStyles } from '@material-ui/core';
+import { IconButton, Typography, withStyles, Divider } from '@material-ui/core';
 import { Cancel, Image, Videocam, Audiotrack, Notes } from '@material-ui/icons';
 
 import Panel from '../Panel/Panel';
 import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/DefaultAnnotationListToolbar';
 import LocaleString from '../LocaleString/LocaleString';
+import Tooltip from '../DefaultTooltip/DefaultTooltip';
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   outline: isDragging ? '2px solid rgb(89, 191, 236)' : '0',
   ...draggableStyle,
 });
 
+// TODO: make this as a property or context in order to be able to extend later on.
 const getIconForAnnotationType = (annotation, color) => {
   switch (annotation.body.type) {
     case 'TextualBody':
-      return <Notes color={color} />;
+      return (
+        <Tooltip title="Text Annotation">
+          <Notes color={color} />
+        </Tooltip>
+      );
     case 'Image':
-      return <Image color={color} />;
+      return (
+        <Tooltip title="Image Annotation">
+          <Image color={color} />
+        </Tooltip>
+      );
     case 'Video':
-      return <Videocam color={color} />;
+      return (
+        <Tooltip title="Video Annotation">
+          <Videocam color={color} />
+        </Tooltip>
+      );
     case 'Audio':
-      return <Audiotrack color={color} />;
+      return (
+        <Tooltip title="Audio Annotation">
+          <Audiotrack color={color} />
+        </Tooltip>
+      );
   }
 };
 
@@ -94,6 +112,7 @@ const AnnotationList = ({
     ) : (
       <DefaultAnnotationListToolbar invokeAction={invokeAction} />
     )}
+    <Divider />
     <Panel.Content>
       <Droppable droppableId="annotationlist">
         {(providedDroppable, snapshotDroppable) => (
@@ -157,9 +176,11 @@ const AnnotationList = ({
                           </div>
                         </div>
                       )}
-                      <IconButton onClick={() => remove(annotation)}>
-                        <Cancel />
-                      </IconButton>
+                      <Tooltip title="Delete Annotation" placement="right">
+                        <IconButton onClick={() => remove(annotation)}>
+                          <Cancel />
+                        </IconButton>
+                      </Tooltip>
                     </div>
                   )}
                 </Draggable>
@@ -172,6 +193,7 @@ const AnnotationList = ({
                 No Annotations
               </Typography>
             )}
+            {providedDroppable.placeholder}
           </div>
         )}
       </Droppable>

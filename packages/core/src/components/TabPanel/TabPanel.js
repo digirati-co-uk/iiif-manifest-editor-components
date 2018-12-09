@@ -14,6 +14,19 @@ class TabPanel extends React.Component {
     });
   };
 
+  getTabName = child => {
+    if (typeof child.type === 'string') {
+      return child.props.title || child.type;
+    } else {
+      return (
+        child.props.title ||
+        (child.type.displayName || '')
+          .replace(/WithStyles\(([^)]+)\)/, '$1')
+          .replace(/([a-z])([A-Z])/g, '$1 $2')
+      );
+    }
+  };
+
   render() {
     const { activeIdx } = this.state;
     const { children } = this.props;
@@ -24,15 +37,12 @@ class TabPanel extends React.Component {
           onChange={this.setActiveIndex}
           indicatorColor="primary"
           textColor="primary"
+          scrollable={children.length > 2}
+          fullWidth={children.length < 3}
+          scrollButtons={children.length < 3 ? 'off' : 'auto'}
         >
           {children.map((child, idx) => (
-            <Tab
-              key={`tab_${idx}`}
-              label={(child.type.displayName || '').replace(
-                /WithStyles\(([^)]+)\)/,
-                '$1'
-              )}
-            />
+            <Tab key={`tab_${idx}`} label={this.getTabName(child)} />
           ))}
         </Tabs>
         <Panel.Content>{children[activeIdx]}</Panel.Content>

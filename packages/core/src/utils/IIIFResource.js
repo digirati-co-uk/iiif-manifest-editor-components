@@ -195,3 +195,28 @@ export const locale = (item, lang, fallback) => {
 
   return fallback || '';
 };
+
+export const getHashParams = uri => {
+  let hashParams = uri.split('#')[1];
+  if (hashParams) {
+    return hashParams.split('&').reduce((result, item) => {
+      let [_key, _value] = item.split('=');
+      result[_key] = _value;
+      return result;
+    }, {});
+  }
+  return {};
+};
+
+export const makeURLHash = obj => {
+  let result = '';
+  if (obj) {
+    result = Object.entries(obj)
+      .reduce((acc, [_key, _value]) => {
+        acc.push(`${_key}=${_value}`);
+        return acc;
+      }, [])
+      .join('&');
+  }
+  return result.length > 0 ? `#${result}` : '';
+};

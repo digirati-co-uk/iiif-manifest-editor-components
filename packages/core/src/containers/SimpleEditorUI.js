@@ -1,17 +1,4 @@
 import React from 'react';
-import AnnotationList from '../components/AnnotationList/AnnotationList';
-import CanvasList from '../components/CanvasList/CanvasList';
-import CollectionExplorer from '../components/CollectionExplorer/CollectionExplorer';
-import EditableCanvas from '../components/EditableCanvas/EditableCanvas';
-import Properties from '../components/Properties/Properties';
-import TabPanel from '../components/TabPanel/TabPanel';
-import renderResource, {
-  queryResourceById,
-  locale,
-} from '../utils/IIIFResource';
-import ManifestEditor from '../components/ManifestEditor/ManifestEditor';
-import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreviewDialog';
-
 import {
   createMuiTheme,
   MuiThemeProvider,
@@ -21,9 +8,23 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
+
+import AnnotationList from '../components/AnnotationList/AnnotationList';
+import CanvasList from '../components/CanvasList/CanvasList';
+import IIIFCollectionExplorer from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer';
+import EditableCanvas from '../components/EditableCanvas/EditableCanvas';
+import Properties from '../components/Properties/Properties';
+import TabPanel from '../components/TabPanel/TabPanel';
+import renderResource, {
+  queryResourceById,
+  locale,
+} from '../utils/IIIFResource';
+import ManifestEditor from '../components/ManifestEditor/ManifestEditor';
+import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreviewDialog';
 import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
+import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
 
 import './SimpleEditorUI.scss';
 
@@ -61,11 +62,14 @@ class SimpleEditorUI extends React.Component {
       'annotationlist->annotationlist': this.sameTypeListDropHandler,
       //'dlcsimagelist->annotationlist': () => {},
       //'dlcsimagelist->canvaseditor': () => {},
-      // 'iiifimagelist->canvaslist': () => {},
+      'iiifimagelist->canvaslist': drop => {
+        alert('youhoo');
+      },
       // 'iiifimagelist->annotationlist': () => {},
       // 'iiifimagelist->canvaseditor': () => {},
     };
   }
+
   state = {
     rootResource: demoManifest,
     selectedIdsByType: {
@@ -117,6 +121,10 @@ class SimpleEditorUI extends React.Component {
             options: {
               type: 'Annotation',
               parent: this.state.selectedIdsByType.Canvas,
+              props: {
+                target:
+                  this.state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
+              },
             },
           });
         }
@@ -219,6 +227,16 @@ class SimpleEditorUI extends React.Component {
     });
   };
 
+  updateResource = (target, props) => {
+    this.dispatch(IIIFReducer, {
+      type: 'UPDATE_RESOURCE',
+      options: {
+        id: target.id,
+        props,
+      },
+    });
+  };
+
   saveProject = () => {
     download(
       this.state.rootResource,
@@ -276,18 +294,24 @@ class SimpleEditorUI extends React.Component {
                     justifyContent: 'flex-end',
                   }}
                 >
-                  <IconButton color="secondary" onClick={this.newProject}>
-                    <LibraryAdd />
-                  </IconButton>
-                  <IconButton color="secondary" onClick={this.saveProject}>
-                    <SaveAlt />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={this.togglePreviewDialog}
-                  >
-                    <Visibility />
-                  </IconButton>
+                  <DefaultTooltip title="New Manifest" placement="bottom">
+                    <IconButton color="secondary" onClick={this.newProject}>
+                      <LibraryAdd />
+                    </IconButton>
+                  </DefaultTooltip>
+                  <DefaultTooltip title="Download Manifest" placement="bottom">
+                    <IconButton color="secondary" onClick={this.saveProject}>
+                      <SaveAlt />
+                    </IconButton>
+                  </DefaultTooltip>
+                  <DefaultTooltip title="Preview JSON" placement="bottom">
+                    <IconButton
+                      color="secondary"
+                      onClick={this.togglePreviewDialog}
+                    >
+                      <Visibility />
+                    </IconButton>
+                  </DefaultTooltip>
                 </div>
               </Toolbar>
             </AppBar>
@@ -303,10 +327,16 @@ class SimpleEditorUI extends React.Component {
                 />
               </div>
               <div className="simple-manifest-editor__canvas">
-                <EditableCanvas />
+                <EditableCanvas
+                  canvas={selectedCanvas}
+                  selectedAnnotation={this.state.selectedIdsByType.Annotation}
+                  select={this.selectResource}
+                  update={this.updateResource}
+                />
               </div>
               <div className="simple-manifest-editor__right-panel">
                 <TabPanel>
+                  <IIIFCollectionExplorer />
                   <Properties
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
@@ -315,7 +345,6 @@ class SimpleEditorUI extends React.Component {
                     changeLanguage={this.changeLanguage}
                     update={this.updateProperty}
                   />
-                  <CollectionExplorer />
                 </TabPanel>
               </div>
             </div>
