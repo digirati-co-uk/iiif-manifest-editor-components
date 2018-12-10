@@ -21,7 +21,12 @@ const getTextAnnotationStyle = styleStr =>
 
 const DEFAULT_RENDERERS = {
   'TextualBody::painting': annotation => (
-    <p style={getTextAnnotationStyle(annotation.style || '')}>
+    <p
+      style={{
+        ...getTextAnnotationStyle(annotation.style || ''),
+        pointerEvents: 'none',
+      }}
+    >
       {annotation.body.value || 'Text Annotation'}
     </p>
   ),
@@ -36,7 +41,13 @@ const DEFAULT_RENDERERS = {
     />
   ),
   'Video::painting': annotation => (
-    <video controls autoplay name="media" style={imgStyle}>
+    <video
+      controls
+      style={{
+        ...imgStyle,
+        pointerEvents: 'none',
+      }}
+    >
       <source
         src={
           annotation.body.id ||
@@ -47,7 +58,12 @@ const DEFAULT_RENDERERS = {
     </video>
   ),
   'Audio::painting': annotation => (
-    <audio controls autoplay>
+    <audio
+      controls
+      style={{
+        pointerEvents: 'none',
+      }}
+    >
       <source
         src={annotation.body.id || 'https://www.w3schools.com/tags/horse.ogg'}
         type="audio/ogg"

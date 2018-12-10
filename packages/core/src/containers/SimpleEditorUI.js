@@ -12,7 +12,7 @@ import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
 import IIIFCollectionExplorer from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer';
-import EditableCanvas from '../components/EditableCanvas/EditableCanvas';
+import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanvasPanel';
 import Properties from '../components/Properties/Properties';
 import TabPanel from '../components/TabPanel/TabPanel';
 import renderResource, {
@@ -327,7 +327,7 @@ class SimpleEditorUI extends React.Component {
                 />
               </div>
               <div className="simple-manifest-editor__canvas">
-                <EditableCanvas
+                <EditableCanvasPanel
                   canvas={selectedCanvas}
                   selectedAnnotation={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}

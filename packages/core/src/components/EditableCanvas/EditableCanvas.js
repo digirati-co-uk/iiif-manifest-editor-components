@@ -6,7 +6,7 @@ import { IconButton, withStyles } from '@material-ui/core';
 import { ZoomIn, ZoomOut } from '@material-ui/icons';
 
 import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRenderer';
-import { getHashParams, makeURLHash } from '../../utils/IIIFResource';
+import { getBounds, makeURLHash } from '../../utils/IIIFResource';
 
 const style = {
   display: 'flex',
@@ -139,7 +139,7 @@ class EditableCanvas extends React.Component {
   };
 
   updateBounds = (annotation, boundsUpdate, canvas) => {
-    const oldBounds = this.getBounds(annotation, canvas);
+    const oldBounds = getBounds(annotation, canvas);
     const bounds = {
       ...oldBounds,
       ...boundsUpdate,
@@ -150,29 +150,6 @@ class EditableCanvas extends React.Component {
     this.props.update(annotation, {
       target: `${canvas.id}${hash}`,
     });
-  };
-
-  getBounds = (annotation, canvas) => {
-    if (annotation.type === 'Annotation' && annotation.target) {
-      let xywh = getHashParams(annotation.target).xywh;
-      if (xywh) {
-        let [x, y, w, h] = xywh.split(',');
-        return {
-          x: parseInt(x, 10),
-          y: parseInt(y, 10),
-          w: parseInt(w, 10),
-          h: parseInt(h, 10),
-        };
-      } else {
-        return {
-          x: 0,
-          y: 0,
-          w: canvas.width,
-          h: canvas.height,
-        };
-      }
-    }
-    //TODO: ???
   };
 
   render() {
@@ -206,7 +183,7 @@ class EditableCanvas extends React.Component {
                   let lockAspectRatio = this.isAspectRationLocked(
                     annotation.body.type
                   );
-                  let bounds = this.getBounds(annotation, canvas);
+                  let bounds = getBounds(annotation, canvas);
                   return (
                     <Rnd
                       key={'annotation__' + canvas.id + '_' + annotation.id}

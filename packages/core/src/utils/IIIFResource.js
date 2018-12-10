@@ -220,3 +220,26 @@ export const makeURLHash = obj => {
   }
   return result.length > 0 ? `#${result}` : '';
 };
+
+export const getBounds = (annotation, canvas) => {
+  if (annotation.type === 'Annotation' && annotation.target) {
+    let xywh = getHashParams(annotation.target).xywh;
+    if (xywh) {
+      let [x, y, w, h] = xywh.split(',');
+      return {
+        x: parseInt(x, 10),
+        y: parseInt(y, 10),
+        w: parseInt(w, 10),
+        h: parseInt(h, 10),
+      };
+    } else {
+      return {
+        x: 0,
+        y: 0,
+        w: canvas.width,
+        h: canvas.height,
+      };
+    }
+  }
+  //TODO: ???
+};
