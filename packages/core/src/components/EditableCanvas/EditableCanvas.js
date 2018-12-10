@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Rnd } from 'react-rnd';
 import { Droppable } from 'react-beautiful-dnd';
-import { IconButton } from '@material-ui/core';
+import { IconButton, withStyles } from '@material-ui/core';
 import { ZoomIn, ZoomOut } from '@material-ui/icons';
 
 import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRenderer';
@@ -14,6 +14,34 @@ const style = {
   justifyContent: 'center',
   background: '#f0f0f0',
 };
+
+const styles = theme => ({
+  noCanvasSelectedMessage: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  root: {
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  canvasBackground: {
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+    background: 'rgba(0,0,0,0.2)',
+    position: 'absolute',
+  },
+  zoomButtons: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+});
 
 const emptyFn = () => {};
 const getListStyle = (isDraggingOver, draggableStyle) => ({
@@ -49,20 +77,25 @@ class EditableCanvas extends React.Component {
 
   isAspectRationLocked = type => this.props.lockAspectRatio.includes(type);
 
-  onDrag = annotation => (ev, data) => {
-    // TODO: this should operate on a temporary annotation
-    let cords = data.node.style.transform.match(PARSE_TRANSFORM);
-    if (cords) {
-      this.updateBounds(
-        annotation,
-        {
-          x: parseInt(parseInt(cords[1], 10) / this.state.zoom, 10),
-          y: parseInt(parseInt(cords[2], 10) / this.state.zoom, 10),
-        },
-        this.props.canvas
-      );
-    }
-  };
+  onDrag = annotation => (ev, direction, src) => emptyFn;
+  // TODO: I leave it like this just for performance reasons for now.
+  // So if the store/state getting updated on each and every mousemove
+  // the experience becomes sluggish so we only update the store on the
+  // mouse up.
+  // (ev, data) => {
+  //   // TODO: this should operate on a temporary annotation
+  //   let cords = data.node.style.transform.match(PARSE_TRANSFORM);
+  //   if (cords) {
+  //     this.updateBounds(
+  //       annotation,
+  //       {
+  //         x: parseInt(parseInt(cords[1], 10) / this.state.zoom, 10),
+  //         y: parseInt(parseInt(cords[2], 10) / this.state.zoom, 10),
+  //       },
+  //       this.props.canvas
+  //     );
+  //   }
+  // };
 
   onDragStop = annotation => (ev, data) => {
     // TODO: this should update the annotation
@@ -79,17 +112,19 @@ class EditableCanvas extends React.Component {
     }
   };
 
-  onResize = annotation => (ev, direction, src) => {
-    // TODO: this should update the annotation
-    this.updateBounds(
-      annotation,
-      {
-        w: parseInt(src.offsetWidth / this.state.zoom, 10),
-        h: parseInt(src.offsetHeight / this.state.zoom, 10),
-      },
-      this.props.canvas
-    );
-  };
+  onResize = annotation => (ev, direction, src) => emptyFn;
+  // TODO: same as for drag.
+  // (ev, direction, src) => {
+  //   // TODO: this should update the annotation
+  //   this.updateBounds(
+  //     annotation,
+  //     {
+  //       w: parseInt(src.offsetWidth / this.state.zoom, 10),
+  //       h: parseInt(src.offsetHeight / this.state.zoom, 10),
+  //     },
+  //     this.props.canvas
+  //   );
+  // };
 
   onResizeStop = annotation => (ev, direction, src) => {
     // TODO: this should update the annotation
@@ -141,47 +176,22 @@ class EditableCanvas extends React.Component {
   };
 
   render() {
-    let { canvas } = this.props;
+    let { classes, canvas } = this.props;
     if (!canvas) {
       return (
-        <div
-          className="canvas-editor"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-          }}
-        >
+        <div className={classes.noCanvasSelectedMessage}>
           Please Select A Canvas
         </div>
       );
     }
-    let self = this;
     const annotations =
       canvas && canvas.items && canvas.items[0] && canvas.items[0].items
         ? canvas.items[0].items
         : [];
     const { selectedAnnotation } = this.props;
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            overflow: 'auto',
-            background: 'rgba(0,0,0,0.2)',
-            position: 'absolute',
-          }}
-        >
+      <div className={classes.root}>
+        <div className={classes.canvasBackground}>
           <Droppable droppableId="canvaseditor">
             {(provided, snapshot) => (
               <div
@@ -231,13 +241,7 @@ class EditableCanvas extends React.Component {
             )}
           </Droppable>
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-          }}
-        >
+        <div className={classes.zoomButtons}>
           <IconButton onClick={this.zoomIn}>
             <ZoomIn />
           </IconButton>
@@ -266,4 +270,4 @@ EditableCanvas.defaultProps = {
   lockAspectRatio: ['Image', 'Video', 'Audio'],
 };
 
-export default EditableCanvas;
+export default withStyles(styles)(EditableCanvas);
