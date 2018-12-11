@@ -59,7 +59,6 @@ const getListStyle = (isDraggingOver, draggableStyle) => ({
   position: 'relative',
 });
 
-const PARSE_TRANSFORM = /(?:translate\((\d+)px,\s+(\d+)px\))/;
 
 const whiteBG = {
   '@context': 'http://iiif.io/api/image/2/context.json',
@@ -115,20 +114,19 @@ class EditableCanvasPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      zoom: 1,
       canvas: props.canvas,
     };
   }
 
   zoomIn = () => {
-    this.setState({
-      zoom: this.state.zoom * 1.2,
-    });
+    if (this.viewport) {
+      this.viewport.zoomIn();
+    }
   };
   zoomOut = () => {
-    this.setState({
-      zoom: this.state.zoom * 0.8,
-    });
+    if (this.viewport) {
+      this.viewport.zoomOut();
+    }
   };
 
   selectItem = item => () => this.props.select(item);
@@ -150,6 +148,8 @@ class EditableCanvasPanel extends React.Component {
   };
 
   setViewport = v => (this.viewport = v);
+
+  setSelectionBoundary = v => (this.componentBounds = v);
 
   render() {
     let { classes, canvas } = this.props;
@@ -176,7 +176,7 @@ class EditableCanvasPanel extends React.Component {
       this.tileSources = [whiteBG];
     }
     return (
-      <div className={classes.root}>
+      <div ref={this.setSelectionBoundary} className={classes.root}>
         <div className={classes.canvasBackground}>
           <ContainerDimensions>
             {({ width, height }) => (
@@ -208,8 +208,8 @@ class EditableCanvasPanel extends React.Component {
                         height={bounds.h}
                         target={canvas.id}
                         ratio={ratio}
+                        selectionRoot={this.componentBounds}
                         setCoords={xywh => {
-                          console.log('xywh', xywh);
                           const meh = {};
                           if (xywh.x) {
                             meh.x = xywh.x;

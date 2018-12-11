@@ -3,7 +3,7 @@
 exports[`EditableCanvas renders the editable canvas unchanged 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <EditableCanvas
+  Symbol(enzyme.__unrendered__): <WithStyles(EditableCanvas)
     canvas={
       Object {
         "id": "test-canvas-1",
@@ -21,25 +21,55 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
-      "children": "EditableCanvas",
+      "canvas": Object {
+        "id": "test-canvas-1",
+      },
+      "classes": Object {
+        "canvasBackground": "EditableCanvas-canvasBackground-3",
+        "noCanvasSelectedMessage": "EditableCanvas-noCanvasSelectedMessage-1",
+        "root": "EditableCanvas-root-2",
+        "zoomButtons": "EditableCanvas-zoomButtons-4",
+      },
+      "lockAspectRatio": Array [
+        "Image",
+        "Video",
+        "Audio",
+      ],
+      "select": [Function],
+      "update": [Function],
     },
     "ref": null,
-    "rendered": "EditableCanvas",
-    "type": "div",
+    "rendered": null,
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
-        "children": "EditableCanvas",
+        "canvas": Object {
+          "id": "test-canvas-1",
+        },
+        "classes": Object {
+          "canvasBackground": "EditableCanvas-canvasBackground-3",
+          "noCanvasSelectedMessage": "EditableCanvas-noCanvasSelectedMessage-1",
+          "root": "EditableCanvas-root-2",
+          "zoomButtons": "EditableCanvas-zoomButtons-4",
+        },
+        "lockAspectRatio": Array [
+          "Image",
+          "Video",
+          "Audio",
+        ],
+        "select": [Function],
+        "update": [Function],
       },
       "ref": null,
-      "rendered": "EditableCanvas",
-      "type": "div",
+      "rendered": null,
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {

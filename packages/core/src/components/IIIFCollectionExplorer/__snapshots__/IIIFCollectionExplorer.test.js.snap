@@ -20,8 +20,7 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "classes": Object {
-        "head": "CollectionExplorer-head-2",
-        "headAddressLine": "CollectionExplorer-headAddressLine-3",
+        "loadingIndicatorContainer": "CollectionExplorer-loadingIndicatorContainer-2",
         "root": "CollectionExplorer-root-1",
       },
       "url": null,
@@ -37,8 +36,7 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "classes": Object {
-          "head": "CollectionExplorer-head-2",
-          "headAddressLine": "CollectionExplorer-headAddressLine-3",
+          "loadingIndicatorContainer": "CollectionExplorer-loadingIndicatorContainer-2",
           "root": "CollectionExplorer-root-1",
         },
         "url": null,

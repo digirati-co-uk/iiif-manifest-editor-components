@@ -3,17 +3,19 @@ import PropTypes from 'prop-types';
 import detectIt from 'detect-it';
 import AnnotationResizers from './AnnotationResizers';
 
-const clearSelection = () => {
-  var selection = window.getSelection
-    ? window.getSelection()
-    : document.selection
-    ? document.selection
-    : null;
-  if (!!selection) {
-    if (selection.empty) {
-      selection.empty();
-    } else {
-      selection.removeAllRanges();
+const clearSelection = root => {
+  root = typeof root === 'string' ? document.querySelector(root) : root;
+  const selection = window.getSelection();
+  if (!!selection && selection.empty) {
+    let currentElement = selection.baseNode;
+    while (currentElement) {
+      console.log(currentElement, root);
+      if (currentElement === root) {
+        selection.empty();
+        break;
+      } else {
+        currentElement = currentElement.parentNode;
+      }
     }
   }
 };
@@ -54,11 +56,12 @@ export default class EditableAnnotation extends React.Component {
     boxStyles: {},
     boxSizeInt: true,
     constrainToCanvasBounds: true,
+    selectionRoot: null,
   };
 
   componentWillReceiveProps() {
     this.detachNativeHandlers();
-    clearSelection();
+    clearSelection(this.props.selectionRoot);
   }
 
   attachNativeHandlers = () => {
@@ -96,7 +99,7 @@ export default class EditableAnnotation extends React.Component {
     } else if (ev.type === 'touchmove') {
       ev.preventDefault();
     }
-    clearSelection();
+    clearSelection(this.props.selectionRoot);
     const X = ev.type === 'mousemove' ? ev.pageX : ev.touches[0].pageX;
     const Y = ev.type === 'mousemove' ? ev.pageY : ev.touches[0].pageY;
     const { position, ratio } = this.props;
@@ -110,7 +113,7 @@ export default class EditableAnnotation extends React.Component {
   };
 
   onPointerUp = ev => {
-    clearSelection();
+    clearSelection(this.props.selectionRoot);
     if (ev.type === 'mouseup') {
       ev.stopPropagation();
     } else if (ev.type === 'touchend') {
@@ -170,7 +173,7 @@ export default class EditableAnnotation extends React.Component {
   };
 
   resizeStart = direction => ev => {
-    clearSelection();
+    clearSelection(this.props.selectionRoot);
     ev.stopPropagation();
     this.attachNativeHandlers();
     this.setState({
