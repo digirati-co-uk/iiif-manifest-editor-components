@@ -59,7 +59,6 @@ const getListStyle = (isDraggingOver, draggableStyle) => ({
   position: 'relative',
 });
 
-
 const whiteBG = {
   '@context': 'http://iiif.io/api/image/2/context.json',
   '@id':
