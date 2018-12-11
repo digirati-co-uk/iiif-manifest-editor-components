@@ -37,6 +37,10 @@ const styles = theme => ({
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
+    '-webkit-user-select': 'none',
+    '-moz-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select: none': 'none',
   },
   canvasBackground: {
     width: '100%',
@@ -148,8 +152,6 @@ class EditableCanvasPanel extends React.Component {
 
   setViewport = v => (this.viewport = v);
 
-  setSelectionBoundary = v => (this.componentBounds = v);
-
   render() {
     let { classes, canvas } = this.props;
     if (!canvas) {
@@ -175,7 +177,7 @@ class EditableCanvasPanel extends React.Component {
       this.tileSources = [whiteBG];
     }
     return (
-      <div ref={this.setSelectionBoundary} className={classes.root}>
+      <div className={classes.root}>
         <div className={classes.canvasBackground}>
           <ContainerDimensions>
             {({ width, height }) => (
@@ -207,7 +209,6 @@ class EditableCanvasPanel extends React.Component {
                         height={bounds.h}
                         target={canvas.id}
                         ratio={ratio}
-                        selectionRoot={this.componentBounds}
                         setCoords={xywh => {
                           const meh = {};
                           if (xywh.x) {
