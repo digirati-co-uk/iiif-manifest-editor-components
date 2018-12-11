@@ -40,11 +40,22 @@ export default class EditableAnnotation extends React.Component {
     boxStyles: {},
     boxSizeInt: true,
     constrainToCanvasBounds: true,
-    selectionRoot: null,
   };
 
-  componentWillReceiveProps() {
-    this.detachNativeHandlers();
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      (prevProps.x !== this.props.x ||
+        prevProps.y !== this.props.y ||
+        prevProps.width !== this.props.width ||
+        prevProps.height !== this.props.height) &&
+      (prevState.dragStarted || prevState.resizeStarted)
+    ) {
+      this.detachNativeHandlers();
+      this.setState({
+        dragStarted: false,
+        resizeStarted: false,
+      });
+    }
   }
 
   attachNativeHandlers = () => {
