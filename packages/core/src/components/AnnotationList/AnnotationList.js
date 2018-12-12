@@ -8,41 +8,12 @@ import Panel from '../Panel/Panel';
 import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/DefaultAnnotationListToolbar';
 import LocaleString from '../LocaleString/LocaleString';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
+import { EditorConsumer } from '../EditorContex/EditorContext';
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   outline: isDragging ? '2px solid rgb(89, 191, 236)' : '0',
   ...draggableStyle,
 });
-
-// TODO: make this as a property or context in order to be able to extend later on.
-const getIconForAnnotationType = (annotation, color) => {
-  switch (annotation.body.type) {
-    case 'TextualBody':
-      return (
-        <Tooltip title="Text Annotation">
-          <Notes color={color} />
-        </Tooltip>
-      );
-    case 'Image':
-      return (
-        <Tooltip title="Image Annotation">
-          <Image color={color} />
-        </Tooltip>
-      );
-    case 'Video':
-      return (
-        <Tooltip title="Video Annotation">
-          <Videocam color={color} />
-        </Tooltip>
-      );
-    case 'Audio':
-      return (
-        <Tooltip title="Audio Annotation">
-          <Audiotrack color={color} />
-        </Tooltip>
-      );
-  }
-};
 
 const emptyFn = () => {};
 
@@ -55,7 +26,9 @@ const style = theme => ({
   },
   annotationDraggable: {
     userSelect: 'none',
-    padding: `${theme.spacing.unit / 2}px ${theme.spacing.unit}px`,
+    padding: `${theme.spacing.unit / 2}px 0 ${theme.spacing.unit / 2}px ${
+      theme.spacing.unit
+    }px`,
     margin: `0`,
     background: theme.palette.background.paper,
     display: 'flex',
@@ -114,89 +87,107 @@ const AnnotationList = ({
     )}
     <Divider />
     <Panel.Content>
-      <Droppable droppableId="annotationlist">
-        {(providedDroppable, snapshotDroppable) => (
-          <div ref={providedDroppable.innerRef} className={classes.list}>
-            {annotations ? (
-              annotations.map((annotation, index) => (
-                <Draggable
-                  key={annotation.id}
-                  draggableId={annotation.id}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                      className={classes.annotationDraggable}
+      <EditorConsumer>
+        {configuration => (
+          <Droppable droppableId="annotationlist">
+            {(providedDroppable, snapshotDroppable) => (
+              <div ref={providedDroppable.innerRef} className={classes.list}>
+                {annotations ? (
+                  annotations.map((annotation, index) => (
+                    <Draggable
+                      key={annotation.id}
+                      draggableId={annotation.id}
+                      index={index}
                     >
-                      {typeof children === 'function' ? (
-                        children(annotation, remove, select)
-                      ) : (
+                      {(provided, snapshot) => (
                         <div
-                          key={annotation.id}
-                          className={classes.defaultAnnotation}
-                          onClick={ev => {
-                            select(annotation);
-                          }}
-                        >
-                          {iconProvider(
-                            annotation,
-                            selected === annotation.id ? 'primary' : 'inherit'
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
                           )}
-                          <div
-                            className={classes.defaultAnnotationText}
-                            title={
-                              annotation.label && annotation.label[lang]
-                                ? annotation.label[lang]
-                                : annotation.id
-                            }
-                          >
-                            <Typography
-                              color={
-                                selected === annotation.id
-                                  ? 'primary'
-                                  : 'inherit'
-                              }
-                              variant="subtitle2"
-                              className={classes.defaultAnnotationTypo}
+                          className={classes.annotationDraggable}
+                        >
+                          {typeof children === 'function' ? (
+                            children(annotation, remove, select)
+                          ) : (
+                            <div
+                              key={annotation.id}
+                              className={classes.defaultAnnotation}
+                              onClick={ev => {
+                                select(annotation);
+                              }}
                             >
-                              <LocaleString
-                                fallback={annotation.id}
-                                lang={lang}
+                              {configuration.annotation[
+                                [
+                                  annotation.body.type,
+                                  annotation.motivation,
+                                ].join('::')
+                              ]
+                                ? configuration.annotation[
+                                    [
+                                      annotation.body.type,
+                                      annotation.motivation,
+                                    ].join('::')
+                                  ].icon({
+                                    color:
+                                      selected === annotation.id
+                                        ? 'primary'
+                                        : 'inherit',
+                                  })
+                                : ''}
+                              <div
+                                className={classes.defaultAnnotationText}
+                                title={
+                                  annotation.label && annotation.label[lang]
+                                    ? annotation.label[lang]
+                                    : annotation.id
+                                }
                               >
-                                {annotation.label}
-                              </LocaleString>
-                            </Typography>
-                          </div>
+                                <Typography
+                                  color={
+                                    selected === annotation.id
+                                      ? 'primary'
+                                      : 'inherit'
+                                  }
+                                  variant="subtitle2"
+                                  className={classes.defaultAnnotationTypo}
+                                >
+                                  <LocaleString
+                                    fallback={annotation.id}
+                                    lang={lang}
+                                  >
+                                    {annotation.label}
+                                  </LocaleString>
+                                </Typography>
+                              </div>
+                            </div>
+                          )}
+                          <Tooltip title="Delete Annotation" placement="right">
+                            <IconButton onClick={() => remove(annotation)}>
+                              <Cancel />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                       )}
-                      <Tooltip title="Delete Annotation" placement="right">
-                        <IconButton onClick={() => remove(annotation)}>
-                          <Cancel />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  )}
-                </Draggable>
-              ))
-            ) : (
-              <Typography
-                variant="caption"
-                className={classes.defaultNoAnnotationIndicator}
-              >
-                No Annotations
-              </Typography>
+                    </Draggable>
+                  ))
+                ) : (
+                  <Typography
+                    variant="caption"
+                    className={classes.defaultNoAnnotationIndicator}
+                  >
+                    No Annotations
+                  </Typography>
+                )}
+                {providedDroppable.placeholder}
+              </div>
             )}
-            {providedDroppable.placeholder}
-          </div>
+          </Droppable>
         )}
-      </Droppable>
+      </EditorConsumer>
     </Panel.Content>
   </Panel>
 );
@@ -218,8 +209,6 @@ AnnotationList.propTypes = {
   select: PropTypes.func,
   /* on remove callback */
   remove: PropTypes.func,
-  /* annotation icon resolver  fn(annotation, color) */
-  iconProvider: PropTypes.func,
   /* toolbar action dispacher */
   invokeAction: PropTypes.func.isRequired,
 };
@@ -228,7 +217,6 @@ AnnotationList.defaultProps = {
   selected: null,
   select: emptyFn,
   remove: emptyFn,
-  iconProvider: getIconForAnnotationType,
   invokeAction: emptyFn,
 };
 

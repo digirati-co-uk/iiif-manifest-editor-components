@@ -243,3 +243,17 @@ export const getBounds = (annotation, canvas) => {
   }
   //TODO: ???
 };
+
+export const getW3cAnnotationStyle = styleStr =>
+  styleStr.split(';').reduce((acc, item) => {
+    let [key, value] = item.split(':');
+    if (key) {
+      if (key.trim()) {
+        let camelisedKey = key
+          .trim()
+          .replace(/\-[a-zA-Z]/g, match => match[1].toUpperCase());
+        acc[camelisedKey] = value;
+      }
+    }
+    return acc;
+  }, {});

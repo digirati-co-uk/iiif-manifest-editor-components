@@ -55,21 +55,6 @@ const demoCanvas = renderResource('Canvas', { parent: demoManifest });
 demoManifest.items.push(demoCanvas);
 
 class SimpleEditorUI extends React.Component {
-  constructor(props) {
-    super(props);
-    this.dropConfig = {
-      'canvaslist->canvaslist': this.sameTypeListDropHandler,
-      'annotationlist->annotationlist': this.sameTypeListDropHandler,
-      //'dlcsimagelist->annotationlist': () => {},
-      //'dlcsimagelist->canvaseditor': () => {},
-      'iiifimagelist->canvaslist': drop => {
-        alert('youhoo');
-      },
-      // 'iiifimagelist->annotationlist': () => {},
-      // 'iiifimagelist->canvaseditor': () => {},
-    };
-  }
-
   state = {
     rootResource: demoManifest,
     selectedIdsByType: {
@@ -101,97 +86,22 @@ class SimpleEditorUI extends React.Component {
     });
   };
 
-  sameTypeListDropHandler = drop => {
-    this.dispatch(IIIFReducer, {
-      type: 'UPDATE_RESOURCE_ORDER',
-      options: {
-        id: drop.draggableId,
-        startIndex: drop.source.index,
-        targetIndex: drop.destination.index,
-      },
-    });
-  };
+  invokeAction2 = (fn, options) => () => {
+    if (!fn) {
+      return;
+    }
 
+    fn(
+      {
+        state: this.state,
+        dispatch: this.dispatch,
+      },
+      options
+    );
+  };
+  //TODO: deprecated replaced by the above
   invokeAction = (action, options) => {
     switch (action) {
-      case 'add-text-annotation':
-        if (this.state.selectedIdsByType.Canvas) {
-          this.dispatch(IIIFReducer, {
-            type: 'ADD_RESOURCE',
-            options: {
-              type: 'Annotation',
-              parent: this.state.selectedIdsByType.Canvas,
-              props: {
-                target:
-                  this.state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
-              },
-            },
-          });
-        }
-        break;
-      case 'add-image-annotation':
-        if (this.state.selectedIdsByType.Canvas) {
-          this.dispatch(IIIFReducer, {
-            type: 'ADD_RESOURCE',
-            options: {
-              type: 'Annotation',
-              parent: this.state.selectedIdsByType.Canvas,
-              props: {
-                body: {
-                  type: 'Image',
-                  id: 'https://picsum.photos/200/300',
-                  width: 200,
-                  height: 300,
-                },
-                target:
-                  this.state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
-              },
-            },
-          });
-        }
-        break;
-      case 'add-video-annotation':
-        if (this.state.selectedIdsByType.Canvas) {
-          this.dispatch(IIIFReducer, {
-            type: 'ADD_RESOURCE',
-            options: {
-              type: 'Annotation',
-              parent: this.state.selectedIdsByType.Canvas,
-              props: {
-                body: {
-                  type: 'Video',
-                  id: 'https://www.w3schools.com/html/mov_bbb.mp4',
-                  width: 320,
-                  height: 176,
-                  duration: 10.026667,
-                },
-                target:
-                  this.state.selectedIdsByType.Canvas + '#xywh=0,0,320,176',
-              },
-            },
-          });
-        }
-        break;
-      case 'add-audio-annotation':
-        if (this.state.selectedIdsByType.Canvas) {
-          this.dispatch(IIIFReducer, {
-            type: 'ADD_RESOURCE',
-            options: {
-              type: 'Annotation',
-              parent: this.state.selectedIdsByType.Canvas,
-              props: {
-                body: {
-                  type: 'Audio',
-                  id: 'https://www.w3schools.com/html/horse.ogg',
-                  duration: 1.515102,
-                },
-                target:
-                  this.state.selectedIdsByType.Canvas + '#xywh=0,0,320,176',
-              },
-            },
-          });
-        }
-        break;
       case 'add-canvas':
         this.dispatch(IIIFReducer, {
           type: 'ADD_RESOURCE',
@@ -280,7 +190,7 @@ class SimpleEditorUI extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className="simple-manifest-editor">
-          <ManifestEditor dropConfig={this.dropConfig}>
+          <ManifestEditor invokeAction={this.invokeAction2}>
             <AppBar position="static">
               <Toolbar>
                 <Typography color="secondary" variant="h6">
@@ -323,7 +233,7 @@ class SimpleEditorUI extends React.Component {
                   selected={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}
                   remove={this.deleteResource}
-                  invokeAction={this.invokeAction}
+                  invokeAction={this.invokeAction2}
                 />
               </div>
               <div className="simple-manifest-editor__canvas">
