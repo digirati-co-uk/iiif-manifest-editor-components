@@ -1,6 +1,6 @@
 import React from 'react';
 import { getW3cAnnotationStyle } from '../../utils/IIIFResource';
-import { EditorConsumer } from '../EditorContex/EditorContext';
+import { EditorConsumer } from '../EditorContext/EditorContext';
 
 const NotSupportedContentType = (annotation, type) => (
   <p style={getW3cAnnotationStyle(annotation.style || '')}>

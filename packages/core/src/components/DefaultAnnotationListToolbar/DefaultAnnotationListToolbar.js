@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Toolbar } from '@material-ui/core';
-import { EditorConsumer } from '../EditorContex/EditorContext';
+import { EditorConsumer } from '../EditorContext/EditorContext';
 
 const DefaultAnnotationListToolbar = ({ invokeAction }) => (
   <EditorConsumer>

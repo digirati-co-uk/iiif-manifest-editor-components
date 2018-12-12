@@ -121,7 +121,6 @@ class SimpleEditorUI extends React.Component {
     const targetClone = JSON.parse(JSON.stringify(target));
     let currentLevel = targetClone;
     property.split('.').forEach(key => {
-      //const intKey = parseInt(key, 10);
       if (!currentLevel[key]) {
         currentLevel[key] = {};
       }

@@ -1,21 +1,19 @@
 import React from 'react';
-import langs from 'langs';
 import { Select, MenuItem } from '@material-ui/core';
+import { EditorConsumer } from '../EditorContext/EditorContext';
 
-const LanguagesDropdown = ({
-  languages = langs.all(),
-  lang = 'en',
-  changeLanguage,
-}) => {
-  return (
-    <Select value={lang} onChange={ev => changeLanguage(ev.target.value)}>
-      {languages.map(language => (
-        <MenuItem key={language[1]} value={language[1]}>
-          {language.name}
-        </MenuItem>
-      ))}
-    </Select>
-  );
-};
+const LanguagesDropdown = ({ lang = 'en', changeLanguage }) => (
+  <EditorConsumer>
+    {configuration => (
+      <Select value={lang} onChange={ev => changeLanguage(ev.target.value)}>
+        {configuration.translation.languages.map(language => (
+          <MenuItem key={language[1]} value={language[1]}>
+            {language.name}
+          </MenuItem>
+        ))}
+      </Select>
+    )}
+  </EditorConsumer>
+);
 
 export default LanguagesDropdown;

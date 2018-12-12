@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Typography, withStyles, Divider } from '@material-ui/core';
-import { Cancel, Image, Videocam, Audiotrack, Notes } from '@material-ui/icons';
+import { Cancel } from '@material-ui/icons';
 
 import Panel from '../Panel/Panel';
 import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/DefaultAnnotationListToolbar';
 import LocaleString from '../LocaleString/LocaleString';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
-import { EditorConsumer } from '../EditorContex/EditorContext';
+import { EditorConsumer } from '../EditorContext/EditorContext';
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   outline: isDragging ? '2px solid rgb(89, 191, 236)' : '0',
@@ -76,7 +76,6 @@ const AnnotationList = ({
   lang,
   select,
   remove,
-  iconProvider,
   invokeAction,
 }) => (
   <Panel>

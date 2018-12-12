@@ -1,7 +1,8 @@
 import React from 'react';
+import langs from 'langs';
+import deepmerge from 'deepmerge';
 
 import IIIFReducer from '../../reducers/iiif';
-
 import TextPainting from '../../annotation/TextPainting';
 import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
@@ -52,8 +53,8 @@ const defaultEditorContext = {
     },
   },
   translation: {
-    languages: {},
-    defaultLanguage: {},
+    languages: langs.all(),
+    defaultLanguage: 'en',
   },
 };
 
@@ -61,13 +62,14 @@ const EditorContext = React.createContext(defaultEditorContext);
 export class EditorProvider extends React.Component {
   render() {
     const { children, configuration } = this.props;
+    console.log('deepmerge', deepmerge, deepmerge.all);
+    const aggregatedConfig = deepmerge.all([
+      defaultEditorContext,
+      configuration,
+    ]);
+    console.log('aggregatedConfig', aggregatedConfig);
     return (
-      <EditorContext.Provider
-        value={{
-          ...defaultEditorContext,
-          ...configuration,
-        }}
-      >
+      <EditorContext.Provider value={aggregatedConfig}>
         {children}
       </EditorContext.Provider>
     );
