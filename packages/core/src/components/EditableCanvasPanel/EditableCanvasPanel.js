@@ -162,8 +162,6 @@ class EditableCanvasPanel extends React.Component {
               <ContainerDimensions>
                 {({ width, height }) => (
                   <Viewport
-                    // maxHeight={height}
-                    // maxWidth={width}
                     setRef={this.setViewport}
                     imageUri={whiteBG['@id']}
                     tileSources={this.tileSources}

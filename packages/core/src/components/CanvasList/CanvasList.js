@@ -6,6 +6,7 @@ import { Cancel, AddCircle } from '@material-ui/icons';
 import Panel from '../Panel/Panel';
 import LocaleString from '../LocaleString/LocaleString';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
+import { getCanvasThumbnail } from '../IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
 
 const grid = 8;
 
@@ -34,19 +35,39 @@ const style = theme => ({
   },
   listItem: {
     userSelect: 'none',
-    padding: `${theme.spacing.unit / 2}px ${theme.spacing.unit * 2}px`,
     margin: `0 ${theme.spacing.unit}px 0 0`,
     display: 'flex',
-    alignItems: 'flex-end',
+    alignItems: 'stretch',
     maxWidth: 180,
+    minWidth: 100,
     position: 'relative',
     height: 100,
     boxSizing: 'border-box',
   },
   canvas: {
+    position: 'relative',
+    height: 100,
+    width: '100%',
+    textAlign: 'center',
+  },
+  canvasThumbnail: {
+    maxWidth: 150,
+    haxHeight: 100,
+    height: '100%',
+  },
+  canvasLabel: {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    zIndex: 1,
+    color: 'white',
+    textAlign: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    padding: `${theme.spacing.unit / 2}px ${theme.spacing.unit * 2}px`,
   },
   deleteButton: {
     position: 'absolute',
@@ -101,46 +122,58 @@ const CanvasList = ({
                     draggableId={canvas.id}
                     index={index}
                   >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style,
-                          selected === canvas.id
-                        )}
-                        className={classes.listItem}
-                      >
-                        {typeof children === 'function' ? (
-                          children(canvas, remove, select)
-                        ) : (
-                          <div
-                            key={`canvas_list_${canvas.id}`}
-                            className={classes.canvas}
-                            title={
-                              canvas.label && canvas.label[lang]
-                                ? canvas.label[lang]
-                                : canvas.id
-                            }
-                            onClick={() => select(canvas)}
-                          >
-                            <LocaleString fallback={canvas.id} lang={lang}>
-                              {canvas.label}
-                            </LocaleString>
-                          </div>
-                        )}
-                        <Tooltip title="Delete Canvas">
-                          <IconButton
-                            onClick={() => remove(canvas)}
-                            className={classes.deleteButton}
-                          >
-                            <Cancel />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    )}
+                    {(provided, snapshot) => {
+                      const [thumbnail, useLazy] = getCanvasThumbnail(canvas);
+                      return (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style,
+                            selected === canvas.id
+                          )}
+                          className={classes.listItem}
+                        >
+                          {typeof children === 'function' ? (
+                            children(canvas, remove, select)
+                          ) : (
+                            <div
+                              key={`canvas_list_${canvas.id}`}
+                              className={classes.canvas}
+                              title={
+                                canvas.label && canvas.label[lang]
+                                  ? canvas.label[lang]
+                                  : canvas.id
+                              }
+                              onClick={() => select(canvas)}
+                            >
+                              {thumbnail && (
+                                <img
+                                  src={thumbnail}
+                                  alt={canvas.id}
+                                  className={classes.canvasThumbnail}
+                                />
+                              )}
+                              <span className={classes.canvasLabel}>
+                                <LocaleString fallback={canvas.id} lang={lang}>
+                                  {canvas.label}
+                                </LocaleString>
+                              </span>
+                            </div>
+                          )}
+                          <Tooltip title="Delete Canvas">
+                            <IconButton
+                              onClick={() => remove(canvas)}
+                              className={classes.deleteButton}
+                            >
+                              <Cancel color={'primary'} />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      );
+                    }}
                   </Draggable>
                 ))}
                 <div className={classes.defaultAddButtonSpacer}>
