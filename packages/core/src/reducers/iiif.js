@@ -22,6 +22,7 @@ const IIIFReducer = (state, action) => {
   return produce(state, nextState => {
     const options = action.options;
     switch (action.type) {
+      case 'ADD_SPECIFIC_RESOURCE':
       case 'ADD_RESOURCE':
         // Calls the resource template provider which renders the requested resource @type
         // Puts it into the passed @parent position and @index (if index is specified)
@@ -45,10 +46,13 @@ const IIIFReducer = (state, action) => {
 
         const parent = queryResourceById(parentId, nextState.rootResource);
 
-        const newResource = renderResource(options.type, {
-          props: options.props || {},
-          parent: parent,
-        });
+        const newResource =
+          action.type === 'ADD_RESOURCE'
+            ? renderResource(options.type, {
+                props: options.props || {},
+                parent: parent,
+              })
+            : options.props;
 
         // this part is a bit of chaos, TODO: clean up
         if (parent) {
@@ -83,9 +87,6 @@ const IIIFReducer = (state, action) => {
           nextState.rootResource = newResource;
         }
         break;
-      case 'ADD_SPECIFIC_RESOURCE':
-      // Used for copying resources from other manifests, receives existing @resource.
-      // Puts it into the passed @parent position and @index (if index is specified)
       case 'REMOVE_RESOURCE':
         const toRemoveFrom = getParentByChildId(
           action.id,

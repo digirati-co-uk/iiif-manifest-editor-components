@@ -295,8 +295,8 @@ export default class EditableAnnotation extends React.Component {
     } = this.props;
     const X = this.applyPrecision(x) + this.state.dX;
     const Y = this.applyPrecision(y) + this.state.dY;
+    //const zam = position ? position.zoom * (1 / ratio) : 1;
     const zam = position ? position.zoom * (1 / ratio) : 1;
-    const rzam = 1 / zam;
     return (
       <div
         style={{
@@ -314,7 +314,7 @@ export default class EditableAnnotation extends React.Component {
         {children}
         <AnnotationResizers
           resizeStart={this.resizeStart}
-          resizerWidth={25 * rzam}
+          resizerWidth={25 * zam}
         />
       </div>
     );

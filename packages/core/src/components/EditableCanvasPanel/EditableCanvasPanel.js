@@ -64,53 +64,23 @@ const getListStyle = (isDraggingOver, draggableStyle) => ({
 });
 
 const whiteBG = {
-  '@context': 'http://iiif.io/api/image/2/context.json',
-  '@id':
-    'https://dlc.services/iiif-img/5/2/71df3d52-df5a-4a57-9607-9ecf4dd2197c',
-  protocol: 'http://iiif.io/api/image',
   width: 1000,
   height: 1000,
-  tiles: [
-    {
-      width: 256,
-      height: 256,
-      scaleFactors: [1, 2, 4],
-    },
-  ],
-  sizes: [
-    {
-      width: 1000,
-      height: 1000,
-    },
-    {
-      width: 400,
-      height: 400,
-    },
-    {
-      width: 200,
-      height: 200,
-    },
-    {
-      width: 100,
-      height: 100,
-    },
-  ],
-  profile: [
-    'http://iiif.io/api/image/2/level1.json',
-    {
-      formats: ['jpg'],
-      qualities: ['native', 'color', 'gray'],
-      supports: [
-        'regionByPct',
-        'sizeByForcedWh',
-        'sizeByWh',
-        'sizeAboveFull',
-        'rotationBy90s',
-        'mirroring',
-        'gray',
-      ],
-    },
-  ],
+  tileSize: 256,
+  getTileUrl: (level, x, y) => {
+    return (
+      'data:image/svg+xml;base64,' +
+      btoa(
+        `<?xml version="1.0" encoding="utf-8"?>\
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" \
+    x="0px" y="0px" viewBox="0 0 256 256" style="enable-background:new 0 0 256 256;" xml:space="preserve">\
+    <g>\
+      <rect x="0" y="0" style="fill:#FFFFFF;" width="256" height="256"/>\
+      </g>\
+    </svg>`
+      )
+    );
+  },
 };
 
 class EditableCanvasPanel extends React.Component {
@@ -166,7 +136,7 @@ class EditableCanvasPanel extends React.Component {
         ? canvas.items[0].items
         : [];
     const { selectedAnnotation } = this.props;
-    const ratio = 0.5;
+    const ratio = 1;
     if (!this.canvas || this.canvas.id !== canvas.id) {
       this.canvas = {
         id: canvas.id,
@@ -174,79 +144,92 @@ class EditableCanvasPanel extends React.Component {
         getHeight: () => canvas.height,
         __jsonld: canvas,
       };
+      whiteBG.width = canvas.width || 1000;
+      whiteBG.height = canvas.height || 1000;
       this.tileSources = [whiteBG];
     }
     return (
       <div className={classes.root}>
-        <div className={classes.canvasBackground}>
-          <ContainerDimensions>
-            {({ width, height }) => (
-              <Viewport
-                maxHeight={height}
-                setRef={this.setViewport}
-                imageUri={whiteBG['@id']}
-                tileSources={this.tileSources}
-                width={canvas.width}
-                height={canvas.height}
-                canvas={this.canvas}
-              >
-                <OpenSeadragonViewport viewportController={true}>
-                  <OpenSeadragonViewer maxHeight={height} />
-                </OpenSeadragonViewport>
-                <CanvasRepresentation ratio={ratio}>
-                  {annotations.map(annotation => {
-                    const bounds = getBounds(annotation, canvas);
-                    // TODO: lock aspect ratio
-                    let lockAspectRatio = this.isAspectRationLocked(
-                      annotation.body.type
-                    );
-                    return (
-                      <EditableAnnotation
-                        key={annotation.id}
-                        x={bounds.x}
-                        y={bounds.y}
-                        width={bounds.w}
-                        height={bounds.h}
-                        target={canvas.id}
-                        ratio={ratio}
-                        setCoords={xywh => {
-                          const meh = {};
-                          if (xywh.x) {
-                            meh.x = xywh.x;
-                          }
-                          if (xywh.y) {
-                            meh.y = xywh.y;
-                          }
-                          if (xywh.width) {
-                            meh.w = xywh.width;
-                          }
-                          if (xywh.height) {
-                            meh.h = xywh.height;
-                          }
-                          this.updateBounds(annotation, meh, canvas);
-                        }}
-                        boxStyles={
-                          annotation.id === selectedAnnotation
-                            ? {
-                                outline: '1px solid skyblue',
-                                background: 'rgba(135, 206, 235, 0.3)',
+        <Droppable droppableId="canvaseditor">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              className={classes.canvasBackground}
+              style={{
+                background: snapshot.isDraggingOver ? 'skyblue' : '',
+              }}
+            >
+              <ContainerDimensions>
+                {({ width, height }) => (
+                  <Viewport
+                    // maxHeight={height}
+                    // maxWidth={width}
+                    setRef={this.setViewport}
+                    imageUri={whiteBG['@id']}
+                    tileSources={this.tileSources}
+                    width={width}
+                    height={height}
+                    canvas={this.canvas}
+                  >
+                    <OpenSeadragonViewport viewportController={true}>
+                      <OpenSeadragonViewer maxHeight={height} />
+                    </OpenSeadragonViewport>
+                    <CanvasRepresentation ratio={ratio}>
+                      {annotations.map(annotation => {
+                        const bounds = getBounds(annotation, canvas);
+                        // TODO: lock aspect ratio
+                        let lockAspectRatio = this.isAspectRationLocked(
+                          annotation.body.type
+                        );
+                        return (
+                          <EditableAnnotation
+                            key={annotation.id}
+                            x={bounds.x}
+                            y={bounds.y}
+                            width={bounds.w}
+                            height={bounds.h}
+                            target={canvas.id}
+                            ratio={ratio}
+                            setCoords={xywh => {
+                              const meh = {};
+                              if (xywh.hasOwnProperty('x')) {
+                                meh.x = xywh.x;
                               }
-                            : {
-                                outline: '1px solid transparent',
-                                background: 'rgba(135, 135, 135, 0.1)',
+                              if (xywh.hasOwnProperty('y')) {
+                                meh.y = xywh.y;
                               }
-                        }
-                        onClick={this.selectItem(annotation)}
-                      >
-                        <AnnotationBodyRenderer annotation={annotation} />
-                      </EditableAnnotation>
-                    );
-                  })}
-                </CanvasRepresentation>
-              </Viewport>
-            )}
-          </ContainerDimensions>
-        </div>
+                              if (xywh.hasOwnProperty('width')) {
+                                meh.w = xywh.width;
+                              }
+                              if (xywh.hasOwnProperty('height')) {
+                                meh.h = xywh.height;
+                              }
+                              this.updateBounds(annotation, meh, canvas);
+                            }}
+                            boxStyles={
+                              annotation.id === selectedAnnotation
+                                ? {
+                                    outline: '1px solid skyblue',
+                                    background: 'rgba(135, 206, 235, 0.3)',
+                                  }
+                                : {
+                                    outline: '1px solid transparent',
+                                    background: 'rgba(135, 135, 135, 0.1)',
+                                  }
+                            }
+                            onClick={this.selectItem(annotation)}
+                          >
+                            <AnnotationBodyRenderer annotation={annotation} />
+                          </EditableAnnotation>
+                        );
+                      })}
+                    </CanvasRepresentation>
+                  </Viewport>
+                )}
+              </ContainerDimensions>
+            </div>
+          )}
+        </Droppable>
         <div className={classes.zoomButtons}>
           <IconButton onClick={this.zoomIn}>
             <ZoomIn />

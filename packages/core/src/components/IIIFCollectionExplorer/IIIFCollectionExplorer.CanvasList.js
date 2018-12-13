@@ -113,6 +113,11 @@ const PortalAwareThumbnail = ({
     </div>
   );
 
+  if (snapshot.isDragging) {
+    //TODO this is just temporary.
+    window.draggedData = JSON.parse(JSON.stringify(canvas));
+  }
+
   if (!usePortal) {
     return child;
   }
@@ -134,7 +139,7 @@ class CanvasList extends React.Component {
     // Style object to be applied to row (to position it)
     style,
   }) => {
-    const { classes } = this.props;
+    const { classes, manifestId } = this.props;
     const canvas = this.props.items[index];
     // TODO: intelligent pre-fetcher to figure out is there sizes in info JSON,
     // if there's no sizes try request a size fit in
@@ -146,7 +151,7 @@ class CanvasList extends React.Component {
         <div className={classes.imageHolder}>
           <Draggable
             key={canvas.id}
-            draggableId={`iiif__${canvas.id}`}
+            draggableId={`${manifestId}||||${canvas.id}`}
             index={index}
             className={classes.draggable}
           >

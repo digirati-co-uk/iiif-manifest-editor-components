@@ -140,7 +140,7 @@ class CollectionExplorer extends React.Component {
             <CircularProgress />
           </div>
         ) : resource && resource.type === 'Manifest' ? (
-          <CanvasList items={items} />
+          <CanvasList items={items} manifestId={resource.id} />
         ) : (
           <CollectionLister items={items} openItem={this.openItem} />
         )}

@@ -1,4 +1,5 @@
 import generateURI from './URIGenerator';
+import convertToV3ifNecessary from './IIIFUpgrader';
 
 const defaultResourceRenderers = {
   Manifest: props => ({
@@ -257,3 +258,17 @@ export const getW3cAnnotationStyle = styleStr =>
     }
     return acc;
   }, {});
+
+export const getCanvasFromExternalManifest = (manifestId, canvasId) =>
+  fetch(manifestId)
+    .then(response => response.json())
+    .then(resource => convertToV3ifNecessary(resource))
+    .then(resource => {
+      let canvases = resource.items.filter(item => item.id === canvasId);
+      if (canvases.length > 0) {
+        const canvas = canvases[0];
+        return canvas;
+      }
+      throw `Cannot retrieve canvas ${canvasId} from ${manifestId}`;
+    })
+    .catch(err => console.log(err));
