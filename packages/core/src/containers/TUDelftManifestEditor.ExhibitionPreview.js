@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Toolbar, withStyles } from '@material-ui/core';
 import { Cancel, AddCircle } from '@material-ui/icons';
-import Panel from '../Panel/Panel';
-import LocaleString from '../LocaleString/LocaleString';
-import Tooltip from '../DefaultTooltip/DefaultTooltip';
-import { getCanvasThumbnail } from '../IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
+import Panel from '../components/Panel/Panel';
+import LocaleString from '../components/LocaleString/LocaleString';
+import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
+import { getCanvasThumbnail } from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
 
 const grid = 8;
 
@@ -109,7 +109,7 @@ const style = theme => ({
 
 const emptyFn = () => {};
 
-const CanvasList = ({
+const ExhibitionPreview = ({
   classes,
   children,
   canvases,
@@ -123,25 +123,24 @@ const CanvasList = ({
   listClass,
   itemClass,
 }) => (
-  <Panel
-    horizontal={direction === 'horizontal'}
-    style={direction === 'horizontal' ? {} : { height: '100%' }}
-  >
+  <Panel horizontal={false}>
     <Panel.Content>
-      <Droppable droppableId="canvaslist" direction={direction}>
+      <Droppable droppableId="canvaslist" direction="vertical">
         {(providedDroppable, snapshotProppable) => (
           <div
             ref={providedDroppable.innerRef}
             style={getListStyle(snapshotProppable.isDraggingOver)}
-            className={
-              listClass
-                ? listClass
-                : direction === 'vertical'
-                ? classes.droppableVertical
-                : classes.droppable
-            }
+            className={listClass}
             {...providedDroppable.droppableProps}
           >
+            <div className={itemClass}>
+              <span>Exhibition</span>
+              <span>Manifest Label</span>
+            </div>
+            <div className={itemClass}>
+              <span>About</span>
+              <p>Lorem ipsum</p>
+            </div>
             {canvases && canvases.length > 0 ? (
               <React.Fragment>
                 {canvases.map((canvas, index) => (
@@ -162,13 +161,7 @@ const CanvasList = ({
                             provided.draggableProps.style,
                             selected === canvas.id
                           )}
-                          className={
-                            itemClass
-                              ? itemClass
-                              : direction === 'vertical'
-                              ? classes.listItemVertical
-                              : classes.listItem
-                          }
+                          className={itemClass}
                         >
                           {typeof children === 'function' ? (
                             children(canvas, remove, select)
@@ -259,7 +252,7 @@ const CanvasList = ({
   </Panel>
 );
 
-CanvasList.propTypes = {
+ExhibitionPreview.propTypes = {
   /* JSS classes */
   classes: PropTypes.any,
   /* if a function passed, the rendered of the children can be overridden */
@@ -286,14 +279,14 @@ CanvasList.propTypes = {
   itemClass: PropTypes.string,
 };
 
-CanvasList.defaultProps = {
+ExhibitionPreview.defaultProps = {
   selected: null,
   select: emptyFn,
   remove: emptyFn,
   invokeAction: emptyFn,
-  direction: 'horizontal',
-  listClass: null,
-  itemClass: null,
+  direction: 'vertical',
+  listClass: 'exhibition-tiles',
+  itemClass: 'exhibition-tile',
 };
 
-export default withStyles(style)(CanvasList);
+export default withStyles(style)(ExhibitionPreview);

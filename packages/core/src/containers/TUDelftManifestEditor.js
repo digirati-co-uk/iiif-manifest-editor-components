@@ -7,7 +7,13 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
-import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
+import {
+  LibraryAdd,
+  SaveAlt,
+  Visibility,
+  GridOn,
+  GridOff,
+} from '@material-ui/icons';
 
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
@@ -29,8 +35,9 @@ import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
 import TextPainting from '../annotation/TextPainting';
 import ImagePainting from '../annotation/ImagePainting';
 import VideoPainting from '../annotation/VideoPainting';
+import ExhibitionPreview from './TUDelftManifestEditor.ExhibitionPreview';
 
-import './SimpleEditorUI.scss';
+import './TUDelftManifestEditor.scss';
 
 const theme = createMuiTheme({
   palette: {
@@ -66,6 +73,7 @@ class TUDelftManifestEditor extends React.Component {
       Annotation: null, //demoAnnotation1.id,
     },
     lang: 'en',
+    exhibitionMode: false,
   };
 
   changeLanguage = lang => {
@@ -177,6 +185,12 @@ class TUDelftManifestEditor extends React.Component {
     });
   };
 
+  toggleExhibitionMode = () => {
+    this.setState({
+      exhibitionMode: !this.state.exhibitionMode,
+    });
+  };
+
   render() {
     const canvases = this.state.rootResource
       ? this.state.rootResource.items
@@ -196,7 +210,14 @@ class TUDelftManifestEditor extends React.Component {
     const { lang } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
-        <div className="simple-manifest-editor">
+        <div
+          className={[
+            'tu-delft-manifest-editor',
+            this.state.exhibitionMode
+              ? 'tu-delft-manifest-editor--exhibition-mode'
+              : '',
+          ].join(' ')}
+        >
           <ManifestEditor
             invokeAction={this.invokeAction2}
             annotation={{
@@ -259,21 +280,55 @@ class TUDelftManifestEditor extends React.Component {
                       <Visibility />
                     </IconButton>
                   </DefaultTooltip>
+                  <DefaultTooltip
+                    title="Exhibition/Standard"
+                    placement="bottom"
+                  >
+                    <IconButton
+                      color="secondary"
+                      onClick={this.toggleExhibitionMode}
+                    >
+                      {this.state.exhibitionMode ? <GridOn /> : <GridOff />}
+                    </IconButton>
+                  </DefaultTooltip>
                 </div>
               </Toolbar>
             </AppBar>
-            <div className="simple-manifest-editor__center">
-              <div className="simple-manifest-editor__left-panel">
-                <AnnotationList
-                  annotations={annotations}
-                  lang={lang}
-                  selected={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  remove={this.deleteResource}
-                  invokeAction={this.invokeAction2}
-                />
+            <div className="tu-delft-manifest-editor__center">
+              <div className="tu-delft-manifest-editor__left-panel">
+                {this.state.exhibitionMode ? (
+                  <TabPanel>
+                    <ExhibitionPreview
+                      canvases={canvases}
+                      direction="vertical"
+                      lang={lang}
+                      selected={this.state.selectedIdsByType.Canvas}
+                      select={this.selectResource}
+                      remove={this.deleteResource}
+                      invokeAction={this.invokeAction}
+                    />
+                    <AnnotationList
+                      title="annotations"
+                      annotations={annotations}
+                      lang={lang}
+                      selected={this.state.selectedIdsByType.Annotation}
+                      select={this.selectResource}
+                      remove={this.deleteResource}
+                      invokeAction={this.invokeAction2}
+                    />
+                  </TabPanel>
+                ) : (
+                  <AnnotationList
+                    annotations={annotations}
+                    lang={lang}
+                    selected={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    remove={this.deleteResource}
+                    invokeAction={this.invokeAction2}
+                  />
+                )}
               </div>
-              <div className="simple-manifest-editor__canvas">
+              <div className="tu-delft-manifest-editor__canvas">
                 <EditableCanvasPanel
                   canvas={selectedCanvas}
                   selectedAnnotation={this.state.selectedIdsByType.Annotation}
@@ -281,7 +336,7 @@ class TUDelftManifestEditor extends React.Component {
                   update={this.updateResource}
                 />
               </div>
-              <div className="simple-manifest-editor__right-panel">
+              <div className="tu-delft-manifest-editor__right-panel">
                 <TabPanel>
                   <IIIFCollectionExplorer />
                   <Properties
@@ -295,16 +350,18 @@ class TUDelftManifestEditor extends React.Component {
                 </TabPanel>
               </div>
             </div>
-            <div className="simple-manifest-editor__bottom">
-              <CanvasList
-                canvases={canvases}
-                lang={lang}
-                selected={this.state.selectedIdsByType.Canvas}
-                select={this.selectResource}
-                remove={this.deleteResource}
-                invokeAction={this.invokeAction}
-              />
-            </div>
+            {!this.state.exhibitionMode && (
+              <div className="tu-delft-manifest-editor__bottom">
+                <CanvasList
+                  canvases={canvases}
+                  lang={lang}
+                  selected={this.state.selectedIdsByType.Canvas}
+                  select={this.selectResource}
+                  remove={this.deleteResource}
+                  invokeAction={this.invokeAction}
+                />
+              </div>
+            )}
           </ManifestEditor>
         </div>
         <SourcePreviewDialog
