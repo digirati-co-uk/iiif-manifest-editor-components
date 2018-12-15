@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import langs from 'langs';
 import deepmerge from 'deepmerge';
 
@@ -189,11 +190,27 @@ const defaultEditorContext = {
 const EditorContext = React.createContext(defaultEditorContext);
 export class EditorProvider extends React.Component {
   render() {
-    const { children, configuration } = this.props;
+    const {
+      children,
+      configuration,
+      annotation,
+      translation,
+      dragDrop,
+    } = this.props;
+
     const aggregatedConfig = deepmerge.all([
       defaultEditorContext,
       configuration,
     ]);
+    if (annotation) {
+      aggregatedConfig.annotation = annotation;
+    }
+    if (translation) {
+      aggregatedConfig.translation = translation;
+    }
+    if (dragDrop) {
+      aggregatedConfig.dragDrop = dragDrop;
+    }
     return (
       <EditorContext.Provider value={aggregatedConfig}>
         {children}
@@ -202,8 +219,24 @@ export class EditorProvider extends React.Component {
   }
 }
 
+EditorProvider.propTypes = {
+  /** child components of the provider */
+  children: PropTypes.any,
+  /** config to merge */
+  configuration: PropTypes.object,
+  /** annotation configuration override (replaces the default) */
+  annotation: PropTypes.object,
+  /** translation configuration override (replaces the default)  */
+  translation: PropTypes.object,
+  /** Drag and drop configuration override (replaces the default) */
+  dragDrop: PropTypes.object,
+};
+
 EditorProvider.defaultProps = {
   configuration: {},
+  annotation: null,
+  translation: null,
+  dragDrop: null,
 };
 
 export const EditorConsumer = EditorContext.Consumer;

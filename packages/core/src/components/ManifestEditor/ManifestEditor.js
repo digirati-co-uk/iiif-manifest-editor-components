@@ -2,8 +2,20 @@ import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { EditorConsumer, EditorProvider } from '../EditorContext/EditorContext';
 
-const ManifestEditor = ({ children, invokeAction, config = {} }) => (
-  <EditorProvider configuration={config}>
+const ManifestEditor = ({
+  children,
+  invokeAction,
+  config = {},
+  annotation,
+  translation,
+  dragDrop,
+}) => (
+  <EditorProvider
+    configuration={config}
+    annotation={annotation}
+    translation={translation}
+    dragDrop={dragDrop}
+  >
     <EditorConsumer>
       {configuration => (
         <DragDropContext
@@ -11,7 +23,7 @@ const ManifestEditor = ({ children, invokeAction, config = {} }) => (
             if (!result.destination) {
               return;
             }
-            const dragDrop = configuration.dragDrop;
+            const dragDropConf = configuration.dragDrop;
             const sourceType = result.source.droppableId.replace(
               /(.*)(\-.*)?/,
               '$1'
@@ -21,8 +33,8 @@ const ManifestEditor = ({ children, invokeAction, config = {} }) => (
               '$1'
             );
             const dropHandler = `${sourceType}->${destType}`;
-            if (dragDrop.hasOwnProperty(dropHandler)) {
-              invokeAction(dragDrop[dropHandler], result)();
+            if (dragDropConf.hasOwnProperty(dropHandler)) {
+              invokeAction(dragDropConf[dropHandler], result)();
             }
           }}
         >
