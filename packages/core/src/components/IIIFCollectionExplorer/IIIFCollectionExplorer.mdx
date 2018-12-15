@@ -5,7 +5,30 @@ menu: Components
 
 import { Playground, PropsTable } from 'docz';
 import IIIFCollectionExplorer from './IIIFCollectionExplorer'; 
+import { DragDropContext } from 'react-beautiful-dnd';
 
 # Collection Explorer
 
 <PropsTable of={IIIFCollectionExplorer} />
+
+The following demonstation loads the `iiif universe` top level collection.
+
+TODO:
+- [ ] make it able to work without drag and drop context.
+- [ ] give the `virtual-list` a minimum height
+- [ ] list item actions
+
+
+<Playground>
+  <DragDropContext onDragEnd={()=>{}}>
+    <div 
+      style={{
+        width: 500,
+        height: 700,
+        position: 'relative',
+      }}
+    >
+      <IIIFCollectionExplorer url="http://ryanfb.github.io/iiif-universe/iiif-universe.json" />
+    </div>
+  </DragDropContext>
+</Playground>
