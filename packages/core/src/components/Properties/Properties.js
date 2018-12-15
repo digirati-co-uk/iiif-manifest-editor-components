@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, InputLabel, FormControl } from '@material-ui/core';
+import { Typography, InputLabel } from '@material-ui/core';
+import { Translate } from '@material-ui/icons';
 
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
 import LanguagesDropdown from '../LanguagesDropdown/LanguagesDropdown';
+import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 
 const Properties = ({
   manifest,
@@ -27,6 +29,14 @@ const Properties = ({
         alignItems: 'center',
       }}
     >
+      <ButtonWithTooltip
+        title="Launch mirror translation tool"
+        onClick={() =>
+          alert('to-do / 纷扰 / lío / histoire / Theater / trambusto / 大騒ぎ')
+        }
+      >
+        <Translate />
+      </ButtonWithTooltip>
       <InputLabel
         style={{
           flex: 1,

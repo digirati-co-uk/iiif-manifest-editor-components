@@ -89,6 +89,7 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
               }
               className={classes.textField}
               margin="dense"
+              variant="outlined"
             />
             <TextField
               label="Value"
