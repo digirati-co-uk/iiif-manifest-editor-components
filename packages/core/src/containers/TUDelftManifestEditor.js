@@ -74,6 +74,7 @@ class TUDelftManifestEditor extends React.Component {
     },
     lang: 'en',
     exhibitionMode: false,
+    exhibitionFullView: false,
   };
 
   changeLanguage = lang => {
@@ -191,6 +192,12 @@ class TUDelftManifestEditor extends React.Component {
     });
   };
 
+  toggleExhibitionFullView = () => {
+    this.setState({
+      exhibitionFullView: !this.state.exhibitionFullView,
+    });
+  };
+
   render() {
     const canvases = this.state.rootResource
       ? this.state.rootResource.items
@@ -215,6 +222,9 @@ class TUDelftManifestEditor extends React.Component {
             'tu-delft-manifest-editor',
             this.state.exhibitionMode
               ? 'tu-delft-manifest-editor--exhibition-mode'
+              : '',
+            this.state.exhibitionFullView
+              ? 'tu-delft-manifest-editor--exhibition-full-view'
               : '',
           ].join(' ')}
         >
@@ -300,12 +310,14 @@ class TUDelftManifestEditor extends React.Component {
                   <TabPanel>
                     <ExhibitionPreview
                       canvases={canvases}
+                      manifest={this.state.rootResource}
                       direction="vertical"
                       lang={lang}
                       selected={this.state.selectedIdsByType.Canvas}
                       select={this.selectResource}
                       remove={this.deleteResource}
                       invokeAction={this.invokeAction}
+                      toggleZoom={this.toggleExhibitionFullView}
                     />
                     <AnnotationList
                       title="annotations"
@@ -328,14 +340,18 @@ class TUDelftManifestEditor extends React.Component {
                   />
                 )}
               </div>
-              <div className="tu-delft-manifest-editor__canvas">
-                <EditableCanvasPanel
-                  canvas={selectedCanvas}
-                  selectedAnnotation={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  update={this.updateResource}
-                />
-              </div>
+              {!(
+                this.state.exhibitionMode && this.state.exhibitionFullView
+              ) && (
+                <div className="tu-delft-manifest-editor__canvas">
+                  <EditableCanvasPanel
+                    canvas={selectedCanvas}
+                    selectedAnnotation={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    update={this.updateResource}
+                  />
+                </div>
+              )}
               <div className="tu-delft-manifest-editor__right-panel">
                 <TabPanel>
                   <IIIFCollectionExplorer />

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Toolbar, withStyles } from '@material-ui/core';
-import { Cancel, AddCircle } from '@material-ui/icons';
+import { Cancel, AddCircle, ZoomIn } from '@material-ui/icons';
 import Panel from '../components/Panel/Panel';
 import LocaleString from '../components/LocaleString/LocaleString';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
@@ -112,6 +112,7 @@ const emptyFn = () => {};
 const ExhibitionPreview = ({
   classes,
   children,
+  manifest,
   canvases,
   toolbar,
   selected,
@@ -119,9 +120,9 @@ const ExhibitionPreview = ({
   select,
   remove,
   invokeAction,
-  direction,
   listClass,
   itemClass,
+  toggleZoom,
 }) => (
   <Panel horizontal={false}>
     <Panel.Content>
@@ -133,13 +134,22 @@ const ExhibitionPreview = ({
             className={listClass}
             {...providedDroppable.droppableProps}
           >
-            <div className={itemClass}>
-              <span>Exhibition</span>
-              <span>Manifest Label</span>
+            <div className="block title cutcorners w-4 h-4">
+              <div className="boxtitle">Exhibition</div>
+              <div className="maintitle">
+                <LocaleString fallback={manifest.id} lang={lang}>
+                  {manifest.label}
+                </LocaleString>
+              </div>
+              <div />
             </div>
-            <div className={itemClass}>
-              <span>About</span>
-              <p>Lorem ipsum</p>
+            <div className="block info cutcorners w-4 h-4">
+              <div className="boxtitle">About</div>
+              <div className="text">
+                <LocaleString fallback={manifest.id} lang={lang}>
+                  {manifest.summary}
+                </LocaleString>
+              </div>
             </div>
             {canvases && canvases.length > 0 ? (
               <React.Fragment>
@@ -203,52 +213,32 @@ const ExhibitionPreview = ({
                     }}
                   </Draggable>
                 ))}
-                {direction === 'horizontal' && (
-                  <div className={classes.defaultAddButtonSpacer}>
-                    <Tooltip title="Add Canvas">
-                      <IconButton onClick={() => invokeAction('add-canvas')}>
-                        <AddCircle />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                )}
               </React.Fragment>
             ) : (
-              direction === 'horizontal' && (
-                <div className={classes.noCanvasesContainer}>
-                  No canvases in the manifest,
-                  <Tooltip title="Add">
-                    <IconButton onClick={() => invokeAction('add-canvas')}>
-                      <AddCircle />
-                    </IconButton>
-                  </Tooltip>
-                  a canvas.
-                </div>
-              )
+              ''
             )}
             {providedDroppable.placeholder}
           </div>
         )}
       </Droppable>
     </Panel.Content>
-    {direction === 'horizontal' ? (
-      ''
-    ) : toolbar ? (
-      toolbar
-    ) : (
-      <Toolbar
-        color="secondary"
-        style={{
-          justifyContent: 'center',
-        }}
-      >
-        <Tooltip title="Add Canvas">
-          <IconButton onClick={() => invokeAction('add-canvas')}>
-            <AddCircle />
-          </IconButton>
-        </Tooltip>
-      </Toolbar>
-    )}
+    <Toolbar
+      color="secondary"
+      style={{
+        justifyContent: 'center',
+      }}
+    >
+      <Tooltip title="Add Canvas">
+        <IconButton onClick={() => invokeAction('add-canvas')}>
+          <AddCircle />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Toggle Full View">
+        <IconButton onClick={toggleZoom}>
+          <ZoomIn />
+        </IconButton>
+      </Tooltip>
+    </Toolbar>
   </Panel>
 );
 
@@ -271,12 +261,12 @@ ExhibitionPreview.propTypes = {
   remove: PropTypes.func,
   /* toolbar action dispacher */
   invokeAction: PropTypes.func.isRequired,
-  /* Canvas panel direction */
-  direction: PropTypes.string.isRequired,
   /* Custom list class  */
   listClass: PropTypes.string,
   /* Custom item class  */
   itemClass: PropTypes.string,
+  /* toggle full view */
+  toggleZoom: PropTypes.func,
 };
 
 ExhibitionPreview.defaultProps = {
@@ -284,9 +274,9 @@ ExhibitionPreview.defaultProps = {
   select: emptyFn,
   remove: emptyFn,
   invokeAction: emptyFn,
-  direction: 'vertical',
-  listClass: 'exhibition-tiles',
-  itemClass: 'exhibition-tile',
+  listClass: 'blocks',
+  itemClass: 'block',
+  toggleZoom: emptyFn,
 };
 
 export default withStyles(style)(ExhibitionPreview);
