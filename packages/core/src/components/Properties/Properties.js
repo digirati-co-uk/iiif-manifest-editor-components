@@ -6,64 +6,91 @@ import { Translate } from '@material-ui/icons';
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
 import LanguagesDropdown from '../LanguagesDropdown/LanguagesDropdown';
 import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
+import TranslationDialog from './Properties.TranslationDialog';
 
-const Properties = ({
-  manifest,
-  canvas,
-  annotation,
-  lang,
-  changeLanguage,
-  update,
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '1rem',
-    }}
-  >
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-      }}
-    >
-      <ButtonWithTooltip
-        title="Launch mirror translation tool"
-        onClick={() =>
-          alert('to-do / 纷扰 / lío / histoire / Theater / trambusto / 大騒ぎ')
-        }
-      >
-        <Translate />
-      </ButtonWithTooltip>
-      <InputLabel
+class Properties extends React.Component {
+  state = {
+    mirrorTranslationOpen: false,
+  };
+
+  openTanslations = () => {
+    this.setState({
+      mirrorTranslationOpen: true,
+    });
+  };
+
+  closeTanslations = () => {
+    this.setState({
+      mirrorTranslationOpen: false,
+    });
+  };
+
+  render() {
+    const {
+      manifest,
+      canvas,
+      annotation,
+      lang,
+      changeLanguage,
+      update,
+    } = this.props;
+    const { mirrorTranslationOpen } = this.state;
+    return (
+      <div
         style={{
-          flex: 1,
-          textAlign: 'right',
-          padding: '0 1rem 0 0',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1rem',
         }}
       >
-        Current Language
-      </InputLabel>
-      <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
-    </div>
-    {annotation && (
-      <React.Fragment>
-        <Typography variant="h6">Annotation</Typography>
-        <MetadataEditor target={annotation} lang={lang} update={update} />
-      </React.Fragment>
-    )}
-    {canvas && (
-      <React.Fragment>
-        <Typography variant="h6">Canvas</Typography>
-        <MetadataEditor target={canvas} lang={lang} update={update} />
-      </React.Fragment>
-    )}
-    <Typography variant="h6">Manifest</Typography>
-    <MetadataEditor target={manifest} lang={lang} update={update} />
-  </div>
-);
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <ButtonWithTooltip
+            title="Launch mirror translation tool"
+            onClick={this.openTanslations}
+          >
+            <Translate />
+          </ButtonWithTooltip>
+          <InputLabel
+            style={{
+              flex: 1,
+              textAlign: 'right',
+              padding: '0 1rem 0 0',
+            }}
+          >
+            Current Language
+          </InputLabel>
+          <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
+        </div>
+        {annotation && (
+          <React.Fragment>
+            <Typography variant="h6">Annotation</Typography>
+            <MetadataEditor target={annotation} lang={lang} update={update} />
+          </React.Fragment>
+        )}
+        {canvas && (
+          <React.Fragment>
+            <Typography variant="h6">Canvas</Typography>
+            <MetadataEditor target={canvas} lang={lang} update={update} />
+          </React.Fragment>
+        )}
+        <Typography variant="h6">Manifest</Typography>
+        <MetadataEditor target={manifest} lang={lang} update={update} />
+        <TranslationDialog
+          manifest={manifest}
+          open={mirrorTranslationOpen}
+          handleClose={this.closeTanslations}
+          update={update}
+        />
+      </div>
+    );
+  }
+}
 
 Properties.propTypes = {
   /** The loaded manifest */
