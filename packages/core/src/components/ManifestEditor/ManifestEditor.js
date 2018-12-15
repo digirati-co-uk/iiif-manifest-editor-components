@@ -2,8 +2,8 @@ import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { EditorConsumer, EditorProvider } from '../EditorContext/EditorContext';
 
-const ManifestEditor = ({ children, invokeAction }) => (
-  <EditorProvider>
+const ManifestEditor = ({ children, invokeAction, config = {} }) => (
+  <EditorProvider configuration={config}>
     <EditorConsumer>
       {configuration => (
         <DragDropContext

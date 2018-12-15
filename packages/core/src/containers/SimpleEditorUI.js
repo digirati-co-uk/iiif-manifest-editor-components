@@ -122,7 +122,11 @@ class SimpleEditorUI extends React.Component {
     let currentLevel = targetClone;
     property.split('.').forEach(key => {
       if (!currentLevel[key]) {
-        currentLevel[key] = {};
+        if (key === 'metadata') {
+          currentLevel[key] = [];
+        } else {
+          currentLevel[key] = {};
+        }
       }
       currentLevel = currentLevel[key];
     });

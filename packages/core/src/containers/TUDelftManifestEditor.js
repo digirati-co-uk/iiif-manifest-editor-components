@@ -25,7 +25,6 @@ import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
 import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
-import { EditorProvider } from '../components/EditorContext/EditorContext';
 
 import './SimpleEditorUI.scss';
 
@@ -123,7 +122,11 @@ class TUDelftManifestEditor extends React.Component {
     let currentLevel = targetClone;
     property.split('.').forEach(key => {
       if (!currentLevel[key]) {
-        currentLevel[key] = {};
+        if (key === 'metadata') {
+          currentLevel[key] = [];
+        } else {
+          currentLevel[key] = {};
+        }
       }
       currentLevel = currentLevel[key];
     });
@@ -188,105 +191,123 @@ class TUDelftManifestEditor extends React.Component {
     );
     const { lang } = this.state;
     return (
-      <EditorProvider
-        configuration={{
-          annotation: {
-            'Audio::painting': null,
-          },
-        }}
-      >
-        <MuiThemeProvider theme={theme}>
-          <div className="simple-manifest-editor">
-            <ManifestEditor invokeAction={this.invokeAction2}>
-              <AppBar position="static">
-                <Toolbar>
-                  <Typography color="secondary" variant="h6">
-                    Manifest Editor
-                  </Typography>
-                  <div
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'canter',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <DefaultTooltip title="New Manifest" placement="bottom">
-                      <IconButton color="secondary" onClick={this.newProject}>
-                        <LibraryAdd />
-                      </IconButton>
-                    </DefaultTooltip>
-                    <DefaultTooltip
-                      title="Download Manifest"
-                      placement="bottom"
+      <MuiThemeProvider theme={theme}>
+        <div className="simple-manifest-editor">
+          <ManifestEditor
+            invokeAction={this.invokeAction2}
+            config={{
+              annotation: {
+                'Audio::painting': null,
+              },
+              translation: {
+                languages: [
+                  {
+                    name: 'English',
+                    local: 'English',
+                    1: 'en',
+                    2: 'eng',
+                    '2T': 'eng',
+                    '2B': 'eng',
+                    3: 'eng',
+                  },
+                  {
+                    name: 'Dutch',
+                    local: 'Nederlands',
+                    1: 'nl',
+                    2: 'nld',
+                    '2T': 'nld',
+                    '2B': 'dut',
+                    3: 'nld',
+                  },
+                ],
+              },
+            }}
+          >
+            <AppBar position="static">
+              <Toolbar>
+                <Typography color="secondary" variant="h6">
+                  Manifest Editor
+                </Typography>
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'canter',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <DefaultTooltip title="New Manifest" placement="bottom">
+                    <IconButton color="secondary" onClick={this.newProject}>
+                      <LibraryAdd />
+                    </IconButton>
+                  </DefaultTooltip>
+                  <DefaultTooltip title="Download Manifest" placement="bottom">
+                    <IconButton color="secondary" onClick={this.saveProject}>
+                      <SaveAlt />
+                    </IconButton>
+                  </DefaultTooltip>
+                  <DefaultTooltip title="Preview JSON" placement="bottom">
+                    <IconButton
+                      color="secondary"
+                      onClick={this.togglePreviewDialog}
                     >
-                      <IconButton color="secondary" onClick={this.saveProject}>
-                        <SaveAlt />
-                      </IconButton>
-                    </DefaultTooltip>
-                    <DefaultTooltip title="Preview JSON" placement="bottom">
-                      <IconButton
-                        color="secondary"
-                        onClick={this.togglePreviewDialog}
-                      >
-                        <Visibility />
-                      </IconButton>
-                    </DefaultTooltip>
-                  </div>
-                </Toolbar>
-              </AppBar>
-              <div className="simple-manifest-editor__center">
-                <div className="simple-manifest-editor__left-panel">
-                  <AnnotationList
-                    annotations={annotations}
-                    lang={lang}
-                    selected={this.state.selectedIdsByType.Annotation}
-                    select={this.selectResource}
-                    remove={this.deleteResource}
-                    invokeAction={this.invokeAction2}
-                  />
+                      <Visibility />
+                    </IconButton>
+                  </DefaultTooltip>
                 </div>
-                <div className="simple-manifest-editor__canvas">
-                  <EditableCanvasPanel
-                    canvas={selectedCanvas}
-                    selectedAnnotation={this.state.selectedIdsByType.Annotation}
-                    select={this.selectResource}
-                    update={this.updateResource}
-                  />
-                </div>
-                <div className="simple-manifest-editor__right-panel">
-                  <TabPanel>
-                    <IIIFCollectionExplorer />
-                    <Properties
-                      manifest={this.state.rootResource}
-                      canvas={selectedCanvas}
-                      annotation={selectedAnnotation}
-                      lang={lang}
-                      changeLanguage={this.changeLanguage}
-                      update={this.updateProperty}
-                    />
-                  </TabPanel>
-                </div>
-              </div>
-              <div className="simple-manifest-editor__bottom">
-                <CanvasList
-                  canvases={canvases}
+              </Toolbar>
+            </AppBar>
+            <div className="simple-manifest-editor__center">
+              <div className="simple-manifest-editor__left-panel">
+                <AnnotationList
+                  annotations={annotations}
                   lang={lang}
-                  selected={this.state.selectedIdsByType.Canvas}
+                  selected={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}
                   remove={this.deleteResource}
-                  invokeAction={this.invokeAction}
+                  invokeAction={this.invokeAction2}
                 />
               </div>
-            </ManifestEditor>
-          </div>
-          <SourcePreviewDialog
-            json={this.state.rootResource}
-            open={this.state.previewDialogOpen}
-            handleClose={this.togglePreviewDialog}
-          />
-        </MuiThemeProvider>
-      </EditorProvider>
+              <div className="simple-manifest-editor__canvas">
+                <EditableCanvasPanel
+                  canvas={selectedCanvas}
+                  selectedAnnotation={this.state.selectedIdsByType.Annotation}
+                  select={this.selectResource}
+                  update={this.updateResource}
+                />
+              </div>
+              <div className="simple-manifest-editor__right-panel">
+                <TabPanel>
+                  <IIIFCollectionExplorer />
+                  <Properties
+                    manifest={this.state.rootResource}
+                    canvas={selectedCanvas}
+                    annotation={selectedAnnotation}
+                    lang={lang}
+                    changeLanguage={this.changeLanguage}
+                    update={this.updateProperty}
+                  />
+                </TabPanel>
+              </div>
+            </div>
+            <div className="simple-manifest-editor__bottom">
+              <CanvasList
+                canvases={canvases}
+                lang={lang}
+                selected={this.state.selectedIdsByType.Canvas}
+                select={this.selectResource}
+                remove={this.deleteResource}
+                invokeAction={this.invokeAction}
+              />
+            </div>
+          </ManifestEditor>
+        </div>
+        <SourcePreviewDialog
+          json={this.state.rootResource}
+          open={this.state.previewDialogOpen}
+          handleClose={this.togglePreviewDialog}
+        />
+      </MuiThemeProvider>
     );
   }
 }

@@ -63,6 +63,47 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
         variant="outlined"
       />
     </FormControl>
+    <FormControl component="fieldset">
+      <FormLabel component="legend">Metadata</FormLabel>
+      {(target.metadata || [])
+        .concat({
+          label: {
+            [lang]: '',
+          },
+          value: {
+            [lang]: '',
+          },
+        })
+        .map((metadata, index) => (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <TextField
+              label="Label"
+              value={locale(metadata.label, lang)}
+              onChange={ev =>
+                update(target, `metadata.${index}.label`, lang, ev.target.value)
+              }
+              className={classes.textField}
+              margin="dense"
+            />
+            <TextField
+              label="Value"
+              value={locale(metadata.value, lang)}
+              onChange={ev =>
+                update(target, `metadata.${index}.value`, lang, ev.target.value)
+              }
+              className={classes.textField}
+              margin="dense"
+              multiline
+              variant="outlined"
+            />
+          </div>
+        ))}
+    </FormControl>
     {/* TODO: key value pair table here */}
   </React.Fragment>
 );
