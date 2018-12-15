@@ -46,6 +46,13 @@ class CollectionExplorer extends React.Component {
     error: null,
   };
 
+  constructor(props) {
+    super(props);
+    const { url } = this.props;
+    if (url && url.length) {
+      this.loadResource(url);
+    }
+  }
   onLoadResource = ev => this.loadResource(this.state.resourceURL);
   back = ev => this.loadResource(ev.target.value);
 
