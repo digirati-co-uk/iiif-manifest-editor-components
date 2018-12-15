@@ -181,10 +181,18 @@ class SimpleEditorUI extends React.Component {
       this.state.selectedIdsByType.Canvas,
       this.state.rootResource
     );
-    const annotations =
+    const paintingAnnotations =
       selectedCanvas && selectedCanvas.items && selectedCanvas.items.length > 0
         ? selectedCanvas.items[0].items || null
         : null;
+
+    const taggingAnnotations =
+      selectedCanvas &&
+      selectedCanvas.annotations &&
+      selectedCanvas.annotations.length > 0
+        ? selectedCanvas.annotations[0].items || null
+        : null;
+
     const selectedAnnotation = queryResourceById(
       this.state.selectedIdsByType.Annotation,
       selectedCanvas
@@ -230,14 +238,26 @@ class SimpleEditorUI extends React.Component {
             </AppBar>
             <div className="simple-manifest-editor__center">
               <div className="simple-manifest-editor__left-panel">
-                <AnnotationList
-                  annotations={annotations}
-                  lang={lang}
-                  selected={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  remove={this.deleteResource}
-                  invokeAction={this.invokeAction2}
-                />
+                <TabPanel>
+                  <AnnotationList
+                    title="Painting"
+                    annotations={paintingAnnotations}
+                    lang={lang}
+                    selected={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    remove={this.deleteResource}
+                    invokeAction={this.invokeAction2}
+                  />
+                  <AnnotationList
+                    title="Tagging"
+                    annotations={taggingAnnotations}
+                    lang={lang}
+                    selected={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    remove={this.deleteResource}
+                    invokeAction={this.invokeAction2}
+                  />
+                </TabPanel>
               </div>
               <div className="simple-manifest-editor__canvas">
                 <EditableCanvasPanel
