@@ -26,6 +26,10 @@ import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
 import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
 
+import TextPainting from '../annotation/TextPainting';
+import ImagePainting from '../annotation/ImagePainting';
+import VideoPainting from '../annotation/VideoPainting';
+
 import './SimpleEditorUI.scss';
 
 const theme = createMuiTheme({
@@ -195,32 +199,33 @@ class TUDelftManifestEditor extends React.Component {
         <div className="simple-manifest-editor">
           <ManifestEditor
             invokeAction={this.invokeAction2}
-            config={{
-              annotation: {
-                'Audio::painting': null,
-              },
-              translation: {
-                languages: [
-                  {
-                    name: 'English',
-                    local: 'English',
-                    1: 'en',
-                    2: 'eng',
-                    '2T': 'eng',
-                    '2B': 'eng',
-                    3: 'eng',
-                  },
-                  {
-                    name: 'Dutch',
-                    local: 'Nederlands',
-                    1: 'nl',
-                    2: 'nld',
-                    '2T': 'nld',
-                    '2B': 'dut',
-                    3: 'nld',
-                  },
-                ],
-              },
+            annotation={{
+              'TextualBody::painting': TextPainting,
+              'Image::painting': ImagePainting,
+              'Video::painting': VideoPainting,
+            }}
+            translation={{
+              defaultLanguage: 'en',
+              languages: [
+                {
+                  name: 'English',
+                  local: 'English',
+                  1: 'en',
+                  2: 'eng',
+                  '2T': 'eng',
+                  '2B': 'eng',
+                  3: 'eng',
+                },
+                {
+                  name: 'Dutch',
+                  local: 'Nederlands',
+                  1: 'nl',
+                  2: 'nld',
+                  '2T': 'nld',
+                  '2B': 'dut',
+                  3: 'nld',
+                },
+              ],
             }}
           >
             <AppBar position="static">
