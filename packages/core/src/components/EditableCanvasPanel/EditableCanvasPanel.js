@@ -8,6 +8,8 @@ import ContainerDimensions from 'react-container-dimensions';
 
 import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRenderer';
 import { getBounds, makeURLHash } from '../../utils/IIIFResource';
+//Experimental workaround for again Canvas Panel....
+import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
 
 import {
   Viewport,
@@ -91,12 +93,19 @@ class EditableCanvasPanel extends React.Component {
     };
   }
 
-  zoomIn = () => {
+  zoomIn = ev => {
+    if (ev) {
+      ev.preventDefault();
+    }
     if (this.viewport) {
       this.viewport.zoomIn();
     }
   };
-  zoomOut = () => {
+  zoomOut = ev => {
+    if (ev) {
+      ev.preventDefault();
+    }
+
     if (this.viewport) {
       this.viewport.zoomOut();
     }
@@ -217,7 +226,17 @@ class EditableCanvasPanel extends React.Component {
                             }
                             onClick={this.selectItem(annotation)}
                           >
+                            {/* <ReactScrollWheelHandler
+                              upHandler={this.zoomIn}
+                              downHandler={this.zoomOut}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                outline: 0,
+                              }}
+                            > */}
                             <AnnotationBodyRenderer annotation={annotation} />
+                            {/* </ReactScrollWheelHandler> */}
                           </EditableAnnotation>
                         );
                       })}

@@ -314,7 +314,7 @@ export default class EditableAnnotation extends React.Component {
         {children}
         <AnnotationResizers
           resizeStart={this.resizeStart}
-          resizerWidth={25 * zam}
+          resizerWidth={25 * (1 / zam)}
         />
       </div>
     );

@@ -14,7 +14,7 @@ export const getCanvasThumbnail = canvas => {
     canvas.items[0].items.length &&
     canvas.items[0].items[0]; // hopefully for now
 
-  if (annotation) {
+  if (annotation && annotation.body && annotation.body.id) {
     const iiifImageParts = annotation.body.id.split('/');
     iiifImageParts[iiifImageParts.length - 3] = '!100,100';
     worstCaseThumbnail = iiifImageParts.join('/');
