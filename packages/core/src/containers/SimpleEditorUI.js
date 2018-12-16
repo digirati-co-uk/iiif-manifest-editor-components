@@ -120,17 +120,34 @@ class SimpleEditorUI extends React.Component {
     //TODO: should be just a dispatch,
     const targetClone = JSON.parse(JSON.stringify(target));
     let currentLevel = targetClone;
-    property.split('.').forEach(key => {
-      if (!currentLevel[key]) {
-        if (key === 'metadata') {
-          currentLevel[key] = [];
-        } else {
-          currentLevel[key] = {};
+    const keys = property.split('.');
+    if (keys.length > 1) {
+      keys.forEach(key => {
+        if (!currentLevel[key]) {
+          if (key === 'metadata') {
+            currentLevel[key] = [];
+          } else {
+            currentLevel[key] = {};
+          }
         }
+        currentLevel = currentLevel[key];
+      });
+      currentLevel[lang] = value.split('\n');
+    } else {
+      if (lang === null) {
+        if (['navDate', 'rights'].indexOf(property) !== -1) {
+          targetClone[property] = value;
+        } else {
+          targetClone[property] = value.split('\n');
+        }
+      } else {
+        if (!targetClone.hasOwnProperty(property)) {
+          targetClone[property] = {};
+        }
+        currentLevel[property][lang] = value.split('\n');
       }
-      currentLevel = currentLevel[key];
-    });
-    currentLevel[lang] = value.split('\n');
+    }
+
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE',
       options: {

@@ -104,7 +104,28 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
           </div>
         ))}
     </FormControl>
-    {/* TODO: key value pair table here */}
+    {target.type === 'Manifest' && (
+      <TextField
+        label="Nav Date"
+        type="datetime-local"
+        className={classes.textField}
+        value={target.navDate || ''}
+        onChange={ev => update(target, 'navDate', null, ev.target.value)}
+        margin="dense"
+        variant="outlined"
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+    )}
+    <TextField
+      label="Rights"
+      className={classes.textField}
+      value={target.rights || ''}
+      onChange={ev => update(target, 'rights', null, ev.target.value)}
+      margin="dense"
+      variant="outlined"
+    />
   </React.Fragment>
 );
 
