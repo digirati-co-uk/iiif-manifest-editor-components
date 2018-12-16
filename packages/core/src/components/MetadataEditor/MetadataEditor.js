@@ -12,6 +12,10 @@ const styles = theme => ({
   label: {
     backgorund: '#fff',
   },
+  metadataRow: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 });
 
 const MetadataEditor = ({ classes, target, lang, update }) => (
@@ -75,12 +79,7 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
           },
         })
         .map((metadata, index) => (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
+          <div className={classes.metadataRow}>
             <TextField
               label="Label"
               value={locale(metadata.label, lang)}

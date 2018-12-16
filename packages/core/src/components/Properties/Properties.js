@@ -1,12 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, InputLabel } from '@material-ui/core';
+import { Typography, InputLabel, withStyles } from '@material-ui/core';
 import { Translate } from '@material-ui/icons';
 
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
 import LanguagesDropdown from '../LanguagesDropdown/LanguagesDropdown';
 import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 import TranslationDialog from './Properties.TranslationDialog';
+
+const style = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '1rem',
+  },
+  translationBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  currentLanguageLabel: {
+    flex: 1,
+    textAlign: 'right',
+    padding: '0 1rem 0 0',
+  },
+});
 
 class Properties extends React.Component {
   state = {
@@ -27,46 +45,32 @@ class Properties extends React.Component {
 
   render() {
     const {
+      classes,
       manifest,
       canvas,
       annotation,
       lang,
       changeLanguage,
       update,
+      noTranslation,
     } = this.props;
     const { mirrorTranslationOpen } = this.state;
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '1rem',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <ButtonWithTooltip
-            title="Launch mirror translation tool"
-            onClick={this.openTanslations}
-          >
-            <Translate />
-          </ButtonWithTooltip>
-          <InputLabel
-            style={{
-              flex: 1,
-              textAlign: 'right',
-              padding: '0 1rem 0 0',
-            }}
-          >
-            Current Language
-          </InputLabel>
-          <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
-        </div>
+      <div className={classes.root}>
+        {!noTranslation && (
+          <div className={classes.translationBar}>
+            <ButtonWithTooltip
+              title="Launch mirror translation tool"
+              onClick={this.openTanslations}
+            >
+              <Translate />
+            </ButtonWithTooltip>
+            <InputLabel className={classes.currentLanguageLabel}>
+              Current Language
+            </InputLabel>
+            <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
+          </div>
+        )}
         {annotation && (
           <React.Fragment>
             <Typography variant="h6">Annotation</Typography>
@@ -99,7 +103,10 @@ Properties.propTypes = {
   canvas: PropTypes.object,
   /** Selected annotation */
   annotation: PropTypes.object,
+  /* update property */
   update: PropTypes.func,
+  /* hides translation options */
+  noTranslation: PropTypes.bool.isRequired,
 };
 
 Properties.defaultProps = {
@@ -107,6 +114,7 @@ Properties.defaultProps = {
   canvas: null,
   annotation: null,
   update: () => () => {},
+  noTranslation: false,
 };
 
-export default Properties;
+export default withStyles(style)(Properties);

@@ -3,15 +3,86 @@ name: Tab Panel
 menu: Layout
 ---
 
+import { Playground, PropsTable } from 'docz';
+import IIIFCollectionExplorer from '../IIIFCollectionExplorer/IIIFCollectionExplorer'; 
+import AnnotationList from '../AnnotationList/AnnotationList';
+import TabPanel from './TabPanel';
+import { DragDropContext } from 'react-beautiful-dnd';
+
 # Tab Panel
 
-Very simple tab bar implementation.
+Wrapper aroundd material-ui tab component which displays the component `children` in tabs. 
 
-- [ ] current tab controlled by the state.
+*Note* that only the active tab is getting rendered.
 
 Can host React components or simple html elements.
 
-If a title property specified, that will be displayed as the tab header. 
-Otherwise for React Components it displays the component name with spaces inserted between the camel case uppercanse letters.
-So for example `CollectionExplorer` will turn into `Collection Explorer`. 
-Simple HTML elements without title will use the HTML element's tag name.
+If a title property specified, that will be displayed as the tab header. Otherwise for 
+React Components it displays the component name with spaces inserted between the camel 
+case uppercanse letters. So for example `CollectionExplorer` will turn into 
+`Collection Explorer`. Simple HTML elements without title will use the HTML element's 
+tag name as the last fallback.
+
+
+<Playground>
+  <DragDropContext onDragEnd={()=>{}}>
+    <div 
+      style={{
+        width: 800,
+        height: 700,
+        position: 'relative',
+      }}
+    >
+      <TabPanel>
+        <IIIFCollectionExplorer
+          title="Biomedical images"
+          url="https://wellcomelibrary.org/service/collections/collections/digbiomed/" 
+        />
+        <AnnotationList
+          annotations={
+            [
+              'Image',
+              'Video',
+              'Audio',
+              'TextualBody'
+            ].map(
+              (type, idx) => ({
+                id: 'test-' + idx,
+                body: { type }
+              })
+            )
+          }
+        />
+        <div title="Lorem Ipsum">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Nulla eu nunc nibh. Vivamus euismod aliquam scelerisque. 
+            Ut eleifend sem ac ligula euismod pellentesque. Suspendisse 
+            rutrum eros orci, quis tincidunt purus porttitor eu. In tempor 
+            ipsum felis, at dapibus nunc consectetur quis. Quisque tempus 
+            ante ac porttitor euismod. Aenean posuere condimentum mollis.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Curabitur id ipsum metus. Mauris sit amet nisl dignissim, 
+            feugiat ex id, accumsan felis. Vivamus a accumsan augue, et 
+            dapibus mi. Nunc consequat vel lorem ac finibus. Morbi sed elementum
+            urna. Aliquam quis ante et odio mollis tincidunt. Pellentesque eu 
+            elit non lectus dignissim dignissim et in neque. Proin lobortis 
+            risus aliquet ipsum commodo, non sagittis eros tincidunt. Ut vel 
+            lectus vitae tortor vehicula vulputate. Mauris ante libero, ornare nec
+            lacus et, auctor ornare neque. Integer sit amet eros vitae odio 
+            imperdiet fringilla ac vitae augue.
+          </p>
+        </div>
+        <div>
+          Plain HTML tag without a title
+        </div>
+      </TabPanel>
+    </div>    
+  </DragDropContext>
+</Playground>
+
+
+**TODO**:
+- [ ] current tab controlled by the state.
