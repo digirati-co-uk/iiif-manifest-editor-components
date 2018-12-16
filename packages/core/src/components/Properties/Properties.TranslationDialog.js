@@ -39,11 +39,11 @@ const processLevel = (obj, key_prefix) => {
 };
 
 const TranslationDialog = ({ manifest, open, handleClose, update }) => {
-  let languageProps = processLevel(manifest || []);
+  let languageProps = processLevel(manifest);
   let availableLanguages = Array.from(
     languageProps.reduce(
       (result, [key, value]) =>
-        new Set([...(new Set(Object.keys(value))), ...result]),
+        new Set([...new Set(Object.keys(value)), ...result]),
       new Set()
     )
   );
@@ -106,6 +106,22 @@ const TranslationDialog = ({ manifest, open, handleClose, update }) => {
       </DialogActions>
     </Dialog>
   );
+};
+
+TranslationDialog.propTypes = {
+  /** The manifest to translate */
+  manifest: PropTypes.object.isRequired,
+  /** is the dialog open */
+  open: PropTypes.bool.isRequired,
+  /** handling the dialog close */
+  handleClose: PropTypes.func.isRequired,
+  /** Method that updates the value */
+  update: PropTypes.func.isRequired,
+};
+
+TranslationDialog.defaultProps = {
+  manifest: [],
+  open: false,
 };
 
 export default TranslationDialog;

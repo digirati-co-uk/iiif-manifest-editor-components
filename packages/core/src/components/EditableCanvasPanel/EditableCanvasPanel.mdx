@@ -1,0 +1,56 @@
+---
+name: Editable Canvas Panel
+menu: 02. High Level Components
+---
+
+import { Playground, PropsTable } from 'docz';
+import EditableCanvasPanel from './EditableCanvasPanel'; 
+
+# Editable Canvas Panel
+
+This version of the canvas editor is using canvas panel.
+
+<PropsTable of={EditableCanvasPanel} />
+
+## Current Issues
+
+- `Canvas Panel` doesn't really supports media types other than *images*.
+- The components extensibility relies on the `Canvas Panel` project which slows down the development.
+- Even if the videos will be implemented as overlays, there are certain situations when we need to make cuts on the functionality:
+  - Videos will be always on top, no free ordering of the annotations (unlike the raw `HTML` primitive based implementation)
+  - `HTML` *Audio*/*Video* synchronization nightmare will not be resolved in the scope of this project.
+- `Canvas Panel` using `Open Sea Dragon` on the bottom which is not a `React` application, therefore it is a bit hackish to access 
+  certain parameters, and the `UI` heavily relies on `DOM` references, which we trying to avoid in a React project usually.
+- At the moment, all annotations displayed as an overlay in order to be able to drag and drop and resize the resources.
+    - This introduces another issue. The mouse wheel zoom, above the annotations, is not working, although this will 
+    be an easy fix by using a custom Open Sea Dragon Mouse tracker (I guess).
+
+*NOTE*
+
+Possible solution for the aforementioned issues is an `A-Frame` based canvas renderer. `A-Frame` is 
+relatively easy to code declarative environment. On the other hand, the React implementation performs poorly, so probably the best to 
+implement it in a separate sandbox before applying it to the current codebase. 
+
+The main benefits of `A-Frame` are the following:
+
+- Supports the all the required web primitives, only IIIF tile source loader needs to be implemented.
+- It is using webGL on the bottom, ergo the rendering is hardware accelerated.
+- It allows new types of content as well, for example 3D laser scans of objects can be also displayed (also built in panoramic videos, image cubes). 
+- As well as the AR support is native to this framework.
+
+It is not a surprise that `A-Frame` comes with it's own limitations, so pease see the following list for the possible drawbacks:
+
+- The react implementation of `A-Frame` performs poorly compared to the base implementation.
+- The GPU has to stream in the textures, ergo they appear delayed.
+- And in general GPUs usually support texture sizes 2^n (power of 2 - ...16, 32, 64, 128, 256...), so additional logic needs to be introduced if IIIF Image server has different sizes.
+- If something goes wrong it crashes the entire webpage (and by something I don't just mean code related mistakes, WebGL is running on a quasi random environment much more close to the hardware with less protection as reguar web code)
+- There's no IIIF viewer support for the created content at the moment.
+
+
+## Requirements
+
+- [x] being able to drop items
+- [x] being able to resize items
+- [x] being able to display multiple annotations at the same time
+- [x] annotation order preserved
+- [x] zoom controls (in/out/reset/fit) 

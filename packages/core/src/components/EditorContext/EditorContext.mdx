@@ -1,6 +1,47 @@
 ---
 name: Editor Context
-menu: Configuration
+route: /configuration/editor-context
+menu: 01. Configuration
 ---
 
+import { Playground, PropsTable } from 'docz';
+import { EditorProvider } from './EditorContext'; 
+
 # Editor Context
+
+Different institutions have different needs, this component allows to create pluggable 
+extensions for different parts of the manifest editor applications.
+
+<PropsTable of={EditorProvider} />
+
+Because we are using React context, a default context will be provided for the consumer components, ergo 
+creating a provider is not necessary to be able to use the manifest editor components.
+
+Also worth to menition that the `ManifestEditor` component creates a Provider 
+for the applications and it also passes forward several properties in order to be 
+able to extend or override the basic context.
+
+## Base Context
+
+The base context has 3 sections:
+
+```js
+{
+  annotation: {
+    ...
+  },
+  dragDrop: {
+    ...
+  },
+  translation: {
+    ...
+  },
+};
+```
+
+### Annotation type definitions
+
+### Drag And Drop configurations
+
+### Translation Options
+

@@ -1,0 +1,17 @@
+---
+name: Translation Dialog
+menu: 03. Components
+---
+
+import { Playground, PropsTable } from 'docz';
+import TranslationDialog from './Properties.TranslationDialog'; 
+
+# Translation Dialog
+
+This is the first sketch of the mirror translation dialog. It will allow users quickly translate manifests. 
+This requires further optimizations on the data access layer because the typing is a bit delayed due to 
+the extensive traversal (in order to find the target elements).
+
+Also it would be a good idea to separate the dialog's component from the actual listing component.
+
+<PropsTable of={TranslationDialog} />

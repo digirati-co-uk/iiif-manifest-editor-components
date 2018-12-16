@@ -1,6 +1,6 @@
 ---
 name: Editable Canvas
-menu: Components
+menu: 02. High Level Components
 ---
 
 import { Playground, PropsTable } from 'docz';
@@ -8,7 +8,15 @@ import EditableCanvas from './EditableCanvas';
 
 # Editable Canvas
 
+The original canvas editor component used in the initial development phase.
+
 <PropsTable of={EditableCanvas} />
+
+## Current issues
+
+- It doesn't handle tile sources therefore the overall performance is poorer than the canvas panel version could be.
+- Zoom level doesn't reset when the displayed canvas changed which results some inconveniences during the editig process.
+
 
 ## Requirements
 

@@ -13,11 +13,11 @@ const ButtonWithTooltip = ({ title, children, onClick = emptyFn }) => (
 );
 
 ButtonWithTooltip.propTypes = {
-  /* Tooltip title */
+  /** Tooltip title */
   title: PropTypes.string,
-  /* Icon or svg */
+  /** Icon or svg */
   children: PropTypes.any,
-  /* click handler */
+  /**  click handler */
   onClick: PropTypes.func,
 };
 

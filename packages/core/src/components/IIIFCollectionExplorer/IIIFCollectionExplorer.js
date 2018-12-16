@@ -54,6 +54,7 @@ class CollectionExplorer extends React.Component {
       this.loadResource(url);
     }
   }
+
   onLoadResource = ev => this.loadResource(this.state.resourceURL);
   back = ev => this.loadResource(ev.target.value);
 

@@ -1,6 +1,6 @@
 ---
 name: Collection Explorer
-menu: Components
+menu: 02. High Level Components
 ---
 
 import { Playground, PropsTable } from 'docz';
@@ -12,12 +12,6 @@ import { DragDropContext } from 'react-beautiful-dnd';
 <PropsTable of={IIIFCollectionExplorer} />
 
 The following demonstation loads the `iiif universe` top level collection.
-
-TODO:
-- [ ] make it able to work without drag and drop context.
-- [x] give the `virtual-list` a minimum height
-- [ ] list item actions
-
 
 <Playground>
   <DragDropContext onDragEnd={()=>{}}>
@@ -32,3 +26,9 @@ TODO:
     </div>
   </DragDropContext>
 </Playground>
+
+
+TODO:
+- [ ] make it able to work without drag and drop context.
+- [x] give the `virtual-list` a minimum height
+- [ ] list item actions
