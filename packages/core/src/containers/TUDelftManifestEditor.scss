@@ -129,8 +129,8 @@
   height: 200px;
   grid-column: auto/span 4;
   width: 200px;
-  -webkit-clip-path: polygon(1rem 0,calc(100% - 1rem) 0,100% 1rem,100% calc(100% - 1rem),calc(100% - 1rem) 100%,1rem 100%,0 calc(100% - 1rem),0 1rem);
-  clip-path: polygon(1rem 0,calc(100% - 1rem) 0,100% 1rem,100% calc(100% - 1rem),calc(100% - 1rem) 100%,1rem 100%,0 calc(100% - 1rem),0 1rem);
+  -webkit-clip-path: polygon(1em 0,calc(100% - 1em) 0,100% 1em,100% calc(100% - 1em),calc(100% - 1em) 100%,1em 100%,0 calc(100% - 1em),0 1em);
+  clip-path: polygon(1em 0,calc(100% - 1em) 0,100% 1em,100% calc(100% - 1em),calc(100% - 1em) 100%,1em 100%,0 calc(100% - 1em),0 1em);
 }
 
 .tu-delft-manifest-editor--exhibition-full-view {
@@ -150,8 +150,6 @@
     height: 400px;
     grid-column: auto/span 4;
     width: 400px;
-    -webkit-clip-path: polygon(1rem 0,calc(100% - 1rem) 0,100% 1rem,100% calc(100% - 1rem),calc(100% - 1rem) 100%,1rem 100%,0 calc(100% - 1rem),0 1rem);
-    clip-path: polygon(1rem 0,calc(100% - 1rem) 0,100% 1rem,100% calc(100% - 1rem),calc(100% - 1rem) 100%,1rem 100%,0 calc(100% - 1rem),0 1rem);
   }
 }
 
