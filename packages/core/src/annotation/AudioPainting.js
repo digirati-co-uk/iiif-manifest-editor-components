@@ -6,6 +6,8 @@ import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
+import AudioPropertiesForm from './forms/AudioPropertiesForm';
+
 export default class AudioPainting extends BaseAnnotation {
   static contentRenderer = annotation => (
     <audio
@@ -34,7 +36,13 @@ export default class AudioPainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = 'TODO: custom property editor';
+  static propertyEditor = null; //AudioPropertiesForm;
+
+  static defaultBody = {
+    type: 'Audio',
+    id: 'https://www.w3schools.com/html/horse.ogg',
+    duration: 1.515102,
+  };
 
   static actions = {
     add: ({ state, dispatch }, options) => {
@@ -45,11 +53,7 @@ export default class AudioPainting extends BaseAnnotation {
             type: 'Annotation',
             parent: state.selectedIdsByType.Canvas,
             props: {
-              body: {
-                type: 'Audio',
-                id: 'https://www.w3schools.com/html/horse.ogg',
-                duration: 1.515102,
-              },
+              body: AudioPainting.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,320,176',
             },
           },

@@ -6,6 +6,8 @@ import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
+import ImagePropertiesForm from './forms/ImagePropertiesForm';
+
 export default class ImagePainting extends BaseAnnotation {
   static contentRenderer = annotation => (
     <img
@@ -31,7 +33,14 @@ export default class ImagePainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = 'TODO: custom property editor';
+  static propertyEditor = ImagePropertiesForm;
+
+  static defaultBody = {
+    type: 'Image',
+    id: 'https://picsum.photos/200/300',
+    width: 200,
+    height: 300,
+  };
 
   static actions = {
     add: ({ state, dispatch }, options) => {
@@ -42,12 +51,7 @@ export default class ImagePainting extends BaseAnnotation {
             type: 'Annotation',
             parent: state.selectedIdsByType.Canvas,
             props: {
-              body: {
-                type: 'Image',
-                id: 'https://picsum.photos/200/300',
-                width: 200,
-                height: 300,
-              },
+              body: ImagePainting.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
             },
           },

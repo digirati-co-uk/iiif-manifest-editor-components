@@ -7,6 +7,8 @@ import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
+import TextPropertiesForm from './forms/TextPropertiesForm';
+
 export default class TextPainting extends BaseAnnotation {
   static contentRenderer = annotation => (
     <p
@@ -31,7 +33,14 @@ export default class TextPainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = 'TODO: custom property editor';
+  static propertyEditor = TextPropertiesForm;
+
+  static defaultBody = {
+    type: 'TextualBody',
+    value: 'new annotation',
+    format: 'text/plain',
+    language: 'en',
+  };
 
   static actions = {
     add: ({ state, dispatch }, options) => {
@@ -42,6 +51,7 @@ export default class TextPainting extends BaseAnnotation {
             type: 'Annotation',
             parent: state.selectedIdsByType.Canvas,
             props: {
+              body: TextPainting.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
             },
           },

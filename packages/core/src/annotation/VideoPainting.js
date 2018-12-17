@@ -6,6 +6,8 @@ import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
+import VideoPropertiesForm from './forms/VideoPropertiesForm';
+
 export default class VideoPainting extends BaseAnnotation {
   static contentRenderer = annotation => (
     <video
@@ -38,7 +40,15 @@ export default class VideoPainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = 'TODO: custom property editor';
+  static propertyEditor = props => VideoPropertiesForm;
+
+  static defaultBody = {
+    type: 'Video',
+    id: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    width: 320,
+    height: 176,
+    duration: 10.026667,
+  };
 
   static actions = {
     add: ({ state, dispatch }, options) => {
@@ -49,13 +59,7 @@ export default class VideoPainting extends BaseAnnotation {
             type: 'Annotation',
             parent: state.selectedIdsByType.Canvas,
             props: {
-              body: {
-                type: 'Video',
-                id: 'https://www.w3schools.com/html/mov_bbb.mp4',
-                width: 320,
-                height: 176,
-                duration: 10.026667,
-              },
+              body: VideoPainting.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,320,176',
             },
           },
