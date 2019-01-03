@@ -18,18 +18,10 @@ class NewAnnotationDialog extends React.Component {
   };
 
   static getDerivedStateFromProps(nextProps, state) {
-    console.log('this is rubbish', state);
     if (
       nextProps.form &&
       nextProps.form.defaultBody.type !== state.resource.body.type
     ) {
-      console.log(
-        'why am i here',
-        nextProps.form.defaultBody.type,
-        state.resource.type,
-        nextProps.form.defaultBody.type !== state.resource.body.type,
-        state
-      );
       return {
         resource: {
           type: 'Annotation',
@@ -37,7 +29,6 @@ class NewAnnotationDialog extends React.Component {
         },
       };
     }
-    console.log('oh we reached this', state);
     return null;
   }
 
@@ -89,7 +80,6 @@ class NewAnnotationDialog extends React.Component {
         currentLevel[property][lang] = value.split('\n');
       }
     }
-    console.log('triggering change', this.state.resource, targetClone);
     this.setState({
       resource: targetClone,
     });
@@ -100,7 +90,6 @@ class NewAnnotationDialog extends React.Component {
   render() {
     const { open, handleClose, form } = this.props;
     const { resource } = this.state;
-    console.log('render->resource', resource);
     return (
       <Dialog
         open={open}

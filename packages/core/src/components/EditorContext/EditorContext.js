@@ -47,7 +47,6 @@ const defaultEditorContext = {
       alert('TODO: dlcsimagelist->canvaseditor');
     },
     'iiifimagelist->canvaslist': ({ state, dispatch }, drop) => {
-      //console.log('TODO: iiifimagelist->canvaslist');
       const [manifestId, canvasId] = drop.draggableId.split('||||');
       // if (manifestId && canvasId) {
       //   getCanvasFromExternalManifest(manifestId, canvasId).then(canvas => {
@@ -116,7 +115,6 @@ const defaultEditorContext = {
       const [manifestId, canvasId] = drop.draggableId.split('||||');
       // if (state.selectedIdsByType.Canvas && manifestId && canvasId) {
       //   getCanvasFromExternalManifest(manifestId, canvasId).then(canvas => {
-      //console.log('success', canvas)
       if (window.draggedData) {
         const canvas = window.draggedData;
         if (canvas.items && canvas.items.length) {
