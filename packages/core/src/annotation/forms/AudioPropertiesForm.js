@@ -2,33 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, TextField } from '@material-ui/core';
 
-const styles = theme => ({
-  root: {},
-});
+import styles from './FormStyles';
 
 class AudioPropertiesForm extends React.Component {
   render() {
-    const { classes, target } = this.props;
+    const { classes, target, update } = this.props;
     const audioId = target.body ? target.body.id || '' : '';
     return (
       <div className={classes.root}>
-        <TextField
-          label="Audio url"
-          className={classes.textField}
-          value={id}
-          onChange={ev => update(target, 'body.id', null, ev.target.value)}
-          margin="dense"
-          variant="outlined"
-        />
-        <div>
-          Audio properties:
-          <dl>
-            <dt>Duration</dt>
-            <dd>n</dd>
+        <div className={classes.formRow}>
+          <TextField
+            label="Audio url"
+            className={classes.textField}
+            value={audioId}
+            onChange={ev => update(target, 'body.id', null, ev.target.value)}
+            margin="dense"
+            variant="outlined"
+          />
+          <div className={classes.dndUpload}>Upload</div>
+          <dl className={classes.factSheet}>
+            <dt className={classes.fact}>Width</dt>
+            <dd className={classes.fact}>{1231231}</dd>
+            <dt className={classes.fact}>Height</dt>
+            <dd className={classes.fact}>{12312312}</dd>
+            <dt className={classes.fact}>Duration</dt>
+            <dd className={classes.fact}>{12312312}</dd>
           </dl>
         </div>
-        <div>TODO: Dropload</div>
-        <div>TODO: Use just a placeholder</div>
       </div>
     );
   }

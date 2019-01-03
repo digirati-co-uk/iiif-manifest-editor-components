@@ -40,7 +40,7 @@ export default class VideoPainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = props => VideoPropertiesForm;
+  static propertyEditor = VideoPropertiesForm;
 
   static defaultBody = {
     type: 'Video',

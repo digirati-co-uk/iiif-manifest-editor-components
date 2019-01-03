@@ -17,11 +17,19 @@ class NewAnnotationDialog extends React.Component {
     },
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps, state) {
+    console.log('this is rubbish', state);
     if (
       nextProps.form &&
-      nextProps.form.defaultBody !== prevState.resource.type
+      nextProps.form.defaultBody.type !== state.resource.body.type
     ) {
+      console.log(
+        'why am i here',
+        nextProps.form.defaultBody.type,
+        state.resource.type,
+        nextProps.form.defaultBody.type !== state.resource.body.type,
+        state
+      );
       return {
         resource: {
           type: 'Annotation',
@@ -29,25 +37,77 @@ class NewAnnotationDialog extends React.Component {
         },
       };
     }
+    console.log('oh we reached this', state);
     return null;
   }
 
-  update = (target, value) => {
-    // this.setState({
-    //   resource:
-    // });
+  update = (target, property, lang, value) => {
+    //TODO: should be just a dispatch,
+    const targetClone = JSON.parse(JSON.stringify(target));
+    let currentLevel = targetClone;
+    const keys = property.split('.');
+    if (keys.length > 1) {
+      if (lang !== null) {
+        keys.forEach(key => {
+          if (!currentLevel[key]) {
+            if (key === 'metadata') {
+              currentLevel[key] = [];
+            } else {
+              currentLevel[key] = {};
+            }
+          }
+          currentLevel = currentLevel[key];
+        });
+        currentLevel[lang] = value.split('\n');
+      } else {
+        keys.forEach((key, index) => {
+          if (index === keys.length - 1) {
+            currentLevel[key] = value;
+          } else {
+            if (!currentLevel[key]) {
+              if (key === 'metadata') {
+                currentLevel[key] = [];
+              } else {
+                currentLevel[key] = {};
+              }
+            }
+            currentLevel = currentLevel[key];
+          }
+        });
+      }
+    } else {
+      if (lang === null) {
+        if (['navDate', 'rights'].indexOf(property) !== -1) {
+          targetClone[property] = value;
+        } else {
+          targetClone[property] = value.split('\n');
+        }
+      } else {
+        if (!targetClone.hasOwnProperty(property)) {
+          targetClone[property] = {};
+        }
+        currentLevel[property][lang] = value.split('\n');
+      }
+    }
+    console.log('triggering change', this.state.resource, targetClone);
+    this.setState({
+      resource: targetClone,
+    });
   };
 
   createAnnotation = () => {};
 
   render() {
     const { open, handleClose, form } = this.props;
+    const { resource } = this.state;
+    console.log('render->resource', resource);
     return (
       <Dialog
         open={open}
         onClose={handleClose}
         scroll="paper"
-        maxWidth="md"
+        maxWidth="sm"
+        fullWidth={true}
         aria-labelledby="new-annotation-dialog"
       >
         <DialogTitle id="new-annotation-dialog">
@@ -58,7 +118,7 @@ class NewAnnotationDialog extends React.Component {
             typeof form.propertyEditor === 'function' &&
             React.createElement(form.propertyEditor, {
               update: this.update,
-              target: this.state.resource,
+              target: resource,
             })}
         </DialogContent>
         <DialogActions>
