@@ -21,13 +21,19 @@ export default class TextPainting extends BaseAnnotation {
     </p>
   );
 
-  static button = ({ title = 'button title', ...props }) => (
+  static button = ({
+    title = 'Text Annotation /w motivation painting',
+    ...props
+  }) => (
     <ButtonWithTooltip title={title} {...props}>
       <Notes />
     </ButtonWithTooltip>
   );
 
-  static icon = ({ color, title = 'Text Annotation' }) => (
+  static icon = ({
+    color,
+    title = 'Text Annotation /w motivation painting',
+  }) => (
     <Tooltip title={title}>
       <Notes color={color} />
     </Tooltip>

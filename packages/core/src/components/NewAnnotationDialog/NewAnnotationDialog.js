@@ -34,6 +34,8 @@ class NewAnnotationDialog extends React.Component {
 
   update = (target, property, lang, value) => {
     //TODO: should be just a dispatch,
+    // This whole thing getting messy and unreadable,
+    // please rethink the structure.
     const targetClone = JSON.parse(JSON.stringify(target));
     let currentLevel = targetClone;
     const keys = property.split('.');
@@ -41,7 +43,7 @@ class NewAnnotationDialog extends React.Component {
       if (lang !== null) {
         keys.forEach(key => {
           if (!currentLevel[key]) {
-            if (key === 'metadata') {
+            if (['metadata', 'thumbnail'].indexOf(key) !== -1) {
               currentLevel[key] = [];
             } else {
               currentLevel[key] = {};
@@ -56,7 +58,7 @@ class NewAnnotationDialog extends React.Component {
             currentLevel[key] = value;
           } else {
             if (!currentLevel[key]) {
-              if (key === 'metadata') {
+              if (['metadata', 'thumbnail'].indexOf(key) !== -1) {
                 currentLevel[key] = [];
               } else {
                 currentLevel[key] = {};
@@ -85,7 +87,12 @@ class NewAnnotationDialog extends React.Component {
     });
   };
 
-  createAnnotation = () => {};
+  createAnnotation = () => {
+    const { addNewResource } = this.props;
+    if (addNewResource) {
+      addNewResource(this.state.resource);
+    }
+  };
 
   render() {
     const { open, handleClose, form } = this.props;
@@ -130,6 +137,8 @@ NewAnnotationDialog.propTypes = {
   handleClose: PropTypes.func,
   /** the annotation property editor form */
   form: PropTypes.any,
+  /** create new annotation */
+  addNewResource: PropTypes.func,
 };
 
 NewAnnotationDialog.defaultProps = {

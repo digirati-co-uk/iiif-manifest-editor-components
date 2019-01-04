@@ -36,7 +36,7 @@ export default class AudioPainting extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = null; //AudioPropertiesForm;
+  static propertyEditor = AudioPropertiesForm;
 
   static defaultBody = {
     type: 'Audio',
