@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Typography, InputLabel, withStyles } from '@material-ui/core';
 import { Translate } from '@material-ui/icons';
 
+import { EditorConsumer } from '../EditorContext/EditorContext';
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
 import LanguagesDropdown from '../LanguagesDropdown/LanguagesDropdown';
 import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
@@ -55,6 +56,13 @@ class Properties extends React.Component {
       noTranslation,
     } = this.props;
     const { mirrorTranslationOpen } = this.state;
+    const annotationType = annotation
+      ? [
+          annotation.body ? annotation.body.type : '',
+          annotation.motivation,
+        ].join('::')
+      : null;
+
     return (
       <div className={classes.root}>
         {!noTranslation && (
@@ -75,6 +83,20 @@ class Properties extends React.Component {
           <React.Fragment>
             <Typography variant="h6">Annotation</Typography>
             <MetadataEditor target={annotation} lang={lang} update={update} />
+            {annotationType}
+            <EditorConsumer>
+              {configuration => {
+                const form = configuration.annotation[annotationType];
+                return (
+                  form &&
+                  typeof form.propertyEditor === 'function' &&
+                  React.createElement(form.propertyEditor, {
+                    update: update,
+                    target: annotation,
+                  })
+                );
+              }}
+            </EditorConsumer>
           </React.Fragment>
         )}
         {canvas && (

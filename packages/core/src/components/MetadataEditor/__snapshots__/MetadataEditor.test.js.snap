@@ -42,6 +42,7 @@ ShallowWrapper {
       },
       "classes": Object {
         "label": "MetadataEditor-label-1",
+        "metadataRow": "MetadataEditor-metadataRow-2",
       },
       "lang": "en",
       "manifest": Object {
@@ -67,6 +68,7 @@ ShallowWrapper {
         },
         "classes": Object {
           "label": "MetadataEditor-label-1",
+          "metadataRow": "MetadataEditor-metadataRow-2",
         },
         "lang": "en",
         "manifest": Object {

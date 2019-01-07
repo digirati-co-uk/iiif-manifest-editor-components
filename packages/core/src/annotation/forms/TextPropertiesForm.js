@@ -40,7 +40,7 @@ class TextPropertiesForm extends React.Component {
         </RadioGroup>
         <TextField
           label="Body Value"
-          className={classes.textField}
+          className={classes.textFieldFullWidth}
           value={body}
           onChange={ev => update(target, 'body.value', null, ev.target.value)}
           margin="dense"

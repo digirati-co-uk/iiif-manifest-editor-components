@@ -8,6 +8,9 @@ const styles = theme => ({
   textField: {
     width: 'calc(100% - 70px)',
   },
+  textFieldFullWidth: {
+    width: '100%',
+  },
   factSheet: {
     width: '100%',
     marginTop: 0,
