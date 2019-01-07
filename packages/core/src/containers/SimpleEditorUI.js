@@ -18,6 +18,7 @@ import TabPanel from '../components/TabPanel/TabPanel';
 import renderResource, {
   queryResourceById,
   locale,
+  update,
 } from '../utils/IIIFResource';
 import ManifestEditor from '../components/ManifestEditor/ManifestEditor';
 import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreviewDialog';
@@ -117,42 +118,11 @@ class SimpleEditorUI extends React.Component {
   };
 
   updateProperty = (target, property, lang, value) => {
-    //TODO: should be just a dispatch,
-    const targetClone = JSON.parse(JSON.stringify(target));
-    let currentLevel = targetClone;
-    const keys = property.split('.');
-    if (keys.length > 1) {
-      keys.forEach(key => {
-        if (!currentLevel[key]) {
-          if (key === 'metadata') {
-            currentLevel[key] = [];
-          } else {
-            currentLevel[key] = {};
-          }
-        }
-        currentLevel = currentLevel[key];
-      });
-      currentLevel[lang] = value.split('\n');
-    } else {
-      if (lang === null) {
-        if (['navDate', 'rights'].indexOf(property) !== -1) {
-          targetClone[property] = value;
-        } else {
-          targetClone[property] = value.split('\n');
-        }
-      } else {
-        if (!targetClone.hasOwnProperty(property)) {
-          targetClone[property] = {};
-        }
-        currentLevel[property][lang] = value.split('\n');
-      }
-    }
-
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE',
       options: {
         id: target.id,
-        props: targetClone,
+        props: update(target, property, lang, value),
       },
     });
   };

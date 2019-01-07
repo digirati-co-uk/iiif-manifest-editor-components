@@ -272,3 +272,45 @@ export const getCanvasFromExternalManifest = (manifestId, canvasId) =>
       throw `Cannot retrieve canvas ${canvasId} from ${manifestId}`;
     })
     .catch(err => console.log(err));
+
+// Internal 'magic constants' for the updater, will be updated when
+// new issues rising unfortunately I had to cut some time on the
+// implementation of this and will return to implement the update
+// properly later on.
+const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights'];
+
+export const update = (target, property, lang, value) => {
+  //TODO: should be just a dispatch,
+  // This whole thing getting messy and unreadable,
+  // please rethink the structure.
+  const targetClone = JSON.parse(JSON.stringify(target));
+  let currentLevel = targetClone;
+  const keys = property.split('.');
+  if (keys.length > 1) {
+    keys.forEach((key, index) => {
+      if (lang === null && index === keys.length - 1) {
+        currentLevel[key] = value;
+      } else {
+        if (!currentLevel[key]) {
+          currentLevel[key] = ARRAY_TYPE_KEYS.indexOf(key) !== -1 ? [] : {};
+        }
+        currentLevel = currentLevel[key];
+      }
+    });
+    if (lang !== null) {
+      currentLevel[lang] = value.split('\n');
+    }
+  } else {
+    if (lang === null) {
+      targetClone[property] =
+        SINGLE_VALUE_KEYS.indexOf(property) !== -1 ? value : value.split('\n');
+    } else {
+      if (!targetClone.hasOwnProperty(property)) {
+        targetClone[property] = {};
+      }
+      currentLevel[property][lang] = value.split('\n');
+    }
+  }
+  return targetClone;
+};

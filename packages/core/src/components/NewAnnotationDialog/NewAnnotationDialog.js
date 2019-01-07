@@ -8,6 +8,8 @@ import {
   Button,
 } from '@material-ui/core';
 
+import { update } from '../../utils/IIIFResource';
+
 class NewAnnotationDialog extends React.Component {
   state = {
     resource: {
@@ -33,57 +35,8 @@ class NewAnnotationDialog extends React.Component {
   }
 
   update = (target, property, lang, value) => {
-    //TODO: should be just a dispatch,
-    // This whole thing getting messy and unreadable,
-    // please rethink the structure.
-    const targetClone = JSON.parse(JSON.stringify(target));
-    let currentLevel = targetClone;
-    const keys = property.split('.');
-    if (keys.length > 1) {
-      if (lang !== null) {
-        keys.forEach(key => {
-          if (!currentLevel[key]) {
-            if (['metadata', 'thumbnail'].indexOf(key) !== -1) {
-              currentLevel[key] = [];
-            } else {
-              currentLevel[key] = {};
-            }
-          }
-          currentLevel = currentLevel[key];
-        });
-        currentLevel[lang] = value.split('\n');
-      } else {
-        keys.forEach((key, index) => {
-          if (index === keys.length - 1) {
-            currentLevel[key] = value;
-          } else {
-            if (!currentLevel[key]) {
-              if (['metadata', 'thumbnail'].indexOf(key) !== -1) {
-                currentLevel[key] = [];
-              } else {
-                currentLevel[key] = {};
-              }
-            }
-            currentLevel = currentLevel[key];
-          }
-        });
-      }
-    } else {
-      if (lang === null) {
-        if (['navDate', 'rights'].indexOf(property) !== -1) {
-          targetClone[property] = value;
-        } else {
-          targetClone[property] = value.split('\n');
-        }
-      } else {
-        if (!targetClone.hasOwnProperty(property)) {
-          targetClone[property] = {};
-        }
-        currentLevel[property][lang] = value.split('\n');
-      }
-    }
     this.setState({
-      resource: targetClone,
+      resource: update(target, property, lang, value),
     });
   };
 
