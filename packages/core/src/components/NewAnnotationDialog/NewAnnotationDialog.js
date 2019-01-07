@@ -8,7 +8,14 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { update } from '../../utils/IIIFResource';
+import { update, updateDisplayProperties } from '../../utils/IIIFResource';
+
+const REQUIRE_META_UPDATE = [
+  'body.id',
+  'body.service.id',
+  'thumbnail.0.id',
+  'thumbnail.0.service.id',
+];
 
 class NewAnnotationDialog extends React.Component {
   state = {
@@ -35,9 +42,27 @@ class NewAnnotationDialog extends React.Component {
   }
 
   update = (target, property, lang, value) => {
-    this.setState({
-      resource: update(target, property, lang, value),
-    });
+    console.log(property, value);
+    if (REQUIRE_META_UPDATE.indexOf(property) !== -1) {
+      updateDisplayProperties(target, property, lang, value, extraProps => {
+        let result = target;
+        if (extraProps) {
+          // TODO: make it work with all property declarations
+          if (property === 'body.id') {
+            Object.entries(extraProps).forEach(([key, data]) => {
+              result = update(result, 'body.' + key, lang, data);
+            });
+          }
+        }
+        this.setState({
+          resource: update(result, property, lang, value),
+        });
+      });
+    } else {
+      this.setState({
+        resource: update(target, property, lang, value),
+      });
+    }
   };
 
   createAnnotation = () => {

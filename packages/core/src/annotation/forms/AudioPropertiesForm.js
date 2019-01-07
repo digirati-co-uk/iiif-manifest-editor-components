@@ -13,13 +13,13 @@ class AudioPropertiesForm extends React.Component {
         <div className={classes.formRow}>
           <TextField
             label="Audio url"
-            className={classes.textField}
+            className={upload ? classes.textField : classes.textFieldFullWidth}
             value={audioId}
             onChange={ev => update(target, 'body.id', null, ev.target.value)}
             margin="dense"
             variant="outlined"
           />
-          <div className={classes.dndUpload}>Upload</div>
+          {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
             <dd className={classes.fact}>{1231231}</dd>
@@ -41,6 +41,8 @@ AudioPropertiesForm.propTypes = {
   target: PropTypes.object,
   /** update function */
   update: PropTypes.func,
+  /** upload service */
+  upload: PropTypes.func,
 };
 
 AudioPropertiesForm.defaultProps = {};

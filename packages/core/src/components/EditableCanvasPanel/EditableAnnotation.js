@@ -310,6 +310,16 @@ export default class EditableAnnotation extends React.Component {
         onMouseDown={this.dragStart}
         onTouchStart={this.dragStart}
         onClick={onClick || emptyFn}
+        onDoubleClick={ev => {
+          const mediaElement = ev.target.querySelector('video,audio');
+          if (mediaElement) {
+            if (mediaElement.paused) {
+              mediaElement.play();
+            } else {
+              mediaElement.pause();
+            }
+          }
+        }}
       >
         {children}
         <AnnotationResizers

@@ -4,9 +4,17 @@ import { withStyles, TextField } from '@material-ui/core';
 
 import styles from './FormStyles';
 
+const UNKNOWN = '-';
+
 class ImagePropertiesForm extends React.Component {
   render() {
-    const { classes, target, update } = this.props;
+    const { classes, target, update, upload } = this.props;
+    // NOTE: the following properties are for the display
+    // values only, e.g. width/height...
+    const annotationBody = target.body || {};
+    const serviceBody = annotationBody.service || {};
+
+    // Editable properties
     const imageUrl = target.body ? target.body.id || '' : '';
     const imageServiceUrl =
       target.body && target.body.service ? target.body.service.id || '' : '';
@@ -27,24 +35,24 @@ class ImagePropertiesForm extends React.Component {
         <div className={classes.formRow}>
           <TextField
             label="Image url"
-            className={classes.textField}
+            className={upload ? classes.textField : classes.textFieldFullWidth}
             value={imageUrl}
             onChange={ev => update(target, 'body.id', null, ev.target.value)}
             margin="dense"
             variant="outlined"
           />
-          <div className={classes.dndUpload}>Upload</div>
+          {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>{1231231}</dd>
+            <dd className={classes.fact}>{annotationBody.width || UNKNOWN}</dd>
             <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>{12312312}</dd>
+            <dd className={classes.fact}>{annotationBody.height || UNKNOWN}</dd>
           </dl>
         </div>
         <div className={classes.formRow}>
           <TextField
             label="Image service url"
-            className={classes.textField}
+            className={upload ? classes.textField : classes.textFieldFullWidth}
             value={imageServiceUrl}
             onChange={ev =>
               update(target, 'body.service.id', null, ev.target.value)
@@ -52,12 +60,12 @@ class ImagePropertiesForm extends React.Component {
             margin="dense"
             variant="outlined"
           />
-          <div className={classes.dndUpload}>Upload</div>
+          {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>{12313123}</dd>
+            <dd className={classes.fact}>{serviceBody.width || UNKNOWN}</dd>
             <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>{123123123}</dd>
+            <dd className={classes.fact}>{serviceBody.height || UNKNOWN}</dd>
             <dt className={classes.fact}>Sizes</dt>
             <dd className={classes.fact}>a,b,c,d</dd>
           </dl>
@@ -65,7 +73,7 @@ class ImagePropertiesForm extends React.Component {
         <div className={classes.formRow}>
           <TextField
             label="Thumbnail url"
-            className={classes.textField}
+            className={upload ? classes.textField : classes.textFieldFullWidth}
             value={thumbnailUrl}
             onChange={ev =>
               update(target, 'thumbnail.0.id', null, ev.target.value)
@@ -73,7 +81,7 @@ class ImagePropertiesForm extends React.Component {
             margin="dense"
             variant="outlined"
           />
-          <div className={classes.dndUpload}>Upload</div>
+          {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
             <dd className={classes.fact}>x</dd>
@@ -84,7 +92,7 @@ class ImagePropertiesForm extends React.Component {
         <div className={classes.formRow}>
           <TextField
             label="Thumbnail service url"
-            className={classes.textField}
+            className={upload ? classes.textField : classes.textFieldFullWidth}
             value={thumbnailServiceUrl}
             onChange={ev =>
               update(target, 'thumbnail.0.service.id', null, ev.target.value)
@@ -92,7 +100,7 @@ class ImagePropertiesForm extends React.Component {
             margin="dense"
             variant="outlined"
           />
-          <div className={classes.dndUpload}>Upload</div>
+          {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
             <dd className={classes.fact}>x</dd>
@@ -114,6 +122,8 @@ ImagePropertiesForm.propTypes = {
   target: PropTypes.object,
   /** update function */
   update: PropTypes.func,
+  /** upload service */
+  upload: PropTypes.func,
 };
 
 ImagePropertiesForm.defaultProps = {};

@@ -314,3 +314,65 @@ export const update = (target, property, lang, value) => {
   }
   return targetClone;
 };
+
+const URL_CACHE = {};
+const PROPS_TO_COPY_IF_EXIST = ['width', 'height', 'sizes', 'duration'];
+
+export const updateDisplayProperties = (
+  target,
+  property,
+  lang,
+  value,
+  callback
+) => {
+  if (URL_CACHE.hasOwnProperty(value)) {
+    callback(URL_CACHE[value]);
+    return;
+  }
+  fetch(value).then(response => {
+    const contentType = response.headers.get('Content-Type');
+    if (contentType === 'application/json') {
+      const data = response.json();
+      const result = {};
+      PROPS_TO_COPY_IF_EXIST.forEach(key => {
+        if (data.hasOwnProperty(key)) {
+          result[key] = data[key];
+        }
+      });
+      URL_CACHE[value] = result;
+      callback(URL_CACHE[value]);
+    } else if (contentType.startsWith('image/')) {
+      const img = new Image();
+      img.onload = () => {
+        URL_CACHE[value] = {
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        };
+        callback(URL_CACHE[value]);
+      };
+      img.src = value;
+    } else if (contentType.startsWith('video/')) {
+      const vid = document.createElement('video');
+      vid.onloadedmetadata = () => {
+        URL_CACHE[value] = {
+          width: vid.videoWidth,
+          height: vid.videoHeight,
+          duration: vid.duration,
+        };
+        callback(URL_CACHE[value]);
+      };
+      vid.src = value;
+    } else if (contentType.startsWith('audio/')) {
+      const au = document.createElement('audio');
+      au.onloadedmetadata = () => {
+        URL_CACHE[value] = {
+          duration: au.duration,
+        };
+        callback(URL_CACHE[value]);
+      };
+      au.src = value;
+    } else {
+      callback(null);
+    }
+  });
+};
