@@ -47,12 +47,14 @@ class NewAnnotationDialog extends React.Component {
       updateDisplayProperties(target, property, lang, value, extraProps => {
         let result = target;
         if (extraProps) {
-          // TODO: make it work with all property declarations
-          if (property === 'body.id') {
-            Object.entries(extraProps).forEach(([key, data]) => {
-              result = update(result, 'body.' + key, lang, data);
-            });
-          }
+          Object.entries(extraProps).forEach(([key, data]) => {
+            result = update(
+              result,
+              property.replace(/\.id$/, `.${key}`),
+              lang,
+              data
+            );
+          });
         }
         this.setState({
           resource: update(result, property, lang, value),

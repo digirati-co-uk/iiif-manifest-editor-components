@@ -13,6 +13,16 @@ class ImagePropertiesForm extends React.Component {
     // values only, e.g. width/height...
     const annotationBody = target.body || {};
     const serviceBody = annotationBody.service || {};
+    const thumbnailProps =
+      target.thumbnail && target.thumbnail.length > 0
+        ? target.thumbnail[0]
+        : {};
+    const thumbnailServiceProps =
+      target.thumbnail &&
+      target.thumbnail.length > 0 &&
+      target.thumbnail[0].service
+        ? target.thumbnail[0].service
+        : {};
 
     // Editable properties
     const imageUrl = target.body ? target.body.id || '' : '';
@@ -84,9 +94,9 @@ class ImagePropertiesForm extends React.Component {
           {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>x</dd>
+            <dd className={classes.fact}>{thumbnailProps.width || UNKNOWN}</dd>
             <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>y</dd>
+            <dd className={classes.fact}>{thumbnailProps.height || UNKNOWN}</dd>
           </dl>
         </div>
         <div className={classes.formRow}>
@@ -103,9 +113,13 @@ class ImagePropertiesForm extends React.Component {
           {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>x</dd>
+            <dd className={classes.fact}>
+              {thumbnailServiceProps.width || UNKNOWN}
+            </dd>
             <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>y</dd>
+            <dd className={classes.fact}>
+              {thumbnailServiceProps.height || UNKNOWN}
+            </dd>
             <dt className={classes.fact}>Sizes</dt>
             <dd className={classes.fact}>a,b,c,d</dd>
           </dl>
