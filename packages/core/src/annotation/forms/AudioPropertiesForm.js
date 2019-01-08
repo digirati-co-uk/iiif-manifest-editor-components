@@ -6,7 +6,7 @@ import styles from './FormStyles';
 
 class AudioPropertiesForm extends React.Component {
   render() {
-    const { classes, target, update } = this.props;
+    const { classes, target, update, upload } = this.props;
     const audioId = target.body ? target.body.id || '' : '';
     return (
       <div className={classes.root}>
@@ -21,10 +21,6 @@ class AudioPropertiesForm extends React.Component {
           />
           {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
-            <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>{1231231}</dd>
-            <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>{12312312}</dd>
             <dt className={classes.fact}>Duration</dt>
             <dd className={classes.fact}>{12312312}</dd>
           </dl>
