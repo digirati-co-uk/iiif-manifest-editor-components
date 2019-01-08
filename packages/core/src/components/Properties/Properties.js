@@ -8,6 +8,7 @@ import MetadataEditor from '../MetadataEditor/MetadataEditor';
 import LanguagesDropdown from '../LanguagesDropdown/LanguagesDropdown';
 import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 import TranslationDialog from './Properties.TranslationDialog';
+import { updateWithMeta } from '../../utils/IIIFResource';
 
 const style = theme => ({
   root: {
@@ -42,6 +43,12 @@ class Properties extends React.Component {
     this.setState({
       mirrorTranslationOpen: false,
     });
+  };
+
+  update = (target, property, lang, value) => {
+    updateWithMeta(target, property, lang, value, (result, prop, lng, val) =>
+      this.props.update(result, prop, lng, val)
+    );
   };
 
   render() {
@@ -91,7 +98,7 @@ class Properties extends React.Component {
                   form &&
                   typeof form.propertyEditor === 'function' &&
                   React.createElement(form.propertyEditor, {
-                    update: update,
+                    update: this.update,
                     target: annotation,
                   })
                 );

@@ -384,3 +384,31 @@ export const updateDisplayProperties = (
       }
     });
 };
+
+const REQUIRE_META_UPDATE = [
+  'body.id',
+  'body.service.id',
+  'thumbnail.0.id',
+  'thumbnail.0.service.id',
+];
+
+export const updateWithMeta = (target, property, lang, value, ready) => {
+  if (REQUIRE_META_UPDATE.indexOf(property) !== -1) {
+    updateDisplayProperties(target, property, lang, value, extraProps => {
+      let result = target;
+      if (extraProps) {
+        Object.entries(extraProps).forEach(([key, data]) => {
+          result = update(
+            result,
+            property.replace(/\.id$/, `.${key}`),
+            lang,
+            data
+          );
+        });
+      }
+      ready(result, property, lang, value);
+    });
+  } else {
+    ready(target, property, lang, value);
+  }
+};

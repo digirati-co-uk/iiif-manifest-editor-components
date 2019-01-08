@@ -153,6 +153,11 @@
   }
 }
 
+//osd haxx
+.navigator {
+  z-index: 10000;
+}
+
 .loader {
   background-color: transparent;
   background-position: center center;
