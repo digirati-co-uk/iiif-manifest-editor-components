@@ -44,23 +44,6 @@ class ImagePropertiesForm extends React.Component {
       <div className={classes.root}>
         <div className={classes.formRow}>
           <TextField
-            label="Image url"
-            className={upload ? classes.textField : classes.textFieldFullWidth}
-            value={imageUrl}
-            onChange={ev => update(target, 'body.id', null, ev.target.value)}
-            margin="dense"
-            variant="outlined"
-          />
-          {upload && <div className={classes.dndUpload}>Upload</div>}
-          <dl className={classes.factSheet}>
-            <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>{annotationBody.width || UNKNOWN}</dd>
-            <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>{annotationBody.height || UNKNOWN}</dd>
-          </dl>
-        </div>
-        <div className={classes.formRow}>
-          <TextField
             label="Image service url"
             className={upload ? classes.textField : classes.textFieldFullWidth}
             value={imageServiceUrl}
@@ -77,26 +60,28 @@ class ImagePropertiesForm extends React.Component {
             <dt className={classes.fact}>Height</dt>
             <dd className={classes.fact}>{serviceBody.height || UNKNOWN}</dd>
             <dt className={classes.fact}>Sizes</dt>
-            <dd className={classes.fact}>a,b,c,d</dd>
+            <dd className={classes.fact}>
+              {(serviceBody.sizes || [])
+                .map(size => [size.width, size.height].join(' x '))
+                .join('; ')}
+            </dd>
           </dl>
         </div>
         <div className={classes.formRow}>
           <TextField
-            label="Thumbnail url"
+            label="Image url"
             className={upload ? classes.textField : classes.textFieldFullWidth}
-            value={thumbnailUrl}
-            onChange={ev =>
-              update(target, 'thumbnail.0.id', null, ev.target.value)
-            }
+            value={imageUrl}
+            onChange={ev => update(target, 'body.id', null, ev.target.value)}
             margin="dense"
             variant="outlined"
           />
           {upload && <div className={classes.dndUpload}>Upload</div>}
           <dl className={classes.factSheet}>
             <dt className={classes.fact}>Width</dt>
-            <dd className={classes.fact}>{thumbnailProps.width || UNKNOWN}</dd>
+            <dd className={classes.fact}>{annotationBody.width || UNKNOWN}</dd>
             <dt className={classes.fact}>Height</dt>
-            <dd className={classes.fact}>{thumbnailProps.height || UNKNOWN}</dd>
+            <dd className={classes.fact}>{annotationBody.height || UNKNOWN}</dd>
           </dl>
         </div>
         <div className={classes.formRow}>
@@ -121,7 +106,30 @@ class ImagePropertiesForm extends React.Component {
               {thumbnailServiceProps.height || UNKNOWN}
             </dd>
             <dt className={classes.fact}>Sizes</dt>
-            <dd className={classes.fact}>a,b,c,d</dd>
+            <dd className={classes.fact}>
+              {(thumbnailServiceProps.sizes || [])
+                .map(size => [size.width, size.height].join(' x '))
+                .join('; ')}
+            </dd>
+          </dl>
+        </div>
+        <div className={classes.formRow}>
+          <TextField
+            label="Thumbnail url"
+            className={upload ? classes.textField : classes.textFieldFullWidth}
+            value={thumbnailUrl}
+            onChange={ev =>
+              update(target, 'thumbnail.0.id', null, ev.target.value)
+            }
+            margin="dense"
+            variant="outlined"
+          />
+          {upload && <div className={classes.dndUpload}>Upload</div>}
+          <dl className={classes.factSheet}>
+            <dt className={classes.fact}>Width</dt>
+            <dd className={classes.fact}>{thumbnailProps.width || UNKNOWN}</dd>
+            <dt className={classes.fact}>Height</dt>
+            <dd className={classes.fact}>{thumbnailProps.height || UNKNOWN}</dd>
           </dl>
         </div>
       </div>
