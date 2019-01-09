@@ -325,13 +325,24 @@ export const updateDisplayProperties = (
   value,
   callback
 ) => {
+  console.log(value);
   if (URL_CACHE.hasOwnProperty(value)) {
+    console.log('keshiz');
     callback(URL_CACHE[value]);
     return;
   }
+
   fetch(value)
     .then(response => {
+      if (!response.ok) {
+        callback(null);
+        return;
+      }
       const contentType = response.headers.get('Content-Type');
+      if (!contentType) {
+        callback(null);
+        return;
+      }
       if (
         contentType.startsWith('application/json') ||
         contentType.startsWith('application/ld+json')
@@ -368,20 +379,23 @@ export const updateDisplayProperties = (
         };
         au.src = value;
       } else {
-        callback(null);
+        callback({
+          width: undefined,
+          duration: undefined,
+          height: undefined,
+        });
       }
     })
     .then(data => {
-      if (data) {
-        const result = {};
-        PROPS_TO_COPY_IF_EXIST.forEach(key => {
-          if (data.hasOwnProperty(key)) {
-            result[key] = data[key];
-          }
-        });
-        URL_CACHE[value] = result;
-        callback(URL_CACHE[value]);
-      }
+      const result = {};
+      PROPS_TO_COPY_IF_EXIST.forEach(key => {
+        result[key] = data ? data[key] || undefined : undefined;
+      });
+      URL_CACHE[value] = result;
+      callback(URL_CACHE[value]);
+    })
+    .catch(err => {
+      callback(null);
     });
 };
 
@@ -393,6 +407,7 @@ const REQUIRE_META_UPDATE = [
 ];
 
 export const updateWithMeta = (target, property, lang, value, ready) => {
+  ready(target, property, lang, value);
   if (REQUIRE_META_UPDATE.indexOf(property) !== -1) {
     updateDisplayProperties(target, property, lang, value, extraProps => {
       let result = target;
@@ -406,9 +421,8 @@ export const updateWithMeta = (target, property, lang, value, ready) => {
           );
         });
       }
+      // result.__lastMod = new Date().getTime();
       ready(result, property, lang, value);
     });
-  } else {
-    ready(target, property, lang, value);
   }
 };
