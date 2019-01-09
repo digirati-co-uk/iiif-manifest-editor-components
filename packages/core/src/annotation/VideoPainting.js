@@ -7,26 +7,40 @@ import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 import VideoPropertiesForm from './forms/VideoPropertiesForm';
+import { parseVideo } from '../utils/VideoServices';
 
 export default class VideoPainting extends BaseAnnotation {
-  static contentRenderer = annotation => (
-    <video
-      controls
-      style={{
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-      }}
-    >
-      <source
-        src={
-          annotation.body.id ||
-          'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
-        }
-        type="video/mp4"
+  static contentRenderer = annotation => {
+    const videoServiceResult = parseVideo(annotation.body.id);
+    return videoServiceResult.type ? (
+      <iframe
+        src={videoServiceResult.src}
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 0,
+          pointerEvents: 'none',
+        }}
       />
-    </video>
-  );
+    ) : (
+      <video
+        controls
+        style={{
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+        }}
+      >
+        <source
+          src={
+            annotation.body.id ||
+            'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
+          }
+          type="video/mp4"
+        />
+      </video>
+    );
+  };
 
   static button = ({ title = 'Add Video Annotation', ...props }) => (
     <ButtonWithTooltip title={title} {...props}>
