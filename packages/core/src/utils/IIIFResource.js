@@ -421,8 +421,45 @@ export const updateWithMeta = (target, property, lang, value, ready) => {
           );
         });
       }
-      // result.__lastMod = new Date().getTime();
+      // TODO: make this as a plugin after the system functionally complete
+      result = dlcsExtras(result, property, lang, value, ready);
       ready(result, property, lang, value);
     });
   }
+};
+
+const dlcsExtras = (target, property, lang, value, ready) => {
+  if (!(typeof value === 'string' && value.indexOf('//dlc.services/') !== -1)) {
+    return;
+  }
+  var result = target;
+  if (property === 'body.service.id') {
+    result = update(
+      result,
+      'body.id',
+      lang,
+      value.replace('/info.json', '') + '/full/full/0/default.jpg',
+      ready
+    );
+
+    result = update(
+      result,
+      'thumbnail.0.service.id',
+      lang,
+      value.replace('/iiif-img/', '/thumbs/'),
+      ready
+    );
+  }
+
+  if (property === 'body.service.id' || property === 'thumbnail.0.service.id') {
+    result = update(
+      result,
+      'thumbnail.0.id',
+      lang,
+      value.replace('/info.json', '').replace('/iiif-img/', '/thumbs/') +
+        '/full/full/0/default.jpg',
+      ready
+    );
+  }
+  return result;
 };
