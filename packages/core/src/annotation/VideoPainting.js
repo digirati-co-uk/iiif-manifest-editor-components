@@ -12,7 +12,7 @@ import { parseVideo } from '../utils/VideoServices';
 export default class VideoPainting extends BaseAnnotation {
   static contentRenderer = annotation => {
     const videoServiceResult = parseVideo(annotation.body.id);
-    return videoServiceResult.type ? (
+    return videoServiceResult && videoServiceResult.type ? (
       <iframe
         src={videoServiceResult.src}
         style={{

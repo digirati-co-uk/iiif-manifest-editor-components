@@ -62,6 +62,8 @@ const theme = createMuiTheme({
   },
 });
 
+const emptyFn = () => {};
+
 const demoManifest = renderResource('Manifest');
 const demoCanvas = renderResource('Canvas', { parent: demoManifest });
 demoManifest.items.push(demoCanvas);
@@ -82,8 +84,8 @@ class TUDelftManifestEditor extends React.Component {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
   };
 
-  dispatch = (reducer, action) => {
-    this.setState(reducer(this.state, action));
+  dispatch = (reducer, action, cb) => {
+    this.setState(reducer(this.state, action), cb || emptyFn);
   };
 
   selectResource = resource => {

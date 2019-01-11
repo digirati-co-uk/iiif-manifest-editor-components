@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 
 import { update, updateWithMeta } from '../../utils/IIIFResource';
+import { SIZING_STRATEGY } from '../../constants/sizing';
 
 class NewAnnotationDialog extends React.Component {
   state = {
@@ -36,17 +37,16 @@ class NewAnnotationDialog extends React.Component {
 
   update = (target, property, lang, value) => {
     updateWithMeta(target, property, lang, value, (result, prop, lng, val) => {
-      console.log(result, prop, lng, val);
       this.setState({
         resource: update(result, prop, lng, val),
       });
     });
   };
 
-  createAnnotation = () => {
+  createAnnotation = sizingStrategy => () => {
     const { addNewResource } = this.props;
     if (addNewResource) {
-      addNewResource(this.state.resource);
+      addNewResource(this.state.resource, sizingStrategy);
     }
   };
 
@@ -77,8 +77,21 @@ class NewAnnotationDialog extends React.Component {
           <Button onClick={handleClose} color="primary">
             dismiss
           </Button>
-          <Button onClick={this.createAnnotation} color="primary">
-            create
+          <Button
+            onClick={this.createAnnotation(
+              SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS
+            )}
+            color="primary"
+          >
+            Squeeze annotation into canvas
+          </Button>
+          <Button
+            onClick={this.createAnnotation(
+              SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
+            )}
+            color="primary"
+          >
+            Extend canvas to fit annotation
           </Button>
         </DialogActions>
       </Dialog>

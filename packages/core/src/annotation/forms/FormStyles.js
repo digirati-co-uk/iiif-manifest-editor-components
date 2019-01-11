@@ -39,6 +39,10 @@ const styles = theme => ({
     justifyContent: 'center',
     borderRadius: theme.spacing.unit / 2,
   },
+  sliderHolder: {
+    margin: '2rem 1rem',
+    '--slider-colour': theme.palette.primary.main,
+  },
 });
 
 export default styles;
