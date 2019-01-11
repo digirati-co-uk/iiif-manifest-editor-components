@@ -146,7 +146,17 @@ class EditableCanvasPanel extends React.Component {
         : [];
     const { selectedAnnotation } = this.props;
     const ratio = 1;
-    if (!this.canvas || this.canvas.id !== canvas.id) {
+    console.log(
+      !this.canvas || this.canvas.id !== canvas.id,
+      canvas.width,
+      canvas.height
+    );
+    if (
+      !this.canvas ||
+      this.canvas.id !== canvas.id ||
+      this.canvas.width !== canvas.width ||
+      this.canvas.height !== canvas.height
+    ) {
       this.canvas = {
         id: canvas.id,
         getWidth: () => canvas.width,

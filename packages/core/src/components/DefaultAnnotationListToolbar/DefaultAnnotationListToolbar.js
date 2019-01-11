@@ -128,7 +128,6 @@ class DefaultAnnotationListToolbar extends React.Component {
                         sizingStrategy ===
                         SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
                       ) {
-                        console.log(JSON.stringify(canvas, null, 2));
                         dispatch(IIIFReducer, {
                           type: 'UPDATE_RESOURCE',
                           options: {
@@ -139,7 +138,6 @@ class DefaultAnnotationListToolbar extends React.Component {
                             },
                           },
                         });
-                        console.log(JSON.stringify(canvas, null, 2));
                       }
                     }
                   );
