@@ -1,0 +1,132 @@
+import React from 'react';
+import { withStyles, TextField, Button, Select } from '@material-ui/core';
+
+/**
+ * @private
+ * @class DLCSLoginPanel
+ * @extends React.Component
+ *
+ * This component allows the user to specify the DLCS API credentials.
+ *
+ * The login panel meant to be private at the moment. Only DLCSImageSelector
+ * should have access for the DLCSLoginPanel.
+ */
+class DLCSLoginPanel extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      endpoint: this.props.endpoint || '',
+      customer: this.props.customer || '',
+      api_id: '',
+      api_secret: '',
+      error: '',
+    };
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onChange(ev) {
+    const newState = {};
+    newState[ev.target.name] = ev.target.value;
+    this.setState(newState);
+  }
+
+  onSubmit(ev) {
+    ev.preventDefault();
+    const self = this;
+    this.setState({
+      error: '',
+    });
+    let headers = new Headers();
+    const url = `${this.state.endpoint}/customers/${this.state.customer}`;
+    const auth = btoa(`${this.state.api_id}:${this.state.api_secret}`);
+    headers.append('Authorization', `Basic ${auth}`);
+    fetch(url, {
+      method: 'GET',
+      headers: headers,
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (
+          !response ||
+          response.success === 'false' ||
+          response.success === false
+        ) {
+          self.setState({
+            error: 'Invalid credentials',
+          });
+        } else {
+          if (self.props.loginCallback) {
+            self.props.loginCallback({
+              dlcs_url: url,
+              auth: auth,
+              userName: response.displayName,
+            });
+          }
+        }
+      })
+      .catch(err => {
+        self.setState({
+          error: err,
+        });
+      });
+  }
+
+  render() {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1rem',
+        }}
+      >
+        <TextField
+          label="DLCS Endpoint"
+          type="url"
+          name="endpoint"
+          value={this.state.endpoint}
+          onChange={this.onChange}
+          margin="dense"
+          variant="outlined"
+        />
+        <TextField
+          label="DLCS Customer Id"
+          type="number"
+          min="0"
+          name="customer"
+          value={this.state.customer}
+          onChange={this.onChange}
+          margin="dense"
+          variant="outlined"
+        />
+        <TextField
+          label="DLCS API ID"
+          type="text"
+          name="api_id"
+          value={this.state.api_id}
+          onChange={this.onChange}
+          margin="dense"
+          variant="outlined"
+        />
+        <TextField
+          label="DLCS API Secret"
+          type="password"
+          name="api_secret"
+          value={this.state.api_secret}
+          onChange={this.onChange}
+          margin="dense"
+          variant="outlined"
+        />
+        <Button onClick={this.onSubmit}>Login</Button>
+        {this.state.error !== '' ? (
+          <div className="dlcs-login-panel__error">{this.state.error}</div>
+        ) : (
+          ''
+        )}
+      </div>
+    );
+  }
+}
+
+export default DLCSLoginPanel;

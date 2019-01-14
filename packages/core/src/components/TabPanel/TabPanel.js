@@ -37,12 +37,18 @@ class TabPanel extends React.Component {
           onChange={this.setActiveIndex}
           indicatorColor="primary"
           textColor="primary"
-          scrollable={children.length > 2}
-          fullWidth={children.length < 3}
-          scrollButtons={children.length < 3 ? 'off' : 'auto'}
+          scrollable={children.length > 3}
+          fullWidth={children.length < 4}
+          scrollButtons={children.length < 4 ? 'off' : 'auto'}
         >
           {children.map((child, idx) => (
-            <Tab key={`tab_${idx}`} label={this.getTabName(child)} />
+            <Tab
+              key={`tab_${idx}`}
+              label={this.getTabName(child)}
+              style={{
+                minWidth: 140,
+              }}
+            />
           ))}
         </Tabs>
         <Panel.Content>{children[activeIdx]}</Panel.Content>
