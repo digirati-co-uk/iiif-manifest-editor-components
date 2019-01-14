@@ -10,7 +10,7 @@ const isP3Context = context =>
   ((context.constructor === Array &&
     context.includes(IIIF_PRESENTATION_V3_CONTEXT_NAMESPACE)) ||
     (context.constructor === String &&
-      context !== IIIF_PRESENTATION_V3_CONTEXT_NAMESPACE));
+      context === IIIF_PRESENTATION_V3_CONTEXT_NAMESPACE));
 
 const convertToV3ifNecessary = manifest => {
   const context = manifest['@context'];
