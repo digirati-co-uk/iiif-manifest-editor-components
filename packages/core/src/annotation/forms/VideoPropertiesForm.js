@@ -14,6 +14,32 @@ import './RangeStyles.scss';
 const UNKNOWN = '-';
 
 class VideoPropertiesForm extends React.Component {
+  getSelectedRange = () => {
+    const { target } = this.props;
+    if (!target.body) {
+      return { min: 0, max: 0 };
+    }
+    if (
+      target.body.selector &&
+      target.body.selector.type === 'FragmentSelector'
+    ) {
+      return (target.body.selector.value + '')
+        .replace(/t\=([0-9]+(?:\.[0-9]+)?),([0-9]+(?:\.[0-9]+)?)/, '$1,$2')
+        .split(',')
+        .reduce(
+          (result, val, idx) => {
+            result[idx === 0 ? 'min' : 'max'] = parseFloat(val);
+            return result;
+          },
+          {
+            min: 0,
+            max: target.body.duration || 0,
+          }
+        );
+    }
+    return { min: 0, max: target.body.duration || 0 };
+  };
+
   render() {
     const { classes, target, update, upload } = this.props;
     const videoUrl = target.body ? target.body.id || '' : '';
@@ -41,24 +67,8 @@ class VideoPropertiesForm extends React.Component {
         ? target.thumbnail[0].service.id || ''
         : '';
 
-    const selectedRange = target.body
-      ? (target.body.selector && target.body.selector.type === 'FragmentSelector'
-        ? (target.body.selector.value + '')
-            .replace(/t\=([0-9]+(?:\.[0-9]+)?),([0-9]+(?:\.[0-9]+)?)/, '$1,$2')
-            .split(',')
-            .reduce(
-              (result, val, idx) => {
-                result[idx === 0 ? 'min' : 'max'] = parseFloat(val);
-                return result;
-              },
-              {
-                min: 0,
-                max: target.body.duration || 0,
-              }
-            )
-        : { min: 0, max: target.body.duration || 0 }
-    ) : { min: 0, max: 0 };
-    console.log(selectedRange, target.body);
+    const selectedRange = this.getSelectedRange();
+
     return (
       <div className={classes.root}>
         <div className={classes.formRow}>
