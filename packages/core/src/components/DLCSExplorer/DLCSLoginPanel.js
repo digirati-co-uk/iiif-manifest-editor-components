@@ -17,8 +17,8 @@ class DLCSLoginPanel extends React.Component {
     this.state = {
       endpoint: this.props.endpoint || '',
       customer: this.props.customer || '',
-      api_id: '',
-      api_secret: '',
+      api_id: this.props.api_id || '',
+      api_secret: this.props.api_secret || '',
       error: '',
     };
     this.onChange = this.onChange.bind(this);
@@ -38,7 +38,11 @@ class DLCSLoginPanel extends React.Component {
       error: '',
     });
     let headers = new Headers();
-    const url = `${this.state.endpoint}/customers/${this.state.customer}`;
+    const { endpoint, customer } = this.state;
+    const url = `${endpoint}/customers/${customer}`.replace(
+      '//customers',
+      '/customers'
+    );
     const auth = btoa(`${this.state.api_id}:${this.state.api_secret}`);
     headers.append('Authorization', `Basic ${auth}`);
     fetch(url, {
@@ -57,11 +61,16 @@ class DLCSLoginPanel extends React.Component {
           });
         } else {
           if (self.props.loginCallback) {
-            self.props.loginCallback({
+            const session = {
               dlcs_url: url,
               auth: auth,
               userName: response.displayName,
-            });
+            };
+
+            if (localStorage) {
+              localStorage.setItem('dlcsSession', JSON.stringify(session));
+            }
+            self.props.loginCallback(session);
           }
         }
       })

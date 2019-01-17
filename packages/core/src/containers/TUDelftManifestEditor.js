@@ -32,8 +32,9 @@ import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
 import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
-
+import DLCSPanel from '../components/DLCSExplorer/DLCSPanel';
 import TextPainting from '../annotation/TextPainting';
+import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';
 import ImagePainting from '../annotation/ImagePainting';
 import VideoPainting from '../annotation/VideoPainting';
 import ExhibitionPreview from './TUDelftManifestEditor.ExhibitionPreview';
@@ -220,6 +221,7 @@ class TUDelftManifestEditor extends React.Component {
           <ManifestEditor
             invokeAction={this.invokeAction2}
             annotation={{
+              'TextualBody::layout-viewport-focus': TextLayoutViewFocus,
               'TextualBody::painting': TextPainting,
               'Image::painting': ImagePainting,
               'Video::painting': VideoPainting,
@@ -343,6 +345,14 @@ class TUDelftManifestEditor extends React.Component {
               )}
               <div className="tu-delft-manifest-editor__right-panel">
                 <TabPanel>
+                  <DLCSPanel
+                    title="DLCS"
+                    //TODO: remove hard wired account
+                    account={{
+                      endpoint: 'https://api.dlc.services/',
+                      customer: 5,
+                    }}
+                  />
                   <IIIFCollectionExplorer />
                   <Properties
                     manifest={this.state.rootResource}

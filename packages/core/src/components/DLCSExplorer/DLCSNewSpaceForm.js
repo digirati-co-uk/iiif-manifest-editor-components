@@ -5,6 +5,20 @@ import { getAuthHeader } from './DLCS.utils';
 
 const DEFAULT_SPACE_NAME = 'New Space';
 
+const styles = theme => ({
+  root: {
+    padding: theme.spacing.unit,
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textField: {
+    flex: 1,
+  },
+});
+
 /**
  * @private
  * @class DLCSNewSpaceForm
@@ -12,7 +26,7 @@ const DEFAULT_SPACE_NAME = 'New Space';
  *
  * The component renders the new space form.
  */
-export class DLCSNewSpaceForm extends React.Component {
+class DLCSNewSpaceForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,20 +77,25 @@ export class DLCSNewSpaceForm extends React.Component {
   };
 
   render() {
+    const { style, classes } = this.props;
     return (
-      <form style={this.props.style || {}} onSubmit={this.onAddNewSpace}>
-        <TextField
-          type="text"
-          name="new_space_name"
-          value={this.state.newSpaceName}
-          onChange={this.newSpaceNameChanged}
-          margin="dense"
-          variant="outlined"
-          labelWidth={150}
-        />
-        <Button onClick={this.onAddNewSpace}>Add New Space</Button>
+      <div style={style || {}} className={classes.root}>
+        <div className={classes.form}>
+          <TextField
+            type="text"
+            name="new_space_name"
+            value={this.state.newSpaceName}
+            onChange={this.newSpaceNameChanged}
+            margin="dense"
+            variant="outlined"
+            className={classes.textField}
+          />
+          <Button onClick={this.onAddNewSpace}>Add New Space</Button>
+        </div>
         {this.state.newSpaceError ? <div>{this.state.newSpaceError}</div> : ''}
-      </form>
+      </div>
     );
   }
 }
+
+export default withStyles(styles)(DLCSNewSpaceForm);

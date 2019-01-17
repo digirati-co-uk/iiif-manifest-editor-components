@@ -12,6 +12,16 @@ import AudioPainting from '../../annotation/AudioPainting';
 import { getCanvasFromExternalManifest } from '../../utils/IIIFResource';
 import generateURI from '../../utils/URIGenerator';
 
+const getImageInfoURL = dlcsURL => {
+  return (
+    dlcsURL
+      .replace('api.', '')
+      .replace('/customers/', '/thumbs/')
+      .replace('/spaces/', '/')
+      .replace('/images/', '/') + '/info.json'
+  );
+};
+
 const defaultEditorContext = {
   annotation: {
     'TextualBody::painting': TextPainting,
@@ -40,16 +50,167 @@ const defaultEditorContext = {
         },
       });
     },
-    'dlcsimagelist->annotationlist': ({ dispatch }, drop) => {
-      alert('TODO: dlcsimagelist->annotationlist');
+    'dlcsimagelist->annotationlist': ({ state, dispatch }, drop) => {
+      if (window.draggedData) {
+        const serviceUrl = getImageInfoURL(window.draggedData['@id']);
+        //TODO: dlcs video
+        const annotation = {
+          motivation: 'painting',
+          type: 'Annotation',
+          body: {
+            id:
+              serviceUrl.replace('/info.json', '') + '/full/full/0/default.jpg',
+            type: 'Image',
+            format: 'image/jpeg',
+            height: window.draggedData.height,
+            width: window.draggedData.width,
+            label: {
+              en: ['-'],
+            },
+            service: {
+              id: serviceUrl,
+              type: 'ImageService2',
+            },
+          },
+          thumbnail: [
+            {
+              id:
+                serviceUrl
+                  .replace('/iiif-img/', '/thumbs/')
+                  .replace('/info.json', '') + '/full/full/0/default.jpg',
+              type: 'Image',
+              service: {
+                id: serviceUrl.replace('/iiif-img/', '/thumbs/'),
+              },
+            },
+          ],
+        };
+        generateURI(annotation, state.selectedIdsByType.Canvas);
+        annotation.target = state.selectedIdsByType.Canvas;
+        dispatch(IIIFReducer, {
+          type: 'ADD_SPECIFIC_RESOURCE',
+          options: {
+            props: annotation,
+            parent: state.selectedIdsByType.Canvas,
+            index: drop.destination.index,
+          },
+        });
+      }
     },
-    'dlcsimagelist->canvaseditor': ({ dispatch }, drop) => {
-      alert('TODO: dlcsimagelist->canvaseditor');
+    'dlcsimagelist->canvaseditor': ({ state, dispatch }, drop) => {
+      if (window.draggedData) {
+        const serviceUrl = getImageInfoURL(window.draggedData['@id']);
+        //TODO: dlcs video
+        const annotation = {
+          motivation: 'painting',
+          type: 'Annotation',
+          body: {
+            id:
+              serviceUrl.replace('/info.json', '') + '/full/full/0/default.jpg',
+            type: 'Image',
+            format: 'image/jpeg',
+            height: window.draggedData.height,
+            width: window.draggedData.width,
+            label: {
+              en: ['-'],
+            },
+            service: {
+              id: serviceUrl,
+              type: 'ImageService2',
+            },
+          },
+          thumbnail: [
+            {
+              id:
+                serviceUrl
+                  .replace('/iiif-img/', '/thumbs/')
+                  .replace('/info.json', '') + '/full/full/0/default.jpg',
+              type: 'Image',
+              service: {
+                id: serviceUrl.replace('/iiif-img/', '/thumbs/'),
+              },
+            },
+          ],
+        };
+        generateURI(annotation, state.selectedIdsByType.Canvas);
+        annotation.target = state.selectedIdsByType.Canvas;
+        dispatch(IIIFReducer, {
+          type: 'ADD_SPECIFIC_RESOURCE',
+          options: {
+            props: annotation,
+            parent: state.selectedIdsByType.Canvas,
+            //index: drop.destination.index,
+          },
+        });
+      }
+    },
+    'dlcsimagelist->canvaslist': ({ state, dispatch }, drop) => {
+      if (window.draggedData) {
+        const serviceUrl = getImageInfoURL(window.draggedData['@id']);
+        //TODO: dlcs video
+        const canvas = {
+          label: {
+            en: ['Untitled Canvas'],
+          },
+          height: window.draggedData.height,
+          width: window.draggedData.width,
+          type: 'Canvas',
+          items: [
+            {
+              type: 'AnnotationPage',
+              items: [
+                {
+                  motivation: 'painting',
+                  type: 'Annotation',
+                  body: {
+                    id:
+                      serviceUrl.replace('/info.json', '') +
+                      '/full/full/0/default.jpg',
+                    type: 'Image',
+                    format: 'image/jpeg',
+                    height: window.draggedData.height,
+                    width: window.draggedData.width,
+                    label: {
+                      en: ['-'],
+                    },
+                    service: {
+                      id: serviceUrl,
+                      type: 'ImageService2',
+                    },
+                  },
+                  thumbnail: [
+                    {
+                      id:
+                        serviceUrl
+                          .replace('/iiif-img/', '/thumbs/')
+                          .replace('/info.json', '') +
+                        '/full/full/0/default.jpg',
+                      type: 'Image',
+                      service: {
+                        id: serviceUrl.replace('/iiif-img/', '/thumbs/'),
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        };
+        generateURI(canvas, state.rootResource.id);
+        generateURI(canvas.items[0], canvas.id);
+        generateURI(canvas.items[0].items[0], canvas.id);
+        canvas.items[0].items[0].target = canvas.id;
+        dispatch(IIIFReducer, {
+          type: 'ADD_SPECIFIC_RESOURCE',
+          options: {
+            props: canvas,
+            parent: state.rootResource.id,
+            index: drop.destination.index,
+          },
+        });
+      }
     },
     'iiifimagelist->canvaslist': ({ state, dispatch }, drop) => {
-      const [manifestId, canvasId] = drop.draggableId.split('||||');
-      // if (manifestId && canvasId) {
-      //   getCanvasFromExternalManifest(manifestId, canvasId).then(canvas => {
       if (window.draggedData) {
         const canvas = window.draggedData;
         if (canvas.width) {
@@ -108,13 +269,9 @@ const defaultEditorContext = {
           },
         });
       }
-      //   });
-      // }
     },
     'iiifimagelist->annotationlist': ({ state, dispatch }, drop) => {
       const [manifestId, canvasId] = drop.draggableId.split('||||');
-      // if (state.selectedIdsByType.Canvas && manifestId && canvasId) {
-      //   getCanvasFromExternalManifest(manifestId, canvasId).then(canvas => {
       if (window.draggedData) {
         const canvas = window.draggedData;
         if (canvas.items && canvas.items.length) {
@@ -141,14 +298,9 @@ const defaultEditorContext = {
             }
           });
         }
-        //   }
-        // });
       }
     },
     'iiifimagelist->canvaseditor': ({ state, dispatch }, drop) => {
-      const [manifestId, canvasId] = drop.draggableId.split('||||');
-      // if (state.selectedIdsByType.Canvas && manifestId && canvasId) {
-      //   getCanvasFromExternalManifest(manifestId, canvasId).then(canvas => {
       if (window.draggedData) {
         const canvas = window.draggedData;
         if (canvas.items && canvas.items.length) {
@@ -175,8 +327,6 @@ const defaultEditorContext = {
           });
         }
       }
-      // });
-      // }
     },
   },
   translation: {

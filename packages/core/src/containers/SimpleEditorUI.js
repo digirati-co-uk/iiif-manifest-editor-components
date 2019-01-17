@@ -12,7 +12,7 @@ import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
 import IIIFCollectionExplorer from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer';
-import DLCSImageSelector from '../components/DLCSExplorer/DLCSExplorer';
+import DLCSPanel from '../components/DLCSExplorer/DLCSPanel';
 import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanvasPanel';
 import Properties from '../components/Properties/Properties';
 import TabPanel from '../components/TabPanel/TabPanel';
@@ -259,7 +259,7 @@ class SimpleEditorUI extends React.Component {
               </div>
               <div className="simple-manifest-editor__right-panel">
                 <TabPanel>
-                  <DLCSImageSelector title="DLCS" />
+                  <DLCSPanel title="DLCS" />
                   <IIIFCollectionExplorer title="IIIF Explorer" />
                   <Properties
                     manifest={this.state.rootResource}

@@ -39,7 +39,9 @@ const processLevel = (obj, key_prefix) => {
 };
 
 const TranslationDialog = ({ manifest, open, handleClose, update }) => {
-  let languageProps = processLevel(manifest);
+  let languageProps = processLevel(manifest).filter(
+    ([key]) => !key.endsWith('.service')
+  );
   let availableLanguages = Array.from(
     languageProps.reduce(
       (result, [key, value]) =>

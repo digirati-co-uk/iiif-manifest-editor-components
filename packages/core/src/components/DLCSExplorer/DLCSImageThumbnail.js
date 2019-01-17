@@ -1,12 +1,28 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core';
+import { BrokenImage } from '@material-ui/icons';
 
+const styles = theme => ({
+  link: {
+    width: '100%',
+    paddingTop: '50%',
+    height: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: '50%',
+  },
+  brokenImage: {
+    color: theme.palette.primary.main,
+  },
+});
 /**
  * @class DLCSImageThumbnail
  * @extends React.Component
  *
  * The components render a dlcs image preview
  */
-export class DLCSImageThumbnail extends React.Component {
+class DLCSImageThumbnail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,12 +59,12 @@ export class DLCSImageThumbnail extends React.Component {
       : ev => ev.preventDefault();
     let imageLoadError = this.state.error;
     let thumbnailUrl = this.getPreviewUrl(this.props.image);
-    const image = this.props.image;
+    const { classes, image } = this.props;
     const imageClickWrap = ev => imageOnClick(ev, image);
     return (
-      <a href={imageInfoUrl} onClick={imageClickWrap}>
+      <a href={imageInfoUrl} onClick={imageClickWrap} className={classes.link}>
         {imageLoadError ? (
-          <span className="broken-image" title={this.props.image['@id']} />
+          <BrokenImage className={classes.brokenImage} />
         ) : (
           <img src={thumbnailUrl} onError={this.onImageLoadError} />
         )}
@@ -56,3 +72,5 @@ export class DLCSImageThumbnail extends React.Component {
     );
   }
 }
+
+export default withStyles(styles)(DLCSImageThumbnail);
