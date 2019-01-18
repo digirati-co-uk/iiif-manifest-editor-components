@@ -50,17 +50,20 @@ const styles = theme => {
       alignItems: 'center',
       padding: `${pad}px 0 ${pad}px ${pad}px`,
       borderBottom: '1px solid #eee',
+      height: '48px',
     },
     user: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'flex-start',
       alignItems: 'center',
+      height: '64px',
     },
     toolbar: {
       display: 'flex',
       flexDirection: 'row',
       padding: `${pad}px 0`,
+      height: 64,
     },
     spaceSelect: {
       width: '100%',

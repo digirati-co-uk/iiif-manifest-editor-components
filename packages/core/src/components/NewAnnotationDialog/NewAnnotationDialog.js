@@ -93,6 +93,12 @@ class NewAnnotationDialog extends React.Component {
           >
             Extend canvas to fit annotation
           </Button>
+          <Button
+            onClick={this.createAnnotation(SIZING_STRATEGY.NONE)}
+            color="primary"
+          >
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     );

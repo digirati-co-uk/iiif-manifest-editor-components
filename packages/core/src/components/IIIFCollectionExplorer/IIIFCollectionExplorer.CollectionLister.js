@@ -23,7 +23,6 @@ const style = theme => ({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    minHeight: '100%',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
   },

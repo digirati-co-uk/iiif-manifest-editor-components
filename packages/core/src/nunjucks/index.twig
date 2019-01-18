@@ -13,6 +13,8 @@ title: Deflt Manifest Editor
 	* {
 		margin: 0;
 		padding: 0;
+	}
+	*, *:before, *:after {
 		box-sizing: border-box;
 	}
 	.tu-delft-manifest-editor__right-panel,
@@ -29,6 +31,12 @@ title: Deflt Manifest Editor
 	 }
 	 .tu-delft-manifest-editor {
 		 border: 0 none;
+	 }
+	 .panel__content {
+		position: relative;
+	 }
+   .panel__content>div {
+		position: absolute;
 	 }
 </style>
 <div id="app"></div>

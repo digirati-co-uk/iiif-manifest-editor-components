@@ -84,7 +84,8 @@ class DefaultAnnotationListToolbar extends React.Component {
                   if (!newProps.target) {
                     if (
                       sizingStrategy ===
-                      SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
+                        SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION ||
+                      sizingStrategy === SIZING_STRATEGY.NONE
                     ) {
                       newProps.target =
                         state.selectedIdsByType.Canvas +
