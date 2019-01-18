@@ -353,8 +353,9 @@ class TUDelftManifestEditor extends React.Component {
                       customer: 5,
                     }}
                   />
-                  <IIIFCollectionExplorer />
+                  <IIIFCollectionExplorer title="IIIF Explorer"/>
                   <Properties
+                    title="Properties"
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
                     annotation={selectedAnnotation}
