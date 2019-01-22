@@ -278,7 +278,7 @@ export const getCanvasFromExternalManifest = (manifestId, canvasId) =>
 // implementation of this and will return to implement the update
 // properly later on.
 const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail'];
-const SINGLE_VALUE_KEYS = ['navDate', 'rights'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior'];
 
 export const update = (target, property, lang, value) => {
   //TODO: should be just a dispatch,

@@ -15,6 +15,7 @@ const style = theme => ({
     display: 'flex',
     flexDirection: 'column',
     padding: '1rem',
+    width: '100%',
   },
   translationBar: {
     display: 'flex',
@@ -33,13 +34,13 @@ class Properties extends React.Component {
     mirrorTranslationOpen: false,
   };
 
-  openTanslations = () => {
+  openTranslations = () => {
     this.setState({
       mirrorTranslationOpen: true,
     });
   };
 
-  closeTanslations = () => {
+  closeTranslations = () => {
     this.setState({
       mirrorTranslationOpen: false,
     });
@@ -76,7 +77,7 @@ class Properties extends React.Component {
           <div className={classes.translationBar}>
             <ButtonWithTooltip
               title="Launch mirror translation tool"
-              onClick={this.openTanslations}
+              onClick={this.openTranslations}
             >
               <Translate />
             </ButtonWithTooltip>
@@ -86,38 +87,55 @@ class Properties extends React.Component {
             <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
           </div>
         )}
-        {annotation && (
-          <React.Fragment>
-            <Typography variant="h6">Annotation</Typography>
-            <MetadataEditor target={annotation} lang={lang} update={update} />
-            {annotationType}
-            <EditorConsumer>
-              {configuration => {
-                const form = configuration.annotation[annotationType];
-                return (
-                  form &&
-                  typeof form.propertyEditor === 'function' &&
-                  React.createElement(form.propertyEditor, {
-                    update: this.update,
-                    target: annotation,
-                  })
-                );
-              }}
-            </EditorConsumer>
-          </React.Fragment>
-        )}
-        {canvas && (
-          <React.Fragment>
-            <Typography variant="h6">Canvas</Typography>
-            <MetadataEditor target={canvas} lang={lang} update={update} />
-          </React.Fragment>
-        )}
-        <Typography variant="h6">Manifest</Typography>
-        <MetadataEditor target={manifest} lang={lang} update={update} />
+        <EditorConsumer>
+          {configuration => {
+            const form = configuration.annotation[annotationType];
+            return (
+              <React.Fragment>
+                {annotation && (
+                  <React.Fragment>
+                    <Typography variant="h6">Annotation</Typography>
+                    <MetadataEditor
+                      target={annotation}
+                      lang={lang}
+                      update={update}
+                      behaviorConfig={configuration.behavior.Annotation}
+                    />
+                    {annotationType}
+                    {form &&
+                      typeof form.propertyEditor === 'function' &&
+                      React.createElement(form.propertyEditor, {
+                        update: this.update,
+                        target: annotation,
+                      })}
+                  </React.Fragment>
+                )}
+                {canvas && (
+                  <React.Fragment>
+                    <Typography variant="h6">Canvas</Typography>
+                    <MetadataEditor
+                      target={canvas}
+                      lang={lang}
+                      update={update}
+                      behaviorConfig={configuration.behavior.Canvas}
+                    />
+                  </React.Fragment>
+                )}
+                <Typography variant="h6">Manifest</Typography>
+                <MetadataEditor
+                  target={manifest}
+                  lang={lang}
+                  update={update}
+                  behaviorConfig={configuration.behavior.Manifest}
+                />
+              </React.Fragment>
+            );
+          }}
+        </EditorConsumer>
         <TranslationDialog
           manifest={manifest}
           open={mirrorTranslationOpen}
-          handleClose={this.closeTanslations}
+          handleClose={this.closeTranslations}
           update={update}
         />
       </div>

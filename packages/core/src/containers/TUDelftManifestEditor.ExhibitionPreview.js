@@ -6,7 +6,206 @@ import { Cancel, AddCircle, ZoomIn } from '@material-ui/icons';
 import Panel from '../components/Panel/Panel';
 import LocaleString from '../components/LocaleString/LocaleString';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
-import { getCanvasThumbnail } from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
+//import { getCanvasThumbnail } from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
+import * as classnames from 'classnames';
+
+const XYWHRx = /(?:.*xywh\=(\d+),(\d+),(\d+),(\d+).*)/;
+
+export const getCanvasThumbnails = canvas => {
+  let thumbnails = null;
+  const annotations =
+    canvas.items &&
+    canvas.items.length &&
+    canvas.items[0].items &&
+    canvas.items[0].items.length &&
+    canvas.items[0].items; // hopefully for now
+
+  if (annotations) {
+    thumbnails = annotations.reduce((results, annotation, index) => {
+      let xywh = null;
+      if (annotation.target) {
+        const targetXYWH = annotation.target.match(XYWHRx);
+        if (targetXYWH && targetXYWH.length === 5) {
+          xywh = {
+            x: parseInt(targetXYWH[1], 10),
+            y: parseInt(targetXYWH[2], 10),
+            w: parseInt(targetXYWH[3], 10),
+            h: parseInt(targetXYWH[4], 10),
+          };
+        }
+      }
+      if (annotation.thumbnail) {
+        if (typeof annotation.thumbnail === 'string') {
+          results[index] = {
+            url: annotation.thumbnail,
+            xywh,
+          };
+        } else if (
+          Array.isArray(annotation.thumbnail) &&
+          annotation.thumbnail.length
+        ) {
+          results[index] = {
+            url:
+              typeof annotation.thumbnail[0] === 'string'
+                ? annotation.thumbnail[0]
+                : annotation.thumbnail[0].id,
+            xywh,
+          };
+        } else if (annotation.thumbnail.id) {
+          thumbnail = annotation.thumbnail.id;
+          results[index] = {
+            url: annotation.thumbnail.id,
+            xywh,
+          };
+        }
+      }
+      if (
+        !results[index] &&
+        annotation &&
+        annotation.body &&
+        annotation.body.id
+      ) {
+        const iiifImageParts = annotation.body.id.split('/');
+        iiifImageParts[iiifImageParts.length - 3] = '!100,100';
+        results[index] = {
+          url: iiifImageParts.join('/'),
+          xywh,
+        };
+      }
+      return results;
+    }, []);
+  }
+
+  if ((thumbnails === null || thumbnails.length === 0) && canvas.thumbnail) {
+    if (typeof canvas.thumbnail === 'string') {
+      thumbnails = {
+        url: canvas.thumbnail,
+        xywh: null,
+      };
+    } else if (Array.isArray(canvas.thumbnail) && canvas.thumbnail.length) {
+      thumbnails = {
+        url:
+          typeof canvas.thumbnail[0] === 'string'
+            ? canvas.thumbnail[0]
+            : canvas.thumbnail[0].id,
+        xywh: null,
+      };
+    } else if (canvas.thumbnail.id) {
+      thumbnails = {
+        url: canvas.thumbnail.id,
+        xywh: null,
+      };
+    }
+  }
+
+  return thumbnails;
+};
+
+const CanvasPreview = ({
+  canvasPercentageRatio,
+  thumbnails,
+  canvasWidth,
+  canvasHeight,
+  canvas,
+}) => (
+  <div
+    style={{
+      position: 'relative',
+      height: 0,
+      overflow: 'visible',
+      padding: `0 0 ${canvasPercentageRatio}% 0`,
+    }}
+  >
+    {thumbnails &&
+      thumbnails.length > 0 &&
+      thumbnails.map(thumbnail => (
+        <img
+          key={`${canvas.id}__${thumbnail.url}`}
+          src={thumbnail.url}
+          alt={canvas.id}
+          //className={classes.canvasThumbnail}
+          style={{
+            position: 'absolute',
+            top: thumbnail.xywh
+              ? (thumbnail.xywh.y / canvasHeight) * 100 + '%'
+              : 0,
+            left: thumbnail.xywh
+              ? (thumbnail.xywh.x / canvasWidth) * 100 + '%'
+              : 0,
+            width: thumbnail.xywh
+              ? (thumbnail.xywh.w / canvasWidth) * 100 + '%'
+              : '100%',
+            height: thumbnail.xywh
+              ? (thumbnail.xywh.h / canvasHeight) * 100 + '%'
+              : '100%',
+          }}
+        />
+      ))}
+  </div>
+);
+
+const getBaseBehaviours = behaviors => {
+  const behaviours = behaviors
+    ? Array.isArray(behaviors)
+      ? behaviors
+      : Object.keys(behaviors)
+    : [];
+  const w = parseInt(
+    behaviours
+      .filter(behaviour => behaviour.startsWith('w-'))
+      .concat(['w-4'])[0]
+      .replace('w-', ''),
+    10
+  );
+  const h = parseInt(
+    behaviours
+      .filter(behaviour => behaviour.startsWith('h-'))
+      .concat(['h-4'])[0]
+      .replace('h-', ''),
+    10
+  );
+  const isColumn =
+    behaviours
+      .filter(behaviour => behaviour === 'row' || behaviour === 'column')
+      .concat(['row'])[0] === 'column';
+
+  // order seem to be invariant for now...
+  // const isLeft =
+  //   behaviours.filter(behaviour => behaviour === 'caption-left').length > 0;
+  const rest = behaviours.filter(
+    behaviour =>
+      !behaviour.startsWith('w-') &&
+      !behaviour.startsWith('h-') &&
+      behaviour !== 'row' &&
+      behaviour !== 'column'
+  );
+  return [w, h, isColumn, rest];
+};
+
+const classnamesObj = (acc, next) => {
+  acc[next] = true;
+  return acc;
+};
+
+const imageClasses = behaviours => {
+  const [w, h, isColumn, rest] = getBaseBehaviours(behaviours);
+  return [
+    'w-' + (isColumn ? w : Math.floor((w / 3) * 2)),
+    'h-' + (isColumn ? Math.floor((h / 3) * 2) : h),
+  ]
+    .concat(rest)
+    .reduce(classnamesObj, {});
+};
+
+const summaryClasses = behaviours => {
+  const [w, h, isColumn, rest] = getBaseBehaviours(behaviours);
+  return [
+    'w-' + (isColumn ? w : w - Math.floor((w / 3) * 2)),
+    'h-' + (isColumn ? h - Math.floor((h / 3) * 2) : h),
+  ]
+    .concat(rest)
+    .reduce(classnamesObj, {});
+};
 
 const grid = 8;
 
@@ -68,9 +267,10 @@ const style = theme => ({
     textAlign: 'center',
   },
   canvasThumbnail: {
-    maxWidth: 150,
-    haxHeight: 100,
-    height: '100%',
+    //maxWidth: 150,
+    //haxHeight: 100,
+    //height: '100%',
+    //width: '100%',
   },
   canvasLabel: {
     whiteSpace: 'nowrap',
@@ -160,7 +360,19 @@ const ExhibitionPreview = ({
                     index={index}
                   >
                     {(provided, snapshot) => {
-                      const [thumbnail, useLazy] = getCanvasThumbnail(canvas);
+                      const thumbnails = getCanvasThumbnails(canvas);
+                      console.log('canvas.behavior', canvas.behavior);
+                      const behaviouralClasses = (canvas.behavior || []).reduce(
+                        (acc, next) => {
+                          acc[next] = true;
+                          return acc;
+                        },
+                        {}
+                      );
+                      const canvasHeight = parseInt(canvas.height || 0, 10);
+                      const canvasWidth = parseInt(canvas.width || 0, 10);
+                      const canvasPercentageRatio =
+                        (canvasHeight / canvasWidth) * 100;
                       return (
                         <div
                           ref={provided.innerRef}
@@ -171,7 +383,7 @@ const ExhibitionPreview = ({
                             provided.draggableProps.style,
                             selected === canvas.id
                           )}
-                          className={itemClass}
+                          className={classnames(itemClass, behaviouralClasses)}
                         >
                           {typeof children === 'function' ? (
                             children(canvas, remove, select)
@@ -186,18 +398,61 @@ const ExhibitionPreview = ({
                               }
                               onClick={() => select(canvas)}
                             >
-                              {thumbnail && (
-                                <img
-                                  src={thumbnail}
-                                  alt={canvas.id}
-                                  className={classes.canvasThumbnail}
-                                />
+                              {canvas.summary && canvas.summary[lang] ? (
+                                <React.Fragment>
+                                  <div
+                                    className={classnames(
+                                      itemClass,
+                                      'image',
+                                      imageClasses(behaviouralClasses)
+                                    )}
+                                  >
+                                    <CanvasPreview
+                                      canvasPercentageRatio={
+                                        canvasPercentageRatio
+                                      }
+                                      thumbnails={thumbnails}
+                                      canvasWidth={canvasWidth}
+                                      canvasHeight={canvasHeight}
+                                      canvas={canvas}
+                                    />
+                                  </div>
+                                  <div
+                                    className={classnames(
+                                      itemClass,
+                                      'info',
+                                      summaryClasses(behaviouralClasses)
+                                    )}
+                                  >
+                                    <LocaleString
+                                      fallback={canvas.id}
+                                      lang={lang}
+                                    >
+                                      {canvas.summary}
+                                    </LocaleString>
+                                  </div>
+                                </React.Fragment>
+                              ) : (
+                                <React.Fragment>
+                                  <CanvasPreview
+                                    canvasPercentageRatio={
+                                      canvasPercentageRatio
+                                    }
+                                    thumbnails={thumbnails}
+                                    canvasWidth={canvasWidth}
+                                    canvasHeight={canvasHeight}
+                                    canvas={canvas}
+                                  />
+                                  <span className={classes.canvasLabel}>
+                                    <LocaleString
+                                      fallback={canvas.id}
+                                      lang={lang}
+                                    >
+                                      {canvas.label}
+                                    </LocaleString>
+                                  </span>
+                                </React.Fragment>
                               )}
-                              <span className={classes.canvasLabel}>
-                                <LocaleString fallback={canvas.id} lang={lang}>
-                                  {canvas.label}
-                                </LocaleString>
-                              </span>
                             </div>
                           )}
                           <Tooltip title="Delete Canvas">

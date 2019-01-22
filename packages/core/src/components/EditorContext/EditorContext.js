@@ -329,6 +329,7 @@ const defaultEditorContext = {
       }
     },
   },
+  behavior: {},
   translation: {
     languages: langs.all(),
     defaultLanguage: 'en',
@@ -344,6 +345,7 @@ export class EditorProvider extends React.Component {
       annotation,
       translation,
       dragDrop,
+      behavior,
     } = this.props;
 
     const aggregatedConfig = deepmerge.all([
@@ -359,6 +361,10 @@ export class EditorProvider extends React.Component {
     if (dragDrop) {
       aggregatedConfig.dragDrop = dragDrop;
     }
+    if (behavior) {
+      aggregatedConfig.behavior = behavior;
+    }
+
     return (
       <EditorContext.Provider value={aggregatedConfig}>
         {children}
@@ -378,6 +384,8 @@ EditorProvider.propTypes = {
   translation: PropTypes.object,
   /** Drag and drop configuration override (replaces the default) */
   dragDrop: PropTypes.object,
+  /** Behaviour definitions */
+  behavior: PropTypes.object,
 };
 
 EditorProvider.defaultProps = {
@@ -385,6 +393,7 @@ EditorProvider.defaultProps = {
   annotation: null,
   translation: null,
   dragDrop: null,
+  behavior: null,
 };
 
 export const EditorConsumer = EditorContext.Consumer;

@@ -77,7 +77,7 @@ const TranslationDialog = ({ manifest, open, handleClose, update }) => {
           </TableHead>
           <TableBody>
             {languageProps.map(([key, translations]) => (
-              <TableRow>
+              <TableRow key={`translation_row_${key}`}>
                 <TableCell key={`translations_${key}`}>{key}</TableCell>
                 {availableLanguages.map(languageCode => (
                   <TableCell key={`translations_${key}_${languageCode}`}>

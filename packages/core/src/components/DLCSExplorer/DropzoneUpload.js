@@ -64,10 +64,48 @@ class DropzoneUpload extends React.Component {
         [fileName]: data,
       },
     });
+    this.putImage(data);
+  };
+
+  putImage = data => {
+    const { url, session } = this.props;
+    const headers = new Headers();
+    headers.append('Authorization', 'Basic ' + session.auth);
+    headers.append('Content-Type', 'application/json');
+    const urlParts = url.split('/');
+    const space = parseInt(urlParts[urlParts.length - 1] || 0, 10);
+    return fetch(`${url}/images`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(
+        {
+          '@context': 'https://api.dlc.services/contexts/Image.jsonld',
+          '@type': 'Image',
+          origin: data.Location,
+          space: space,
+          tags: [],
+          roles: [],
+        },
+        null,
+        2
+      ),
+    })
+      .then(response => {
+        if (!(response.status === 200 || response.status === 201)) {
+          throw `${response.status} - ${response.statusText}`;
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then(response => {
+        console.log('putImage - doneish', response);
+        //TODO: do something
+      })
+      .catch(err => alert(err));
   };
 
   uploadComplete = () => {
-    this.ingest();
+    //this.ingest();
   };
 
   createIngestPayload = () => {
@@ -140,6 +178,7 @@ class DropzoneUpload extends React.Component {
             margin: '0',
             padding: '0.5rem',
             position: 'relative',
+            height: '48px',
           }}
         >
           <Dropzone

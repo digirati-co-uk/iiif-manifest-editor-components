@@ -129,8 +129,31 @@
   height: 200px;
   grid-column: auto/span 4;
   width: 200px;
+  display: inline-block;
   -webkit-clip-path: polygon(1em 0,calc(100% - 1em) 0,100% 1em,100% calc(100% - 1em),calc(100% - 1em) 100%,1em 100%,0 calc(100% - 1em),0 1em);
   clip-path: polygon(1em 0,calc(100% - 1em) 0,100% 1em,100% calc(100% - 1em),calc(100% - 1em) 100%,1em 100%,0 calc(100% - 1em),0 1em);
+}
+
+.blocks {
+  .block.row {
+    display: flex;
+    flex-direction: row;
+  }
+  .block.column {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@for $i from 1 through 12 {
+  .w-#{$i} {
+    grid-column: auto / span #{$i};
+    width: #{$i*50}px;
+  }
+  .h-#{$i} {
+    grid-row: auto / span #{$i};
+    height: #{$i*50}px;
+  }
 }
 
 .tu-delft-manifest-editor--exhibition-full-view {
@@ -141,7 +164,7 @@
     min-height: 100%;
     margin: 0 auto;
     max-width: 1200px;
-    font-size: 16px;
+    font-size: 16px; 
   }
   
   .block {
@@ -150,6 +173,16 @@
     height: 400px;
     grid-column: auto/span 4;
     width: 400px;
+  }
+  @for $i from 1 through 12 {
+    .w-#{$i} {
+      grid-column: auto / span #{$i};
+      width: #{$i*100}px;
+    }
+    .h-#{$i} {
+      grid-row: auto / span #{$i};
+      height: #{$i*100}px;
+    }
   }
 }
 

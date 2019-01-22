@@ -8,6 +8,7 @@ const ManifestEditor = ({
   config = {},
   annotation,
   translation,
+  behavior,
   dragDrop,
 }) => (
   <EditorProvider
@@ -15,6 +16,7 @@ const ManifestEditor = ({
     annotation={annotation}
     translation={translation}
     dragDrop={dragDrop}
+    behavior={behavior}
   >
     <EditorConsumer>
       {configuration => (

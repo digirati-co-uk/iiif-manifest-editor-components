@@ -1,10 +1,14 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
 import {
   withStyles,
   TextField,
   FormControl,
   FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from '@material-ui/core';
 import { locale } from '../../utils/IIIFResource';
 
@@ -18,7 +22,94 @@ const styles = theme => ({
   },
 });
 
-const MetadataEditor = ({ classes, target, lang, update }) => (
+const Behavior = ({ config, classes, target, lang, update }) => {
+  if (config) {
+    return (config.groups || []).map((group, index) => {
+      if (Array.isArray(group)) {
+        return (
+          <RadioGroup
+            aria-label={group.label}
+            //className={classes.group}
+            value={(target.behavior || [])[index]}
+            onChange={ev =>
+              update(target, `behavior.${index}`, null, ev.target.value)
+            }
+            row
+          >
+            {(group || []).map(value => (
+              <FormControlLabel
+                key={group.label + ' ' + value}
+                value={value}
+                control={<Radio color="primary" />}
+                label={value}
+                labelPlacement="end"
+              />
+            ))}
+          </RadioGroup>
+        );
+      } else if (typeof group === 'string') {
+        return (
+          <TextField
+            label="Freetext behaivor"
+            value={(target.behavior || [])[index]}
+            onChange={ev =>
+              update(target, `behavior.${index}`, null, ev.target.value)
+            }
+            className={classes.textField}
+            margin="dense"
+            multiline
+            variant="outlined"
+          />
+        );
+      } else if (
+        group.hasOwnProperty('label') &&
+        group.hasOwnProperty('values')
+      ) {
+        return (
+          <FormControl component="fieldset">
+            <FormLabel component="legend">{group.label}</FormLabel>
+            <RadioGroup
+              aria-label={group.label}
+              className={classes.group}
+              value={(target.behavior || [])[index]}
+              onChange={ev =>
+                update(target, `behavior.${index}`, null, ev.target.value)
+              }
+              row
+            >
+              {(group.values || []).map(value => (
+                <FormControlLabel
+                  key={group.label + ' ' + value}
+                  value={value}
+                  control={<Radio color="primary" />}
+                  label={value}
+                  labelPlacement="end"
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        );
+      } else if (typeof group === 'function' && !group.name) {
+        return group({
+          target,
+          update,
+        });
+      } else if (typeof group === 'function' && group.name) {
+        console.log('group', group, 'group.name', group.name);
+        //ReactDOM.createEleme
+        return React.createElement(group.name, {
+          target,
+          update,
+          //classes,
+        });
+      }
+    });
+  } else {
+    return 'Behaviour Placeholder';
+  }
+};
+
+const MetadataEditor = ({ behaviorConfig, classes, target, lang, update }) => (
   <React.Fragment>
     <TextField
       label="Label"
@@ -79,7 +170,7 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
           },
         })
         .map((metadata, index) => (
-          <div className={classes.metadataRow}>
+          <div key={`metadata_row__${index}`} className={classes.metadataRow}>
             <TextField
               label="Label"
               value={locale(metadata.label, lang)}
@@ -126,6 +217,13 @@ const MetadataEditor = ({ classes, target, lang, update }) => (
       margin="dense"
       variant="outlined"
     />
+    <Behavior
+      config={behaviorConfig}
+      classes={classes}
+      target={target}
+      lang={lang}
+      update={update}
+    />
   </React.Fragment>
 );
 
@@ -134,6 +232,7 @@ MetadataEditor.propTypes = {
   /** Language */
   lang: PropTypes.string,
   update: PropTypes.func,
+  behaviorConfig: PropTypes.object,
 };
 
 MetadataEditor.defaultProps = {

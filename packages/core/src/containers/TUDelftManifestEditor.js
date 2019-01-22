@@ -38,6 +38,7 @@ import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';
 import ImagePainting from '../annotation/ImagePainting';
 import VideoPainting from '../annotation/VideoPainting';
 import ExhibitionPreview from './TUDelftManifestEditor.ExhibitionPreview';
+import ExhibitionCanvasWidthHeight from './TUDelftManifestEditor.ExhibitionCanvasWidthHeight';
 
 import './TUDelftManifestEditor.scss';
 
@@ -74,7 +75,7 @@ class TUDelftManifestEditor extends React.Component {
     rootResource: demoManifest,
     selectedIdsByType: {
       Canvas: demoCanvas.id,
-      Annotation: null, //demoAnnotation1.id,
+      Annotation: null,
     },
     lang: 'en',
     exhibitionMode: false,
@@ -249,6 +250,14 @@ class TUDelftManifestEditor extends React.Component {
                 },
               ],
             }}
+            behavior={{
+              Canvas: {
+                groups: [
+                  ['row', 'column'],
+                  props => <ExhibitionCanvasWidthHeight {...props} />,
+                ],
+              },
+            }}
           >
             <AppBar position="static">
               <Toolbar>
@@ -353,7 +362,7 @@ class TUDelftManifestEditor extends React.Component {
                       customer: 5,
                     }}
                   />
-                  <IIIFCollectionExplorer title="IIIF Explorer"/>
+                  <IIIFCollectionExplorer title="IIIF Explorer" />
                   <Properties
                     title="Properties"
                     manifest={this.state.rootResource}
