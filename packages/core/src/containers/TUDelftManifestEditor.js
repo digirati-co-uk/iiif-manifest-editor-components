@@ -221,6 +221,14 @@ class TUDelftManifestEditor extends React.Component {
         >
           <ManifestEditor
             invokeAction={this.invokeAction2}
+            config={{
+              s3: {
+                AMZN_S3_IDENTITY_POOL_HASH:
+                  '23b9d884-95a2-4d5c-8a38-e847db51217e',
+                AMZN_S3_REGION: 'eu-west-1',
+                AMZN_S3_BUCKET: 'dlcservices-delft-pre-ingest-uploads',
+              },
+            }}
             annotation={{
               'TextualBody::layout-viewport-focus': TextLayoutViewFocus,
               'TextualBody::painting': TextPainting,

@@ -13,12 +13,21 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import { CheckCircle, Error } from '@material-ui/icons';
-//import { refresh } from '../../actions/portal';
-import { bulkUpload } from './amazonS3';
+import { CheckCircle, Error, QuestionAnswerOutlined } from '@material-ui/icons';
 import { guid } from '../../utils/URIGenerator';
+import { EditorConsumer } from '../EditorContext/EditorContext';
 
-class DropzoneUpload extends React.Component {
+const getKey = name =>
+  'temporary/' +
+  new Date().toISOString().replace(/T.*/, '') +
+  '/' +
+  encodeURIComponent(name);
+
+const UPDATE_THROTTLING = 250;
+const PART_SIZE = 10 * 1024 * 1024;
+const PARALLEL_UPLOADS = 1;
+
+class DLCSDropzoneUpload extends React.Component {
   state = {
     files: [],
     uploaded: {},
@@ -26,14 +35,44 @@ class DropzoneUpload extends React.Component {
     errors: {},
     lastUpdate: {},
   };
+  constructor(props) {
+    super(props);
+    if (!DLCSDropzoneUpload.s3) {
+      if (
+        props.configuration.s3.AMZN_S3_IDENTITY_POOL_HASH &&
+        props.configuration.s3.AMZN_S3_REGION &&
+        props.configuration.s3.AMZN_S3_BUCKET
+      ) {
+        const awsJS = document.createElement('script');
+        awsJS.async = false;
+        awsJS.src = 'https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js';
+        awsJS.onload = ev => {
+          //var albumBucketName = props.configuration.s3.AMZN_S3_BUCKET;
+          window.AWS.config.region = props.configuration.s3.AMZN_S3_REGION; // Region
+          window.AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: `${props.configuration.s3.AMZN_S3_REGION}:${
+              props.configuration.s3.AMZN_S3_IDENTITY_POOL_HASH
+            }`,
+          });
+          DLCSDropzoneUpload.s3 = new AWS.S3({
+            apiVersion: '2012-10-17',
+            params: {
+              Bucket: props.configuration.s3.AMZN_S3_BUCKET,
+            },
+          });
+        };
+        document.head.appendChild(awsJS);
+      } else {
+        console.warn(
+          `AMZN_S3_IDENTITY_POOL_HASH, AMZN_S3_REGION, AMZN_S3_BUCKET hasn\'t been found in the env, so upload functionality disabled`
+        );
+      }
+    }
+  }
 
   onDrop = files => {
-    bulkUpload({
+    this.bulkUpload({
       files,
-      onError: this.uploadError,
-      onProgress: this.uploadProgress,
-      onItemComplete: this.uploadItemComplete,
-      onComplete: this.uploadComplete,
     });
     this.setState({
       files,
@@ -116,7 +155,7 @@ class DropzoneUpload extends React.Component {
   };
 
   resetUploadState = () => {
-    if(this.props.afterUpload) {
+    if (this.props.afterUpload) {
       this.props.afterUpload();
     }
     this.setState({
@@ -125,6 +164,50 @@ class DropzoneUpload extends React.Component {
       uploading: {},
       errors: {},
       lastUpdate: {},
+    });
+  };
+
+  bulkUpload = ({ files }) => {
+    const lastUpdate = {};
+    const uploaded = [];
+    files.forEach(file => {
+      const key = getKey(file.name);
+      const params = {
+        Key: key,
+        Body: file,
+        ACL: 'public-read',
+      };
+      const options = {
+        partSize: PART_SIZE,
+        queueSize: PARALLEL_UPLOADS,
+      };
+      if (!DLCSDropzoneUpload.s3) {
+        return;
+      }
+      DLCSDropzoneUpload.s3
+        .upload(params, options)
+        .on('httpUploadProgress', evt => {
+          const percent = parseInt((evt.loaded * 100) / evt.total);
+          const epoch = new Date().getTime();
+          if (
+            epoch - UPDATE_THROTTLING >= (lastUpdate[file.name] || 0) ||
+            percent === 100
+          ) {
+            lastUpdate[file.name] = epoch;
+            this.uploadProgress(file.name, percent);
+          }
+        })
+        .send((err, data) => {
+          if (err) {
+            this.uploadError(file.name, err.message);
+            return;
+          }
+          uploaded.push(file.name);
+          this.uploadItemComplete(file.name, data);
+          if (files.length === uploaded.length) {
+            this.uploadComplete();
+          }
+        });
     });
   };
 
@@ -182,7 +265,7 @@ class DropzoneUpload extends React.Component {
                           value={this.state.uploading[f.name]}
                         />
                       ) : (
-                        ' '
+                        <QuestionAnswerOutlined />
                       )}
                     </ListItemIcon>
                     <ListItemText
@@ -196,7 +279,9 @@ class DropzoneUpload extends React.Component {
             <DialogActions>
               <Button
                 onClick={this.resetUploadState}
-                disabled={Object.keys(this.state.uploading).length > 0}
+                disabled={
+                  this.state.files.length === this.state.uploaded.length
+                }
                 color="primary"
               >
                 Ok
@@ -210,5 +295,13 @@ class DropzoneUpload extends React.Component {
     );
   }
 }
+
+const DropzoneUpload = props => (
+  <EditorConsumer>
+    {configuration => (
+      <DLCSDropzoneUpload {...props} configuration={configuration} />
+    )}
+  </EditorConsumer>
+);
 
 export default DropzoneUpload;

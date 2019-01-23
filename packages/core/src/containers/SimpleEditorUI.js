@@ -191,7 +191,17 @@ class SimpleEditorUI extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className="simple-manifest-editor">
-          <ManifestEditor invokeAction={this.invokeAction2}>
+          <ManifestEditor
+            invokeAction={this.invokeAction2}
+            config={{
+              s3: {
+                AMZN_S3_IDENTITY_POOL_HASH:
+                  '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
+                AMZN_S3_REGION: 'eu-west-1',
+                AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+              },
+            }}
+          >
             <AppBar position="static">
               <Toolbar>
                 <Typography color="secondary" variant="h6">
