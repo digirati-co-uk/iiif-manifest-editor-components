@@ -36,6 +36,7 @@
     "@material-ui/icons": "^3.0.1",
     "classnames": "^2.2.6",
     "deepmerge": "^3.0.0",
+    "dotenv-webpack": "^1.7.0",
     "iiif-prezi2to3": "^1.0.8",
     "immer": "^1.8.0",
     "langs": "^2.0.0",
