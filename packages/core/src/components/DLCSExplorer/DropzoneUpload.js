@@ -16,6 +16,7 @@ import {
 import { CheckCircle, Error } from '@material-ui/icons';
 //import { refresh } from '../../actions/portal';
 import { bulkUpload } from './amazonS3';
+import { guid } from '../../utils/URIGenerator';
 
 class DropzoneUpload extends React.Component {
   state = {
@@ -74,7 +75,7 @@ class DropzoneUpload extends React.Component {
     headers.append('Content-Type', 'application/json');
     const urlParts = url.split('/');
     const space = parseInt(urlParts[urlParts.length - 1] || 0, 10);
-    return fetch(`${url}/images`, {
+    return fetch(`${url}/images/${guid()}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify(
@@ -108,50 +109,6 @@ class DropzoneUpload extends React.Component {
     //this.ingest();
   };
 
-  createIngestPayload = () => {
-    const urlParts = this.props.url.split('/');
-    const space = parseInt(urlParts[urlParts.length - 1] || 0, 10);
-    console.log(this.props.url, urlParts, space);
-    return {
-      '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-      '@id': this.props.url,
-      '@type': 'Collection',
-      total_items: Object.keys(this.state.uploaded).length,
-      member: Object.entries(this.state.uploaded).map(([key, data], index) => ({
-        '@context': 'https://api.dlc.services/contexts/Image.jsonld',
-        '@type': 'Image',
-        origin: data.Location,
-        space: space,
-      })),
-    };
-  };
-
-  ingest = () => {
-    const imagesToIngest = this.createIngestPayload();
-    const { baseUrl, url, session } = this.props;
-    // dispatch(postData(`${baseUrl}/queue`, imagesToIngest, url));
-    const headers = new Headers();
-    headers.append('Authorization', 'Basic ' + session.auth);
-    headers.append('Content-Type', 'application/json');
-    return fetch(`${baseUrl}/queue`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(imagesToIngest, null, 2),
-    })
-      .then(response => {
-        if (!(response.status === 200 || response.status === 201)) {
-          throw `${response.status} - ${response.statusText}`;
-        }
-        return response;
-      })
-      .then(response => response.json())
-      .then(response => {
-        console.log('postData - doneish', response);
-        //TODO: do something
-      })
-      .catch(err => alert(err));
-  };
-
   onCancel = () => {
     this.setState({
       files: [],
@@ -159,7 +116,9 @@ class DropzoneUpload extends React.Component {
   };
 
   resetUploadState = () => {
-    //const { dispatch } = this.props;
+    if(this.props.afterUpload) {
+      this.props.afterUpload();
+    }
     this.setState({
       files: [],
       uploaded: {},
@@ -167,7 +126,6 @@ class DropzoneUpload extends React.Component {
       errors: {},
       lastUpdate: {},
     });
-    //dispatch(refresh());
   };
 
   render() {
@@ -236,7 +194,11 @@ class DropzoneUpload extends React.Component {
               </List>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.resetUploadState} color="primary">
+              <Button
+                onClick={this.resetUploadState}
+                disabled={Object.keys(this.state.uploading).length > 0}
+                color="primary"
+              >
                 Ok
               </Button>
             </DialogActions>

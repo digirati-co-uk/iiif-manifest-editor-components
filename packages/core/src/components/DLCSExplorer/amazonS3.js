@@ -9,30 +9,34 @@ const PART_SIZE = 10 * 1024 * 1024;
 const PARALLEL_UPLOADS = 1;
 
 if (!window.s3) {
-  const awsJS = document.createElement('script');
-  awsJS.async = false;
-  awsJS.src = 'https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js';
-  awsJS.onload = ev => {
-    console.log('amazon api loaeded');
-    var albumBucketName = 'dlcs-dlcservices-test-ingest';
-    window.AWS.config.region = 'eu-west-1'; // Region
-    window.AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'eu-west-1:4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
-    });
-
-    window.s3 = new AWS.S3({
-      apiVersion: '2012-10-17',
-      params: {
-        Bucket: albumBucketName,
-      },
-    });
-    console.log('amazon s3 preconfigured');
-  };
-  document.head.appendChild(awsJS);
+  if (
+    process.env.AMZN_S3_IDENTITY_POOL_HASH &&
+    process.env.AMZN_S3_REGION &&
+    process.env.AMZN_S3_BUCKET
+  ) {
+    const awsJS = document.createElement('script');
+    awsJS.async = false;
+    awsJS.src = 'https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js';
+    awsJS.onload = ev => {
+      var albumBucketName = process.env.AMZN_S3_BUCKET;
+      window.AWS.config.region = process.env.AMZN_S3_REGION; // Region
+      window.AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: `${process.env.AMZN_S3_REGION}:${process.env.AMZN_S3_IDENTITY_POOL_HASH}`,
+      });
+      window.s3 = new AWS.S3({
+        apiVersion: '2012-10-17',
+        params: {
+          Bucket: albumBucketName,
+        },
+      });
+    };
+    document.head.appendChild(awsJS);
+  } else {
+    console.warn(
+      'AMZN_S3_IDENTITY_POOL_HASH, AMZN_S3_REGION, AMZN_S3_BUCKET hasn\'t been found in the env, so upload functionality disabled' 
+    );
+  }
 }
-
-//TODO: this assumes that the amazon api loaded in the index HTML.
-// ATM it is tied to my test dlcs ingest account, it has to change later.
 
 export const bulkUpload = ({
   files,

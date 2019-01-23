@@ -8,7 +8,7 @@ const s4 = () =>
     .substring(1);
 
 // private
-const guid = (pattern = 'ss-s-s-s-sss') => pattern.replace(/s/g, s4);
+export const guid = (pattern = 'ss-s-s-s-sss') => pattern.replace(/s/g, s4);
 
 /**
  * Generates a URI for the resource passed.

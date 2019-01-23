@@ -31,8 +31,6 @@ const getItemStyle = (image, isDragging, draggableStyle) => {
   };
 };
 
-console.log('DropzoneUpload', DropzoneUpload);
-
 const styles = theme => {
   const pad = theme.spacing.unit;
   return {
@@ -96,6 +94,7 @@ class DLCSImageSelector extends React.Component {
     images: [],
     addNewSpaceActive: false,
     searchActive: false,
+    lastQueryString: undefined,
   };
 
   sessionAcquiredCallback = session => {
@@ -135,6 +134,7 @@ class DLCSImageSelector extends React.Component {
         this.setState({
           images: response.member,
           selectedSpace: targetSpace,
+          lastQueryString: qs,
         })
       )
       .catch(err => alert(err));
@@ -176,6 +176,13 @@ class DLCSImageSelector extends React.Component {
     );
   };
 
+  refreshList = () => {
+    this.loadImages(
+      this.state.selectedSpace,
+      this.state.lastQueryString
+    );
+  };
+
   render() {
     let self = this;
     let { endpoint, customer, classes } = this.props;
@@ -185,11 +192,7 @@ class DLCSImageSelector extends React.Component {
         this.sessionAcquiredCallback(JSON.parse(session));
       }
     }
-    if (this.state.session && this.state.selectedSpace) {
-      console.log(this.state.selectedSpace);
-      console.log(this.state.session);
-    }
-
+    
     return (
       <div className={classes.root}>
         {this.state.session ? (
@@ -285,26 +288,12 @@ class DLCSImageSelector extends React.Component {
                 )}
               </Droppable>
             </div>
-            {/* <div className={classes.resultsGrid}>
-              <div className={classes.results}>
-                {(this.state.images || []).map((image, index) => {
-                  return !this.props.children ? (
-                    <DLCSImageThumbnail
-                      key={image['@id']}
-                      image={image}
-                      imageOnClick={this.props.imageOnClick || (() => {})}
-                    />
-                  ) : (
-                    this.props.children(image, index)
-                  );
-                })}
-              </div>
-            </div> */}
             {this.state.session && this.state.selectedSpace && (
               <DropzoneUpload
                 url={this.state.selectedSpace}
                 baseUrl={this.state.session.dlcs_url}
                 session={this.state.session}
+                afterUpload={this.refreshList}
               />
             )}
           </React.Fragment>
