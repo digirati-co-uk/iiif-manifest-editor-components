@@ -6,7 +6,6 @@ import { Cancel, AddCircle, ZoomIn } from '@material-ui/icons';
 import Panel from '../components/Panel/Panel';
 import LocaleString from '../components/LocaleString/LocaleString';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
-//import { getCanvasThumbnail } from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
 import * as classnames from 'classnames';
 
 const XYWHRx = /(?:.*xywh\=(\d+),(\d+),(\d+),(\d+).*)/;
