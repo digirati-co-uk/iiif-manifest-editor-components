@@ -11,7 +11,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { locale, update as rawUpdate } from '../../utils/IIIFResource';
-import { throttle, debounce } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
 
 const styles = theme => ({
   label: {
@@ -142,7 +142,6 @@ class MetadataEditor extends React.Component {
 
   localUpdate = (target, prop, lang, val) => {
     const updated = rawUpdate(target, prop, lang, val);
-    console.log('localUpdate');
     this.setState(
       {
         target: updated,
@@ -152,7 +151,6 @@ class MetadataEditor extends React.Component {
   };
 
   syncLocalState = () => {
-    console.log('this is happening');
     const currentTime = new Date().getTime();
     this.props.update(this.props.target, null, null, this.state.target);
     this.setState({
