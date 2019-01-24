@@ -286,7 +286,7 @@ export const update = (target, property, lang, value) => {
   // please rethink the structure.
   const targetClone = JSON.parse(JSON.stringify(target));
   let currentLevel = targetClone;
-  const keys = property.split('.');
+  const keys = property ? property.split('.') : [];
   if (keys.length > 1) {
     keys.forEach((key, index) => {
       if (lang === null && index === keys.length - 1) {
@@ -302,7 +302,11 @@ export const update = (target, property, lang, value) => {
       currentLevel[lang] = value.split('\n');
     }
   } else {
-    if (lang === null) {
+    if (keys.length === 0) {
+      // if no property set we just pass the value...
+      // this is a hack for now. Fix it later.
+      return value;
+    } else if (lang === null) {
       targetClone[property] =
         SINGLE_VALUE_KEYS.indexOf(property) !== -1 ? value : value.split('\n');
     } else {

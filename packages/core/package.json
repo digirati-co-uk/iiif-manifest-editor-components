@@ -50,7 +50,8 @@
     "react-lazy-images": "^1.1.0",
     "react-rnd": "^9.0.4",
     "react-scroll-wheel-handler": "^1.0.6",
-    "react-virtualized": "^9.21.0"
+    "react-virtualized": "^9.21.0",
+    "throttle-debounce": "^2.1.0"
   },
   "jest": {
     "transform": {

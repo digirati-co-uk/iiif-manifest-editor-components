@@ -10,7 +10,8 @@ import {
   Radio,
   FormControlLabel,
 } from '@material-ui/core';
-import { locale } from '../../utils/IIIFResource';
+import { locale, update as rawUpdate } from '../../utils/IIIFResource';
+import { throttle, debounce } from 'throttle-debounce';
 
 const styles = theme => ({
   label: {
@@ -109,123 +110,220 @@ const Behavior = ({ config, classes, target, lang, update }) => {
   }
 };
 
-const MetadataEditor = ({ behaviorConfig, classes, target, lang, update }) => (
-  <React.Fragment>
-    <TextField
-      label="Label"
-      value={locale(target.label, lang)}
-      onChange={ev => update(target, 'label', lang, ev.target.value)}
-      className={classes.textField}
-      margin="dense"
-      variant="outlined"
-    />
-    <TextField
-      label="Summary"
-      value={locale(target.summary, lang)}
-      onChange={ev => update(target, 'summary', lang, ev.target.value)}
-      className={classes.textField}
-      margin="dense"
-      multiline
-      variant="outlined"
-    />
-    <FormControl component="fieldset">
-      <FormLabel component="legend">Required Statement</FormLabel>
-      <TextField
-        label="Label"
-        value={locale(
-          target.requiredStatement && target.requiredStatement.label,
-          lang
+class MetadataEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      target: JSON.parse(JSON.stringify(props.target)),
+      lastUpdate: new Date().getTime(),
+    };
+    this.throttledSyncProps = throttle(1000, false, this.syncLocalState);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const currentTime = new Date().getTime();
+    if (
+      props.target &&
+      state.target.id &&
+      props.target.id !== state.target.id //||
+      //state.lastUpdate + 1000 <= currentTime
+    ) {
+      console.log('getDerivedStateFromProps', props, state);
+      return {
+        // Since this method fires on both props and state changes, local updates
+        // to the controlled value will be ignored, because the props version
+        // always overrides it. Oops!
+        target: JSON.parse(JSON.stringify(props.target)),
+        lastUpdate: currentTime,
+      };
+    }
+    return null;
+  }
+
+  localUpdate = (target, prop, lang, val) => {
+    const updated = rawUpdate(target, prop, lang, val);
+    console.log('localUpdate');
+    this.setState(
+      {
+        target: updated,
+      },
+      this.throttledSyncProps
+    );
+  };
+
+  syncLocalState = () => {
+    console.log('this is happening');
+    const currentTime = new Date().getTime();
+    this.props.update(this.props.target, null, null, this.state.target);
+    this.setState({
+      lastUpdate: currentTime,
+    });
+  };
+
+  render() {
+    const { behaviorConfig, classes, target, lang, update } = this.props;
+    return (
+      <React.Fragment>
+        <TextField
+          label="Label"
+          value={locale(this.state.target.label, lang)}
+          onChange={ev =>
+            this.localUpdate(this.state.target, 'label', lang, ev.target.value)
+          }
+          className={classes.textField}
+          margin="dense"
+          variant="outlined"
+        />
+        <TextField
+          label="Summary"
+          value={locale(this.state.target.summary, lang)}
+          onChange={ev =>
+            this.localUpdate(
+              this.state.target,
+              'summary',
+              lang,
+              ev.target.value
+            )
+          }
+          className={classes.textField}
+          margin="dense"
+          multiline
+          variant="outlined"
+        />
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Required Statement</FormLabel>
+          <TextField
+            label="Label"
+            value={locale(
+              this.state.target.requiredStatement &&
+                this.state.target.requiredStatement.label,
+              lang
+            )}
+            onChange={ev =>
+              this.localUpdate(
+                this.state.target,
+                'requiredStatement.label',
+                lang,
+                ev.target.value
+              )
+            }
+            className={classes.textField}
+            margin="dense"
+            variant="outlined"
+          />
+          <TextField
+            label="Value"
+            value={locale(
+              this.state.target.requiredStatement &&
+                this.state.target.requiredStatement.value,
+              lang
+            )}
+            onChange={ev =>
+              this.localUpdate(
+                this.state.target,
+                'requiredStatement.value',
+                lang,
+                ev.target.value
+              )
+            }
+            className={classes.textField}
+            margin="dense"
+            multiline
+            variant="outlined"
+          />
+        </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Metadata</FormLabel>
+          {(this.state.target.metadata || [])
+            .concat({
+              label: {
+                [lang]: '',
+              },
+              value: {
+                [lang]: '',
+              },
+            })
+            .map((metadata, index) => (
+              <div
+                key={`metadata_row__${index}`}
+                className={classes.metadataRow}
+              >
+                <TextField
+                  label="Label"
+                  value={locale(metadata.label, lang)}
+                  onChange={ev =>
+                    this.localUpdate(
+                      this.state.target,
+                      `metadata.${index}.label`,
+                      lang,
+                      ev.target.value
+                    )
+                  }
+                  className={classes.textField}
+                  margin="dense"
+                  variant="outlined"
+                />
+                <TextField
+                  label="Value"
+                  value={locale(metadata.value, lang)}
+                  onChange={ev =>
+                    this.localUpdate(
+                      this.state.target,
+                      `metadata.${index}.value`,
+                      lang,
+                      ev.target.value
+                    )
+                  }
+                  className={classes.textField}
+                  margin="dense"
+                  multiline
+                  variant="outlined"
+                />
+              </div>
+            ))}
+        </FormControl>
+        {target.type === 'Manifest' && (
+          <TextField
+            label="Nav Date"
+            type="datetime-local"
+            className={classes.textField}
+            value={this.state.target.navDate || ''}
+            onChange={ev =>
+              this.localUpdate(
+                this.state.target,
+                'navDate',
+                null,
+                ev.target.value
+              )
+            }
+            margin="dense"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         )}
-        onChange={ev =>
-          update(target, 'requiredStatement.label', lang, ev.target.value)
-        }
-        className={classes.textField}
-        margin="dense"
-        variant="outlined"
-      />
-      <TextField
-        label="Value"
-        value={locale(
-          target.requiredStatement && target.requiredStatement.value,
-          lang
-        )}
-        onChange={ev =>
-          update(target, 'requiredStatement.value', lang, ev.target.value)
-        }
-        className={classes.textField}
-        margin="dense"
-        multiline
-        variant="outlined"
-      />
-    </FormControl>
-    <FormControl component="fieldset">
-      <FormLabel component="legend">Metadata</FormLabel>
-      {(target.metadata || [])
-        .concat({
-          label: {
-            [lang]: '',
-          },
-          value: {
-            [lang]: '',
-          },
-        })
-        .map((metadata, index) => (
-          <div key={`metadata_row__${index}`} className={classes.metadataRow}>
-            <TextField
-              label="Label"
-              value={locale(metadata.label, lang)}
-              onChange={ev =>
-                update(target, `metadata.${index}.label`, lang, ev.target.value)
-              }
-              className={classes.textField}
-              margin="dense"
-              variant="outlined"
-            />
-            <TextField
-              label="Value"
-              value={locale(metadata.value, lang)}
-              onChange={ev =>
-                update(target, `metadata.${index}.value`, lang, ev.target.value)
-              }
-              className={classes.textField}
-              margin="dense"
-              multiline
-              variant="outlined"
-            />
-          </div>
-        ))}
-    </FormControl>
-    {target.type === 'Manifest' && (
-      <TextField
-        label="Nav Date"
-        type="datetime-local"
-        className={classes.textField}
-        value={target.navDate || ''}
-        onChange={ev => update(target, 'navDate', null, ev.target.value)}
-        margin="dense"
-        variant="outlined"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    )}
-    <TextField
-      label="Rights"
-      className={classes.textField}
-      value={target.rights || ''}
-      onChange={ev => update(target, 'rights', null, ev.target.value)}
-      margin="dense"
-      variant="outlined"
-    />
-    <Behavior
-      config={behaviorConfig}
-      classes={classes}
-      target={target}
-      lang={lang}
-      update={update}
-    />
-  </React.Fragment>
-);
+        <TextField
+          label="Rights"
+          className={classes.textField}
+          value={this.state.target.rights || ''}
+          onChange={ev =>
+            this.localUpdate(this.state.target, 'rights', null, ev.target.value)
+          }
+          margin="dense"
+          variant="outlined"
+        />
+        <Behavior
+          config={behaviorConfig}
+          classes={classes}
+          target={target}
+          lang={lang}
+          update={update}
+        />
+      </React.Fragment>
+    );
+  }
+}
 
 MetadataEditor.propTypes = {
   target: PropTypes.any,
