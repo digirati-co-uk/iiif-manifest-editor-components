@@ -46,7 +46,7 @@ const styles = theme => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: `${pad}px 0 ${pad}px ${pad}px`,
+      padding: `${pad}px 0 ${pad}px ${pad / 2}px`,
       borderBottom: '1px solid #eee',
       height: '48px',
     },
@@ -56,6 +56,9 @@ const styles = theme => {
       justifyContent: 'flex-start',
       alignItems: 'center',
       height: '64px',
+    },
+    userIcon: {
+      margin: `${pad}px ${pad * 1.5}px ${pad}px ${pad}px`,
     },
     toolbar: {
       display: 'flex',
@@ -177,14 +180,10 @@ class DLCSImageSelector extends React.Component {
   };
 
   refreshList = () => {
-    this.loadImages(
-      this.state.selectedSpace,
-      this.state.lastQueryString
-    );
+    this.loadImages(this.state.selectedSpace, this.state.lastQueryString);
   };
 
   render() {
-    let self = this;
     let { endpoint, customer, classes } = this.props;
     if (!this.state.session && localStorage) {
       const session = localStorage.getItem('dlcsSession');
@@ -192,14 +191,14 @@ class DLCSImageSelector extends React.Component {
         this.sessionAcquiredCallback(JSON.parse(session));
       }
     }
-    
+
     return (
       <div className={classes.root}>
         {this.state.session ? (
           <React.Fragment>
             <div className={classes.header}>
               <span className={classes.user}>
-                <PermIdentity />
+                <PermIdentity className={classes.userIcon}/>
                 {this.state.session.userName}
               </span>
               <Button onClick={this.onLogout}>Logout</Button>
