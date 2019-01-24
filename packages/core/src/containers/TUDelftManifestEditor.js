@@ -13,6 +13,7 @@ import {
   Visibility,
   GridOn,
   GridOff,
+  Input,
 } from '@material-ui/icons';
 
 import AnnotationList from '../components/AnnotationList/AnnotationList';
@@ -39,6 +40,9 @@ import ImagePainting from '../annotation/ImagePainting';
 import VideoPainting from '../annotation/VideoPainting';
 import ExhibitionPreview from './TUDelftManifestEditor.ExhibitionPreview';
 import ExhibitionCanvasWidthHeight from './TUDelftManifestEditor.ExhibitionCanvasWidthHeight';
+import DefaultLoadManifestDialog from '../components/DefaultLoadManifestDialog/DefaultLoadManifestDialog';
+
+import convertToV3ifNecessary from '../utils/IIIFUpgrader';
 
 import './TUDelftManifestEditor.scss';
 
@@ -189,6 +193,21 @@ class TUDelftManifestEditor extends React.Component {
     });
   };
 
+  toggleManifestDialog = () => {
+    this.setState({
+      loadManifestDialogOpen: !this.state.loadManifestDialogOpen,
+    });
+  };
+
+  loadManifest = json => {
+    //console.log(json, convertToV3ifNecessary(json));
+    this.dispatch(IIIFReducer, {
+      type: 'LOAD_MANIFEST',
+      manifest: convertToV3ifNecessary(json),
+    });
+    this.toggleManifestDialog();
+  };
+
   render() {
     const canvases = this.state.rootResource
       ? this.state.rootResource.items
@@ -280,6 +299,14 @@ class TUDelftManifestEditor extends React.Component {
                     justifyContent: 'flex-end',
                   }}
                 >
+                  <DefaultTooltip title="Load Manifest" placement="bottom">
+                    <IconButton
+                      color="secondary"
+                      onClick={this.toggleManifestDialog}
+                    >
+                      <Input />
+                    </IconButton>
+                  </DefaultTooltip>
                   <DefaultTooltip title="New Manifest" placement="bottom">
                     <IconButton color="secondary" onClick={this.newProject}>
                       <LibraryAdd />
@@ -401,6 +428,11 @@ class TUDelftManifestEditor extends React.Component {
           json={this.state.rootResource}
           open={this.state.previewDialogOpen}
           handleClose={this.togglePreviewDialog}
+        />
+        <DefaultLoadManifestDialog
+          open={this.state.loadManifestDialogOpen}
+          loadManifest={this.loadManifest}
+          handleClose={this.toggleManifestDialog}
         />
       </MuiThemeProvider>
     );
