@@ -277,7 +277,7 @@ export const getCanvasFromExternalManifest = (manifestId, canvasId) =>
 // new issues rising unfortunately I had to cut some time on the
 // implementation of this and will return to implement the update
 // properly later on.
-const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail'];
+const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail', 'behavior'];
 const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior'];
 
 export const update = (target, property, lang, value) => {
