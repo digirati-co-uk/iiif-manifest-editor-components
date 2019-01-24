@@ -415,6 +415,7 @@ class TUDelftManifestEditor extends React.Component {
                 <CanvasList
                   canvases={canvases}
                   lang={lang}
+                  direction="horizontal"
                   selected={this.state.selectedIdsByType.Canvas}
                   select={this.selectResource}
                   remove={this.deleteResource}

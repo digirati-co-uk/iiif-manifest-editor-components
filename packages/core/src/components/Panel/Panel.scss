@@ -22,6 +22,10 @@
     flex-direction: row;
     height: 100%;
     width: auto;
+    .panel__content {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
     .panel__toolbar {
       height: auto;
       width: 30px;
