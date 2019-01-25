@@ -8,6 +8,7 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
+  Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
 import { locale, update as rawUpdate } from '../../utils/IIIFResource';
@@ -55,27 +56,64 @@ const Behavior = ({ config, classes, target, lang, update }) => {
   if (config) {
     return (config.groups || []).map((group, index) => {
       if (Array.isArray(group)) {
-        return (
-          <RadioGroup
-            aria-label={group.label}
-            //className={classes.group}
-            value={(target.behavior || [])[index]}
-            onChange={ev =>
-              update(target, `behavior.${index}`, null, ev.target.value)
-            }
-            row
-          >
-            {(group || []).map(value => (
-              <FormControlLabel
-                key={group.label + ' ' + value}
-                value={value}
-                control={<Radio color="primary" />}
-                label={value}
-                labelPlacement="end"
-              />
-            ))}
-          </RadioGroup>
-        );
+        if (group.length > 1) {
+          return (
+            <RadioGroup
+              aria-label={group.label}
+              //className={classes.group}
+              value={(target.behavior || [])[index]}
+              onChange={ev =>
+                update(target, `behavior.${index}`, null, ev.target.value)
+              }
+              row
+            >
+              {(group || []).map(value => (
+                <FormControlLabel
+                  key={group.label + ' ' + value}
+                  value={value}
+                  control={<Radio color="primary" />}
+                  label={value}
+                  labelPlacement="end"
+                />
+              ))}
+            </RadioGroup>
+          );
+        } else {
+          return (
+            <FormControlLabel
+              label={group[0]}
+              labelPlacement="end"
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={
+                    (target.behavior || []).filter(val => val === group[0])
+                      .length > 0
+                  }
+                  onChange={() => {
+                    const behaviours = target.behavior || [];
+                    if (behaviours.indexOf(group[0]) !== -1) {
+                      update(
+                        target,
+                        'behavior',
+                        null,
+                        behaviours.filter(val => val !== group[0])
+                      );
+                    } else {
+                      update(
+                        target,
+                        'behavior',
+                        null,
+                        [].concat(behaviours).concat(group[0])
+                      );
+                    }
+                  }}
+                  value={group[0]}
+                />
+              }
+            />
+          );
+        }
       } else if (typeof group === 'string') {
         return (
           <TextField
@@ -218,9 +256,7 @@ class MetadataEditor extends React.Component {
         />
         <FormControl component="fieldset">
           <FormLabel component="legend">Required Statement</FormLabel>
-          <div
-            className={classes.keyValuePair}
-          >
+          <div className={classes.keyValuePair}>
             <div className={classes.keyValuePairContent}>
               <TextField
                 label="Label"

@@ -282,6 +282,7 @@ class TUDelftManifestEditor extends React.Component {
                 groups: [
                   ['row', 'column'],
                   props => <ExhibitionCanvasWidthHeight {...props} />,
+                  ['caption-left'],
                 ],
               },
             }}
