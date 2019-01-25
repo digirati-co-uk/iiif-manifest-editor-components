@@ -17,9 +17,37 @@ const styles = theme => ({
   label: {
     backgorund: '#fff',
   },
-  metadataRow: {
+  keyValuePair: {
+    border: `1px solid ${theme.palette.action.disabled}`,
+    marginBottom: theme.spacing.unit,
+    marginTop: theme.spacing.unit,
+    borderRadius: theme.shape.borderRadius,
+  },
+  keyValuePairFocus: {
+    border: `2px solid ${theme.palette.primary.main}`,
+    marginBottom: theme.spacing.unit,
+    marginTop: theme.spacing.unit,
+    borderRadius: theme.shape.borderRadius,
+    transition: `border-color ${theme.transitions.duration.shorter} ${
+      theme.transitions.easing.easeOut
+    }, border-width ${theme.transitions.duration.shorter} ${
+      theme.transitions.easing.easeOut
+    }, padding-left ${theme.transitions.duration.shorter} ${
+      theme.transitions.easing.easeOut
+    }`,
+  },
+  keyValuePairContent: {
+    marginTop: -theme.spacing.unit,
     display: 'flex',
     flexDirection: 'column',
+  },
+  keyValuePairField: {
+    '&>div>fieldset': {
+      border: '0 none !important',
+      '&>legend': {
+        background: '#fff',
+      },
+    },
   },
 });
 
@@ -190,45 +218,67 @@ class MetadataEditor extends React.Component {
         />
         <FormControl component="fieldset">
           <FormLabel component="legend">Required Statement</FormLabel>
-          <TextField
-            label="Label"
-            value={locale(
-              this.state.target.requiredStatement &&
-                this.state.target.requiredStatement.label,
-              lang
-            )}
-            onChange={ev =>
-              this.localUpdate(
-                this.state.target,
-                'requiredStatement.label',
-                lang,
-                ev.target.value
-              )
-            }
-            className={classes.textField}
-            margin="dense"
-            variant="outlined"
-          />
-          <TextField
-            label="Value"
-            value={locale(
-              this.state.target.requiredStatement &&
-                this.state.target.requiredStatement.value,
-              lang
-            )}
-            onChange={ev =>
-              this.localUpdate(
-                this.state.target,
-                'requiredStatement.value',
-                lang,
-                ev.target.value
-              )
-            }
-            className={classes.textField}
-            margin="dense"
-            multiline
-            variant="outlined"
-          />
+          <div
+            className={classes.keyValuePair}
+          >
+            <div className={classes.keyValuePairContent}>
+              <TextField
+                label="Label"
+                value={locale(
+                  this.state.target.requiredStatement &&
+                    this.state.target.requiredStatement.label,
+                  lang
+                )}
+                onChange={ev =>
+                  this.localUpdate(
+                    this.state.target,
+                    'requiredStatement.label',
+                    lang,
+                    ev.target.value
+                  )
+                }
+                onFocus={ev =>
+                  (ev.target.parentNode.parentNode.parentNode.parentNode.className =
+                    classes.keyValuePairFocus)
+                }
+                onBlur={ev =>
+                  (ev.target.parentNode.parentNode.parentNode.parentNode.className =
+                    classes.keyValuePair)
+                }
+                className={classes.keyValuePairField}
+                margin="dense"
+                variant="outlined"
+              />
+              <TextField
+                label="Value"
+                value={locale(
+                  this.state.target.requiredStatement &&
+                    this.state.target.requiredStatement.value,
+                  lang
+                )}
+                onChange={ev =>
+                  this.localUpdate(
+                    this.state.target,
+                    'requiredStatement.value',
+                    lang,
+                    ev.target.value
+                  )
+                }
+                onFocus={ev =>
+                  (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
+                    classes.keyValuePairFocus)
+                }
+                onBlur={ev =>
+                  (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
+                    classes.keyValuePair)
+                }
+                className={classes.keyValuePairField}
+                margin="dense"
+                multiline
+                variant="outlined"
+              />
+            </div>
+          </div>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel component="legend">Metadata</FormLabel>
@@ -244,39 +294,57 @@ class MetadataEditor extends React.Component {
             .map((metadata, index) => (
               <div
                 key={`metadata_row__${index}`}
-                className={classes.metadataRow}
+                className={classes.keyValuePair}
               >
-                <TextField
-                  label="Label"
-                  value={locale(metadata.label, lang)}
-                  onChange={ev =>
-                    this.localUpdate(
-                      this.state.target,
-                      `metadata.${index}.label`,
-                      lang,
-                      ev.target.value
-                    )
-                  }
-                  className={classes.textField}
-                  margin="dense"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Value"
-                  value={locale(metadata.value, lang)}
-                  onChange={ev =>
-                    this.localUpdate(
-                      this.state.target,
-                      `metadata.${index}.value`,
-                      lang,
-                      ev.target.value
-                    )
-                  }
-                  className={classes.textField}
-                  margin="dense"
-                  multiline
-                  variant="outlined"
-                />
+                <div className={classes.keyValuePairContent}>
+                  <TextField
+                    label="Label"
+                    value={locale(metadata.label, lang)}
+                    onChange={ev =>
+                      this.localUpdate(
+                        this.state.target,
+                        `metadata.${index}.label`,
+                        lang,
+                        ev.target.value
+                      )
+                    }
+                    onFocus={ev =>
+                      (ev.target.parentNode.parentNode.parentNode.parentNode.className =
+                        classes.keyValuePairFocus)
+                    }
+                    onBlur={ev =>
+                      (ev.target.parentNode.parentNode.parentNode.parentNode.className =
+                        classes.keyValuePair)
+                    }
+                    className={classes.keyValuePairField}
+                    margin="dense"
+                    variant="outlined"
+                  />
+                  <TextField
+                    label="Value"
+                    value={locale(metadata.value, lang)}
+                    onChange={ev =>
+                      this.localUpdate(
+                        this.state.target,
+                        `metadata.${index}.value`,
+                        lang,
+                        ev.target.value
+                      )
+                    }
+                    onFocus={ev =>
+                      (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
+                        classes.keyValuePairFocus)
+                    }
+                    onBlur={ev =>
+                      (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
+                        classes.keyValuePair)
+                    }
+                    className={classes.keyValuePairField}
+                    margin="dense"
+                    multiline
+                    variant="outlined"
+                  />
+                </div>
               </div>
             ))}
         </FormControl>

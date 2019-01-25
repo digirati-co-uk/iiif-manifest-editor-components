@@ -27,6 +27,11 @@ const style = theme => ({
     textAlign: 'right',
     padding: '0 1rem 0 0',
   },
+  resourceBlock: {
+    paddingBottom: theme.spacing.unit,
+    display: 'flex',
+    flexDirection: 'column',
+  },
 });
 
 class Properties extends React.Component {
@@ -93,7 +98,7 @@ class Properties extends React.Component {
             return (
               <React.Fragment>
                 {annotation && (
-                  <React.Fragment>
+                  <div className={classes.resourceBlock}>
                     <Typography variant="h6">Annotation</Typography>
                     <MetadataEditor
                       target={annotation}
@@ -108,10 +113,10 @@ class Properties extends React.Component {
                         update: this.update,
                         target: annotation,
                       })}
-                  </React.Fragment>
+                  </div>
                 )}
                 {canvas && (
-                  <React.Fragment>
+                  <div className={classes.resourceBlock}>
                     <Typography variant="h6">Canvas</Typography>
                     <MetadataEditor
                       target={canvas}
@@ -119,15 +124,17 @@ class Properties extends React.Component {
                       update={update}
                       behaviorConfig={configuration.behavior.Canvas}
                     />
-                  </React.Fragment>
+                  </div>
                 )}
-                <Typography variant="h6">Manifest</Typography>
-                <MetadataEditor
-                  target={manifest}
-                  lang={lang}
-                  update={update}
-                  behaviorConfig={configuration.behavior.Manifest}
-                />
+                <div className={classes.resourceBlock}>
+                  <Typography variant="h6">Manifest</Typography>
+                  <MetadataEditor
+                    target={manifest}
+                    lang={lang}
+                    update={update}
+                    behaviorConfig={configuration.behavior.Manifest}
+                  />
+                </div>
               </React.Fragment>
             );
           }}
