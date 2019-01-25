@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
 import {
   withStyles,
@@ -10,7 +9,10 @@ import {
   Radio,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
 import { locale, update as rawUpdate } from '../../utils/IIIFResource';
 import { throttle } from 'throttle-debounce';
 
@@ -172,7 +174,36 @@ const Behavior = ({ config, classes, target, lang, update }) => {
       }
     });
   } else {
-    return 'Behaviour Placeholder';
+    return (target.behavior || []).concat(['']).map((behaviour, idx, arr) => (
+      <TextField
+        //label="Label"
+        value={behaviour}
+        onChange={ev =>
+          update(target, `behavior.${idx}`, null, ev.target.value)
+        }
+        className={classes.textField}
+        margin="dense"
+        variant="outlined"
+        InputProps={{
+          endAdornment: arr.length - 1 !== idx && (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() =>
+                  update(
+                    target,
+                    'behavior',
+                    null,
+                    (target.behavior || []).filter((el, index) => index !== idx)
+                  )
+                }
+              >
+                <Delete />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+    ));
   }
 };
 
@@ -415,13 +446,16 @@ class MetadataEditor extends React.Component {
           margin="dense"
           variant="outlined"
         />
-        <Behavior
-          config={behaviorConfig}
-          classes={classes}
-          target={target}
-          lang={lang}
-          update={update}
-        />
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Behaviors</FormLabel>
+          <Behavior
+            config={behaviorConfig}
+            classes={classes}
+            target={target}
+            lang={lang}
+            update={update}
+          />
+        </FormControl>
       </React.Fragment>
     );
   }
