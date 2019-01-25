@@ -344,6 +344,7 @@ class TUDelftManifestEditor extends React.Component {
                 {this.state.exhibitionMode ? (
                   <TabPanel>
                     <ExhibitionPreview
+                      title="Exhibition Preview"
                       canvases={canvases}
                       manifest={this.state.rootResource}
                       direction="vertical"
