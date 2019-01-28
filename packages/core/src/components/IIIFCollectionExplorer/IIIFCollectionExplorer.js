@@ -64,7 +64,7 @@ class CollectionExplorer extends React.Component {
       this.setState({
         isLoading: true,
       });
-      fetch(url)
+      fetch(url.replace(/^https?\:\/\//, '//'))
         .then(response => {
           if (!response.ok) {
             throw `[${response.status}] ${response.statusText}`;
