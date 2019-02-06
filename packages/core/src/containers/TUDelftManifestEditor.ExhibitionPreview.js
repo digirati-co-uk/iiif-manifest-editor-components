@@ -368,6 +368,12 @@ const ExhibitionPreview = ({
                         },
                         {}
                       );
+                      if (
+                        !behaviouralClasses.column &&
+                        !behaviouralClasses.row
+                      ) {
+                        behaviouralClasses.row = true;
+                      }
                       const canvasHeight = parseInt(canvas.height || 0, 10);
                       const canvasWidth = parseInt(canvas.width || 0, 10);
                       const canvasPercentageRatio =
