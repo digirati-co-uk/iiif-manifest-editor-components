@@ -19,8 +19,9 @@ export const guid = (pattern = 'ss-s-s-s-sss') => pattern.replace(/s/g, s4);
 const generateURI = (resource, parent = null, options = {}) => {
   switch (resource.type) {
     case 'Manifest':
+      const manifestBaseUrl = window.rootManifestUrl || rootURL;
       //{scheme}://{host}/{prefix}/{identifier}/manifest
-      resource.id = `${rootURL}${options.id || guid()}/manifest`;
+      resource.id = `${manifestBaseUrl}${options.id || guid()}/manifest`;
       break;
     case 'Canvas':
     // {scheme}://{host}/{prefix}/{identifier}/canvas/{name}

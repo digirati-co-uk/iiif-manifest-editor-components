@@ -67,7 +67,9 @@ const theme = createMuiTheme({
     },
   },
 });
-
+// Temporary override until the settings panel hasn't been funded.
+window.rootManifestUrl =
+  'https://delft-static-site-generator.netlify.com/iiif/';
 const emptyFn = () => {};
 
 const demoManifest = renderResource('Manifest');
