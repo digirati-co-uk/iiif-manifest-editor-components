@@ -259,20 +259,6 @@ export const getW3cAnnotationStyle = styleStr =>
     return acc;
   }, {});
 
-export const getCanvasFromExternalManifest = (manifestId, canvasId) =>
-  fetch(manifestId)
-    .then(response => response.json())
-    .then(resource => convertToV3ifNecessary(resource))
-    .then(resource => {
-      let canvases = resource.items.filter(item => item.id === canvasId);
-      if (canvases.length > 0) {
-        const canvas = canvases[0];
-        return canvas;
-      }
-      throw `Cannot retrieve canvas ${canvasId} from ${manifestId}`;
-    })
-    .catch(err => console.log(err));
-
 // Internal 'magic constants' for the updater, will be updated when
 // new issues rising unfortunately I had to cut some time on the
 // implementation of this and will return to implement the update
@@ -466,4 +452,43 @@ const dlcsExtras = (target, property, lang, value, ready) => {
     );
   }
   return result;
+};
+
+const DEFAULT_ANNOTATION_WIDTH = 300;
+const DEFAULT_ANNOTATION_HEIGHT = 200;
+
+export const getAnnotationDimensions = annotation => {
+  if (annotation.body) {
+    if (annotation.body.service) {
+      if (
+        Array.isArray(annotation.body.service) &&
+        annotation.body.service.length > 0 &&
+        annotation.body.service[0].width &&
+        annotation.body.service[0].height
+      ) {
+        return {
+          width: annotation.body.service[0].width,
+          height: annotation.body.service[0].height,
+        };
+      } else if (
+        annotation.body.service.width &&
+        annotation.body.service.height
+      ) {
+        return {
+          width: annotation.body.service.width,
+          height: annotation.body.service.height,
+        };
+      }
+    }
+    if (annotation.body.width && annotation.body.height) {
+      return {
+        width: annotation.body.width,
+        height: annotation.body.height,
+      };
+    }
+  }
+  return {
+    width: DEFAULT_ANNOTATION_WIDTH,
+    height: DEFAULT_ANNOTATION_HEIGHT,
+  };
 };

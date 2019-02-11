@@ -16,6 +16,7 @@ const styles = theme => ({
     color: theme.palette.primary.main,
   },
 });
+
 /**
  * @class DLCSImageThumbnail
  * @extends React.Component

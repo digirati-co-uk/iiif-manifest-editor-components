@@ -6,8 +6,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
-
 render(<TUDelftManifestEditor />, document.getElementById('app'));
+//import VNASlideshowEditor from './containers/VNASlideshowEditor';
+//render(<VNASlideshowEditor />, document.getElementById('app'));
 // export default {
 //   AnnotationList,
 //   CanvasList,

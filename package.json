@@ -15,7 +15,8 @@
     "build-ci": "npm-run-all build build-docs",
     "start-docz": "cd packages/core && yarn && yarn docz:dev",
     "link": "lerna link",
-    "postinstall": "lerna link"
+    "postinstall": "lerna link",
+    "start": "fesk-setup"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as classnames from 'classnames';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Toolbar, withStyles } from '@material-ui/core';
 import { Cancel, AddCircle } from '@material-ui/icons';
@@ -9,21 +10,6 @@ import Tooltip from '../DefaultTooltip/DefaultTooltip';
 import { getCanvasThumbnail } from '../IIIFCollectionExplorer/IIIFCollectionExplorer.utils';
 
 const grid = 8;
-
-const getItemStyle = (isDragging, draggableStyle, isSelected) => ({
-  // change background colour if dragging
-  background: isDragging ? 'rgb(89, 191, 236)' : 'rgb(236, 231, 231)',
-  color: isDragging ? 'rgb(255,255,255)' : 'rgb(0, 0, 0)',
-  outline: isSelected ? '2px solid rgb(89, 191, 236)' : '0',
-
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
-
-const getListStyle = (isDraggingOver, draggableStyle) => ({
-  background: isDraggingOver ? 'white' : 'white',
-  //...draggableStyle,
-});
 
 const style = theme => ({
   droppable: {
@@ -49,6 +35,13 @@ const style = theme => ({
     position: 'relative',
     height: 100,
     boxSizing: 'border-box',
+  },
+  listItemDragging: {
+    background: theme.palette.primary.contrastText,
+    color: theme.palette.secondary.main,
+  },
+  listItemSelected: {
+    outline: `2px solid ${theme.palette.primary.contrastText}`,
   },
   listItemVertical: {
     userSelect: 'none',
@@ -132,7 +125,6 @@ const CanvasList = ({
         {(providedDroppable, snapshotProppable) => (
           <div
             ref={providedDroppable.innerRef}
-            style={getListStyle(snapshotProppable.isDraggingOver)}
             className={
               listClass
                 ? listClass
@@ -157,18 +149,18 @@ const CanvasList = ({
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style,
-                            selected === canvas.id
-                          )}
-                          className={
+                          className={classnames(
                             itemClass
                               ? itemClass
                               : direction === 'vertical'
                               ? classes.listItemVertical
-                              : classes.listItem
-                          }
+                              : classes.listItem,
+                            {
+                              [classes.listItemSelected]:
+                                selected === canvas.id,
+                              [classes.listItemDragging]: snapshot.isDragging,
+                            }
+                          )}
                         >
                           {typeof children === 'function' ? (
                             children(canvas, remove, select)

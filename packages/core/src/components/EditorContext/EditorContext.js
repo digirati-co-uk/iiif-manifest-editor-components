@@ -9,7 +9,6 @@ import TextPainting from '../../annotation/TextPainting';
 import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
 import AudioPainting from '../../annotation/AudioPainting';
-import { getCanvasFromExternalManifest } from '../../utils/IIIFResource';
 import generateURI from '../../utils/URIGenerator';
 
 const getImageInfoURL = dlcsURL => {

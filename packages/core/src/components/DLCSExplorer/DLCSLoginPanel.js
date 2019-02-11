@@ -1,6 +1,14 @@
 import React from 'react';
 import { withStyles, TextField, Button, Select } from '@material-ui/core';
 
+const style = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '1rem',
+  },
+});
+
 /**
  * @private
  * @class DLCSLoginPanel
@@ -82,14 +90,9 @@ class DLCSLoginPanel extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '1rem',
-        }}
-      >
+      <div className={classes.root}>
         <TextField
           label="DLCS Endpoint"
           type="url"
@@ -138,4 +141,4 @@ class DLCSLoginPanel extends React.Component {
   }
 }
 
-export default DLCSLoginPanel;
+export default withStyles(style)(DLCSLoginPanel);

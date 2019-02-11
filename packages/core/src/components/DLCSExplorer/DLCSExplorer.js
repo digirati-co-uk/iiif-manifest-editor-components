@@ -19,8 +19,6 @@ const getItemStyle = (image, isDragging, draggableStyle) => {
   return {
     // some basic styles to make the items look a bit nicer
     userSelect: 'none',
-    //padding: `${grid / 2}px ${grid}px`,
-    //margin: `0 0 ${grid}px 0`,
     display: 'flex',
     boxSizing: 'border-box',
     width: '25%',
@@ -198,7 +196,7 @@ class DLCSImageSelector extends React.Component {
           <React.Fragment>
             <div className={classes.header}>
               <span className={classes.user}>
-                <PermIdentity className={classes.userIcon}/>
+                <PermIdentity className={classes.userIcon} />
                 {this.state.session.userName}
               </span>
               <Button onClick={this.onLogout}>Logout</Button>

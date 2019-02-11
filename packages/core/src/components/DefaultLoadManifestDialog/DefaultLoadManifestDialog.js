@@ -7,9 +7,25 @@ import {
   DialogActions,
   Button,
   TextField,
+  withStyles,
 } from '@material-ui/core';
 
-const DefaultLoadManifestDialog = ({ loadManifest, open, handleClose }) => (
+//TODO: Error handling...
+
+const style = theme => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 680,
+  },
+});
+
+const DefaultLoadManifestDialog = ({
+  classes,
+  loadManifest,
+  open,
+  handleClose,
+}) => (
   <Dialog
     open={open}
     onClose={handleClose}
@@ -19,17 +35,9 @@ const DefaultLoadManifestDialog = ({ loadManifest, open, handleClose }) => (
   >
     <DialogTitle id="preview-dialog-title">Open Manifest</DialogTitle>
     <DialogContent>
-      <form
-        id="manifest_form"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: 680,
-        }}
-      >
+      <form id="manifest_form" className={classes.form}>
         <TextField
           label="Type a IIIF Manifest Url"
-          //className={classes.textField}
           margin="dense"
           variant="outlined"
           name="manifestUrl"
@@ -37,7 +45,6 @@ const DefaultLoadManifestDialog = ({ loadManifest, open, handleClose }) => (
         />
         <TextField
           label="Or paste the IIIF Manifest Body"
-          //className={classes.textField}
           margin="dense"
           multiline
           variant="outlined"
@@ -54,6 +61,7 @@ const DefaultLoadManifestDialog = ({ loadManifest, open, handleClose }) => (
       <Button
         onClick={ev => {
           ev.preventDefault();
+          /* this part should be an action */
           const manifestUrl = document.forms.manifest_form.manifestUrl.value;
           const manifestBody = document.forms.manifest_form.manifestBody.value;
           if (manifestUrl !== '') {
@@ -85,4 +93,4 @@ DefaultLoadManifestDialog.defaultProps = {
   loadManifest: () => {},
 };
 
-export default DefaultLoadManifestDialog;
+export default withStyles(style)(DefaultLoadManifestDialog);

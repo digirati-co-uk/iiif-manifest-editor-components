@@ -3,7 +3,6 @@ import ContainerDimensions from 'react-container-dimensions';
 
 import {
   Viewport,
-  //StaticImageViewport,
   OpenSeadragonViewport,
   OpenSeadragonViewer,
   CanvasRepresentation,
@@ -87,7 +86,7 @@ class ImageCropper extends React.Component {
     ) {
       this.canvas = {
         id: canvas.id,
-        getCanonicalImageUri: width => imageId, //.replace(/\/full\/full\//,'/full/')
+        getCanonicalImageUri: width => imageId,
         getWidth: () => canvas.width,
         getHeight: () => canvas.height,
         __jsonld: canvas,
@@ -98,10 +97,8 @@ class ImageCropper extends React.Component {
       <div>
         <ContainerDimensions>
           {({ width }) => {
-            const cWidth = width; //canvas.width > width ? width : canvas.width;
-            const cHeight =
-              //(canvas.width > width ? width / canvas.width : 1) * canvas.height;
-              (width / canvas.width) * canvas.height;
+            const cWidth = width;
+            const cHeight = (width / canvas.width) * canvas.height;
             return (
               <Viewport
                 setRef={this.setViewport}

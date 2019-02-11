@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as classnames from 'classnames';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Typography, withStyles, Divider } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
@@ -9,11 +10,6 @@ import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/Defaul
 import LocaleString from '../LocaleString/LocaleString';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
 import { EditorConsumer } from '../EditorContext/EditorContext';
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  outline: isDragging ? '2px solid rgb(89, 191, 236)' : '0',
-  ...draggableStyle,
-});
 
 const emptyFn = () => {};
 
@@ -33,10 +29,13 @@ const style = theme => ({
     background: theme.palette.background.paper,
     display: 'flex',
     flexDirection: 'row',
-    alingItems: 'center',
+    alignItems: 'center',
     justifyContent: 'stretch',
     alignItems: 'center',
     borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  annotationDragging: {
+    outline: `2px solid ${theme.palette.primary.contrastText}`,
   },
   defaultAnnotation: {
     flex: 1,
@@ -103,11 +102,9 @@ const AnnotationList = ({
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                          className={classes.annotationDraggable}
+                          className={classnames(classes.annotationDraggable, {
+                            [classes.annotationDragging]: snapshot.isDragging,
+                          })}
                         >
                           {typeof children === 'function' ? (
                             children(annotation, remove, select)

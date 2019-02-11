@@ -2,6 +2,8 @@ import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { EditorConsumer, EditorProvider } from '../EditorContext/EditorContext';
 
+const TYPE_RX = /(.*)(\-.*)?/;
+
 const ManifestEditor = ({
   children,
   invokeAction,
@@ -26,12 +28,9 @@ const ManifestEditor = ({
               return;
             }
             const dragDropConf = configuration.dragDrop;
-            const sourceType = result.source.droppableId.replace(
-              /(.*)(\-.*)?/,
-              '$1'
-            );
+            const sourceType = result.source.droppableId.replace(TYPE_RX, '$1');
             const destType = result.destination.droppableId.replace(
-              /(.*)(\-.*)?/,
+              TYPE_RX,
               '$1'
             );
             const dropHandler = `${sourceType}->${destType}`;

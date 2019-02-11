@@ -51,11 +51,11 @@ class NewAnnotationDialog extends React.Component {
   };
 
   render() {
-    const { open, handleClose, form } = this.props;
+    const { handleClose, form } = this.props;
     const { resource } = this.state;
     return (
       <Dialog
-        open={open}
+        open={!!form}
         onClose={handleClose}
         scroll="paper"
         maxWidth="sm"
@@ -106,8 +106,6 @@ class NewAnnotationDialog extends React.Component {
 }
 
 NewAnnotationDialog.propTypes = {
-  /** is the dialog open*/
-  open: PropTypes.bool,
   /** the close function passed from the hosting component */
   handleClose: PropTypes.func,
   /** the annotation property editor form */
@@ -116,8 +114,6 @@ NewAnnotationDialog.propTypes = {
   addNewResource: PropTypes.func,
 };
 
-NewAnnotationDialog.defaultProps = {
-  open: false,
-};
+NewAnnotationDialog.defaultProps = {};
 
 export default NewAnnotationDialog;
