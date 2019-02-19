@@ -1,24 +1,31 @@
 import React from 'react';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import {
+  createMuiTheme,
+  MuiThemeProvider,
+  IconButton,
+} from '@material-ui/core';
 import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
 
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
 import IIIFCollectionExplorer from '../components/IIIFCollectionExplorer/IIIFCollectionExplorer';
-import DLCSPanel from '../components/DLCSExplorer/DLCSPanel';
 import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanvasPanel';
 import Properties from '../components/Properties/Properties';
 import TabPanel from '../components/TabPanel/TabPanel';
 import renderResource, {
   queryResourceById,
   locale,
-  update,
 } from '../utils/IIIFResource';
 import ManifestEditor from '../components/ManifestEditor/ManifestEditor';
 import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreviewDialog';
 import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
+import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
+
+import ImagePainting from '../annotation/ImagePainting';
+import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';
+
 import Layout from '../components/ApplicationLayout/ApplicationLayout';
 import AppBar from '../components/ManifestEditorAppBar/ManifestEditorAppBar';
 import AppBarButton from '../components/AppBarButton/AppBarButton';
@@ -28,12 +35,12 @@ import './SimpleEditorUI.scss';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#59bfec',
-      contrastText: '#fff',
+      main: '#000',
+      contrastText: '#ff9a00',
     },
     secondary: {
-      main: '#fff',
-      contrastText: '#59bfec',
+      main: '#ff9a00',
+      contrastText: '#000',
     },
   },
   typography: {
@@ -47,13 +54,11 @@ const theme = createMuiTheme({
   },
 });
 
-const emptyFn = () => {};
-
 const demoManifest = renderResource('Manifest');
 const demoCanvas = renderResource('Canvas', { parent: demoManifest });
 demoManifest.items.push(demoCanvas);
 
-class SimpleEditorUI extends React.Component {
+class VNASlideshowEditor extends React.Component {
   state = {
     rootResource: demoManifest,
     selectedIdsByType: {
@@ -67,8 +72,8 @@ class SimpleEditorUI extends React.Component {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
   };
 
-  dispatch = (reducer, action, cb) => {
-    this.setState(reducer(this.state, action), cb || emptyFn);
+  dispatch = (reducer, action) => {
+    this.setState(reducer(this.state, action));
   };
 
   selectResource = resource => {
@@ -166,18 +171,10 @@ class SimpleEditorUI extends React.Component {
       this.state.selectedIdsByType.Canvas,
       this.state.rootResource
     );
-    const paintingAnnotations =
+    const annotations =
       selectedCanvas && selectedCanvas.items && selectedCanvas.items.length > 0
         ? selectedCanvas.items[0].items || null
         : null;
-
-    const taggingAnnotations =
-      selectedCanvas &&
-      selectedCanvas.annotations &&
-      selectedCanvas.annotations.length > 0
-        ? selectedCanvas.annotations[0].items || null
-        : null;
-
     const selectedAnnotation = queryResourceById(
       this.state.selectedIdsByType.Annotation,
       selectedCanvas
@@ -188,16 +185,43 @@ class SimpleEditorUI extends React.Component {
         <ManifestEditor
           invokeAction={this.invokeAction2}
           config={{
-            s3: {
-              AMZN_S3_IDENTITY_POOL_HASH:
-                '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
-              AMZN_S3_REGION: 'eu-west-1',
-              AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+            appBarButtonStyle: 'icon-and-label',
+            hideHeaderForSingleTab: true,
+          }}
+          annotation={{
+            'TextualBody::layout-viewport-focus': TextLayoutViewFocus,
+            'Image::painting': ImagePainting,
+          }}
+          metaOntology={{
+            'Properties.Annotation': 'Item',
+            'Properties.Canvas': 'Slide',
+            'Properties.Manifest': 'Slideshow',
+            'Canvas.Summary': 'Short description',
+            'Canvas.Label': 'Title',
+            'Canvas.RequiredStatement': 'Legal notice',
+            'Canvas.RequiredStatement.Label': 'Title',
+            'Canvas.RequiredStatement.Label': 'Body',
+          }}
+          behavior={{
+            Canvas: {
+              groups: [
+                {
+                  label: 'info-position',
+                  values: [
+                    'info-position-left',
+                    'info-position-right',
+                    'info-position-center',
+                  ],
+                  default: 'info-position-left',
+                },
+                ['layout-overlay', 'layout-split'],
+                '*',
+              ],
             },
           }}
         >
           <Layout>
-            <AppBar>
+            <AppBar title="Slideshow Editor">
               <AppBarButton
                 text="New Manifest"
                 onClick={this.newProject}
@@ -217,8 +241,7 @@ class SimpleEditorUI extends React.Component {
             <Layout.Middle>
               <Layout.Left>
                 <AnnotationList
-                  title="Painting"
-                  annotations={paintingAnnotations}
+                  annotations={annotations}
                   lang={lang}
                   selected={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}
@@ -236,8 +259,7 @@ class SimpleEditorUI extends React.Component {
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
-                  <DLCSPanel title="DLCS" />
-                  <IIIFCollectionExplorer title="IIIF Explorer" />
+                  <IIIFCollectionExplorer />
                   <Properties
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
@@ -245,6 +267,7 @@ class SimpleEditorUI extends React.Component {
                     lang={lang}
                     changeLanguage={this.changeLanguage}
                     update={this.updateProperty}
+                    noTranslation={true}
                   />
                 </TabPanel>
               </Layout.Right>
@@ -271,4 +294,4 @@ class SimpleEditorUI extends React.Component {
   }
 }
 
-export default SimpleEditorUI;
+export default VNASlideshowEditor;

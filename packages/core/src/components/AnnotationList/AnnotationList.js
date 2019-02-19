@@ -7,9 +7,8 @@ import { Cancel } from '@material-ui/icons';
 
 import Panel from '../Panel/Panel';
 import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/DefaultAnnotationListToolbar';
-import LocaleString from '../LocaleString/LocaleString';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
-import { EditorConsumer } from '../EditorContext/EditorContext';
+import AnnotationListItem from './AnnotationListItem';
 
 const emptyFn = () => {};
 
@@ -35,24 +34,7 @@ const style = theme => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
   annotationDragging: {
-    outline: `2px solid ${theme.palette.primary.contrastText}`,
-  },
-  defaultAnnotation: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'stretch',
-    maxWidth: 'calc(100% - 40px)',
-  },
-  defaultAnnotationText: {
-    flex: 1,
-    padding: '0 0 0 1rem',
-    overflow: 'hidden',
-  },
-  defaultAnnotationTypo: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
+    outline: `2px solid ${theme.palette.primary.main}`,
   },
   defaultNoAnnotationIndicator: {
     position: 'absolute',
@@ -85,105 +67,56 @@ const AnnotationList = ({
     )}
     <Divider />
     <Panel.Content>
-      <EditorConsumer>
-        {configuration => (
-          <Droppable droppableId="annotationlist">
-            {(providedDroppable, snapshotDroppable) => (
-              <div ref={providedDroppable.innerRef} className={classes.list}>
-                {annotations ? (
-                  annotations.map((annotation, index) => (
-                    <Draggable
-                      key={annotation.id}
-                      draggableId={annotation.id}
-                      index={index}
+      <Droppable droppableId="annotationlist">
+        {(providedDroppable, snapshotDroppable) => (
+          <div ref={providedDroppable.innerRef} className={classes.list}>
+            {annotations ? (
+              annotations.map((annotation, index) => (
+                <Draggable
+                  key={annotation.id}
+                  draggableId={annotation.id}
+                  index={index}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className={classnames(classes.annotationDraggable, {
+                        [classes.annotationDragging]: snapshot.isDragging,
+                      })}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={classnames(classes.annotationDraggable, {
-                            [classes.annotationDragging]: snapshot.isDragging,
-                          })}
-                        >
-                          {typeof children === 'function' ? (
-                            children(annotation, remove, select)
-                          ) : (
-                            <div
-                              key={annotation.id}
-                              className={classes.defaultAnnotation}
-                              onClick={ev => {
-                                select(annotation);
-                              }}
-                            >
-                              {configuration.annotation[
-                                [
-                                  annotation.body.type,
-                                  annotation.motivation,
-                                ].join('::')
-                              ]
-                                ? configuration.annotation[
-                                    [
-                                      annotation.body.type,
-                                      annotation.motivation,
-                                    ].join('::')
-                                  ].icon({
-                                    color:
-                                      selected === annotation.id
-                                        ? 'primary'
-                                        : 'inherit',
-                                  })
-                                : ''}
-                              <div
-                                className={classes.defaultAnnotationText}
-                                title={
-                                  annotation.label && annotation.label[lang]
-                                    ? annotation.label[lang]
-                                    : annotation.id
-                                }
-                              >
-                                <Typography
-                                  color={
-                                    selected === annotation.id
-                                      ? 'primary'
-                                      : 'inherit'
-                                  }
-                                  variant="subtitle2"
-                                  className={classes.defaultAnnotationTypo}
-                                >
-                                  <LocaleString
-                                    fallback={annotation.id}
-                                    lang={lang}
-                                  >
-                                    {annotation.label}
-                                  </LocaleString>
-                                </Typography>
-                              </div>
-                            </div>
-                          )}
-                          <Tooltip title="Delete Annotation" placement="right">
-                            <IconButton onClick={() => remove(annotation)}>
-                              <Cancel />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
+                      {typeof children === 'function' ? (
+                        children(annotation, remove, select)
+                      ) : (
+                        <AnnotationListItem
+                          annotation={annotation}
+                          lang={lang}
+                          onSelect={select}
+                          selected={selected === annotation.id}
+                        />
                       )}
-                    </Draggable>
-                  ))
-                ) : (
-                  <Typography
-                    variant="caption"
-                    className={classes.defaultNoAnnotationIndicator}
-                  >
-                    No Annotations
-                  </Typography>
-                )}
-                {providedDroppable.placeholder}
-              </div>
+                      <Tooltip title="Delete Annotation" placement="right">
+                        <IconButton onClick={() => remove(annotation)}>
+                          <Cancel />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  )}
+                </Draggable>
+              ))
+            ) : (
+              <Typography
+                variant="caption"
+                className={classes.defaultNoAnnotationIndicator}
+              >
+                No Annotations
+              </Typography>
             )}
-          </Droppable>
+            {providedDroppable.placeholder}
+          </div>
         )}
-      </EditorConsumer>
+      </Droppable>
     </Panel.Content>
   </Panel>
 );

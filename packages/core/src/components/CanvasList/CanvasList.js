@@ -37,11 +37,11 @@ const style = theme => ({
     boxSizing: 'border-box',
   },
   listItemDragging: {
-    background: theme.palette.primary.contrastText,
+    background: theme.palette.primary.main,
     color: theme.palette.secondary.main,
   },
   listItemSelected: {
-    outline: `2px solid ${theme.palette.primary.contrastText}`,
+    outline: `2px solid ${theme.palette.primary.main}`,
   },
   listItemVertical: {
     userSelect: 'none',

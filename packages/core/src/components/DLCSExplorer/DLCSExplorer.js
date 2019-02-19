@@ -91,7 +91,7 @@ class DLCSImageSelector extends React.Component {
   state = {
     session: null,
     spaces: [],
-    selectedSpace: null,
+    selectedSpace: '',
     images: [],
     addNewSpaceActive: false,
     searchActive: false,
@@ -120,7 +120,7 @@ class DLCSImageSelector extends React.Component {
     this.setState({
       session: null,
       spaces: [],
-      selectedSpace: null,
+      selectedSpace: '',
       images: [],
     });
   };
@@ -183,21 +183,22 @@ class DLCSImageSelector extends React.Component {
 
   render() {
     let { endpoint, customer, classes } = this.props;
-    if (!this.state.session && localStorage) {
-      const session = localStorage.getItem('dlcsSession');
-      if (session) {
-        this.sessionAcquiredCallback(JSON.parse(session));
+    const { selectedSpace, session } = this.state;
+    if (!session && localStorage) {
+      const newSession = localStorage.getItem('dlcsSession');
+      if (newSession) {
+        this.sessionAcquiredCallback(JSON.parse(newSession));
       }
     }
 
     return (
       <div className={classes.root}>
-        {this.state.session ? (
+        {session ? (
           <React.Fragment>
             <div className={classes.header}>
               <span className={classes.user}>
                 <PermIdentity className={classes.userIcon} />
-                {this.state.session.userName}
+                {session.userName}
               </span>
               <Button onClick={this.onLogout}>Logout</Button>
             </div>
@@ -215,7 +216,7 @@ class DLCSImageSelector extends React.Component {
               <Select
                 native
                 onChange={this.onSelectedSpace}
-                value={this.state.selectedSpace}
+                value={selectedSpace}
                 className={classes.spaceSelect}
                 labelWidth={0}
                 input={<OutlinedInput />}
@@ -244,7 +245,7 @@ class DLCSImageSelector extends React.Component {
               style={{
                 display: this.state.addNewSpaceActive ? 'block' : 'none',
               }}
-              session={this.state.session}
+              session={session}
               callback={this.addNewSpaceCallback}
             />
             <DLCSSearchForm
@@ -285,11 +286,11 @@ class DLCSImageSelector extends React.Component {
                 )}
               </Droppable>
             </div>
-            {this.state.session && this.state.selectedSpace && (
+            {session && selectedSpace && (
               <DropzoneUpload
-                url={this.state.selectedSpace}
-                baseUrl={this.state.session.dlcs_url}
-                session={this.state.session}
+                url={selectedSpace}
+                baseUrl={session.dlcs_url}
+                session={session}
                 afterUpload={this.refreshList}
               />
             )}

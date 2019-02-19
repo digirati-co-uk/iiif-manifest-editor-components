@@ -1,73 +1,3 @@
-.tu-delft-manifest-editor {
-  border: 1px solid lightgrey;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  &__center {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-  };
-  &__bottom {
-    height: 120px;
-    border-top: 2px solid rgba(0,0,0,0.1);
-    box-sizing: border-box;
-  }
-  &__left-panel {
-    width: 320px;
-    border-right: 2px solid rgba(0,0,0,0.1);
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-  }
-  &__canvas {
-    flex: 1;
-  }
-  &__right-panel {
-    width: 420px;
-    border-left: 2px solid rgba(0,0,0,0.1);
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-  }
-
-  &--exhibition-mode {
-    .tu-delft-manifest-editor__left-panel {
-      width: 600px;
-    }
-  }
-  &--exhibition-full-view {
-    .tu-delft-manifest-editor__left-panel {
-      width: auto;
-      flex: 1;
-    }
-  }
-  ::-webkit-scrollbar {
-    width:2px;
-    height: 2px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    border-radius:0%;
-    background:rgba(0,0,0,0.1);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    border-radius:0;
-    background:rgba(0,0,0,0.2);
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background:rgba(0,0,0,0.4);
-  }
-  
-  // ::-webkit-scrollbar-thumb:window-inactive {
-  //   background:rgba(0,0,0,0.05);
-  // }
-}
-
 .blocks {
   display: grid;
   grid-template-columns: repeat(12,8.3%);
@@ -85,7 +15,7 @@
   }
   .title,
   .info {
-    padding:2em;
+    padding: 2em;
   }
   .title {
     background-color: rgb(225,193,54);
@@ -96,13 +26,11 @@
   }
   .info {
     .boxtitle {
-      margin-bottom:1.5em;
-      
+      margin-bottom: 1.5em;
     }
     background-color: #000;
     color:#fff;
     overflow-y:auto;
-    
   }
 
   .image {
@@ -114,11 +42,11 @@
     }
     .caption {
       color:white;
-      padding:0 2em;
+      padding: 0 2em;
       position: absolute;
       text-align: center;
       bottom: 1em;
-      left:0;
+      left: 0;
       width: 100%;
     }
   }
@@ -160,39 +88,50 @@
   }
 }
 
-.tu-delft-manifest-editor--exhibition-full-view {
-  .blocks {
-    display: grid;
-    grid-template-columns: repeat(12,100px);
-    grid-auto-rows: 100px;
-    min-height: 100%;
-    margin: 0 auto;
-    max-width: 1200px;
-    font-size: 16px; 
-  }
-  
-  .block {
-    position: relative;
-    grid-row: auto/span 4;
-    height: 400px;
-    grid-column: auto/span 4;
-    width: 400px;
-  }
-  @for $i from 1 through 12 {
-    .w-#{$i} {
-      grid-column: auto / span #{$i};
-      width: #{$i*100}px;
-    }
-    .h-#{$i} {
-      grid-row: auto / span #{$i};
-      height: #{$i*100}px;
-    }
-  }
-}
+.tu-delft-manifest-editor {
+  width: 100%;
+  height: 100%;
 
-//osd haxx
-.navigator {
-  z-index: 10000;
+  &--exhibition-mode {
+    .layout__left {
+      width: 600px;
+    }
+  }
+  &--exhibition-full-view {
+    .layout__left-panel {
+      width: auto;
+      flex: 1;
+    }
+  }
+  &--exhibition-full-view {
+    .blocks {
+      display: grid;
+      grid-template-columns: repeat(12,100px);
+      grid-auto-rows: 100px;
+      min-height: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+      font-size: 16px; 
+    }
+    
+    .block {
+      position: relative;
+      grid-row: auto/span 4;
+      height: 400px;
+      grid-column: auto/span 4;
+      width: 400px;
+    }
+    @for $i from 1 through 12 {
+      .w-#{$i} {
+        grid-column: auto / span #{$i};
+        width: #{$i*100}px;
+      }
+      .h-#{$i} {
+        grid-row: auto / span #{$i};
+        height: #{$i*100}px;
+      }
+    }
+  } 
 }
 
 .loader {

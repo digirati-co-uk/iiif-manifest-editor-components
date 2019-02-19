@@ -10,10 +10,10 @@ import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 import TranslationDialog from './Properties.TranslationDialog';
 import { updateWithMeta } from '../../utils/IIIFResource';
 
+import { Label } from '../LabelContext/LabelContext';
+
 const style = theme => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
     padding: '1rem',
     width: '100%',
   },
@@ -99,7 +99,9 @@ class Properties extends React.Component {
               <React.Fragment>
                 {annotation && (
                   <div className={classes.resourceBlock}>
-                    <Typography variant="h6">Annotation</Typography>
+                    <Typography variant="h6">
+                      <Label name="Properties.Annotation">Annotation</Label>
+                    </Typography>
                     <MetadataEditor
                       target={annotation}
                       lang={lang}
@@ -117,7 +119,9 @@ class Properties extends React.Component {
                 )}
                 {canvas && (
                   <div className={classes.resourceBlock}>
-                    <Typography variant="h6">Canvas</Typography>
+                    <Typography variant="h6">
+                      <Label name="Properties.Canvas">Canvas</Label>
+                    </Typography>
                     <MetadataEditor
                       target={canvas}
                       lang={lang}
@@ -127,7 +131,9 @@ class Properties extends React.Component {
                   </div>
                 )}
                 <div className={classes.resourceBlock}>
-                  <Typography variant="h6">Manifest</Typography>
+                  <Typography variant="h6">
+                    <Label name="Properties.Manifest">Manifest</Label>
+                  </Typography>
                   <MetadataEditor
                     target={manifest}
                     lang={lang}

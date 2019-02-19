@@ -1,0 +1,35 @@
+---
+name: App Bar Button
+menu: 05. Layout
+---
+
+import { Playground, PropsTable } from 'docz';
+import AppBarButton from './AppBarButton';
+import { AppBar, Toolbar } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
+
+
+
+# App Bar Button
+
+Due to the different opinions about how an appbar button should look like, this component has been created to cater for everyone.
+
+<PropsTable of={AppBarButton.Naked} />
+
+
+<Playground>
+  <AppBar position="static">
+    <Toolbar>
+      <AppBarButton
+        text="icon-and-tooltip"
+        icon={<Add />}
+        variant="icon-and-tooltip"
+      />
+      <AppBarButton
+        text="icon-and-label"
+        icon={<Add />}
+        variant="icon-and-label"
+      />
+    </Toolbar>
+  </AppBar>
+</Playground>

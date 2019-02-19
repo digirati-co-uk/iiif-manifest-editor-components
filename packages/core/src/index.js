@@ -5,6 +5,8 @@
 // import MetadataEditor from './components/MetadataEditor/MetadataEditor';
 import React from 'react';
 import { render } from 'react-dom';
+// import SimpleEditorUI from './containers/SimpleEditorUI';
+// render(<SimpleEditorUI />, document.getElementById('app'));
 import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
 render(<TUDelftManifestEditor />, document.getElementById('app'));
 //import VNASlideshowEditor from './containers/VNASlideshowEditor';

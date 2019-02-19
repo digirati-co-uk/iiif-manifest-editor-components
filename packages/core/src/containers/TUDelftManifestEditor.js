@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  createMuiTheme,
-  MuiThemeProvider,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-} from '@material-ui/core';
+import * as classnames from 'classnames';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import {
   LibraryAdd,
   SaveAlt,
@@ -32,7 +26,6 @@ import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreview
 import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
-import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
 import DLCSPanel from '../components/DLCSExplorer/DLCSPanel';
 import TextPainting from '../annotation/TextPainting';
 import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';
@@ -43,6 +36,10 @@ import ExhibitionCanvasWidthHeight from './TUDelftManifestEditor.ExhibitionCanva
 import DefaultLoadManifestDialog from '../components/DefaultLoadManifestDialog/DefaultLoadManifestDialog';
 
 import convertToV3ifNecessary from '../utils/IIIFUpgrader';
+
+import AppBar from '../components/ManifestEditorAppBar/ManifestEditorAppBar';
+import Layout from '../components/ApplicationLayout/ApplicationLayout';
+import AppBarButton from '../components/AppBarButton/AppBarButton';
 
 import './TUDelftManifestEditor.scss';
 
@@ -67,6 +64,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
 // Temporary override until the settings panel hasn't been funded.
 window.rootManifestUrl =
   'https://delft-static-site-generator.netlify.com/iiif/';
@@ -226,138 +224,97 @@ class TUDelftManifestEditor extends React.Component {
       this.state.selectedIdsByType.Annotation,
       selectedCanvas
     );
-    const { lang } = this.state;
+    const { lang, exhibitionMode, exhibitionFullView } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
-        <div
-          className={[
-            'tu-delft-manifest-editor',
-            this.state.exhibitionMode
-              ? 'tu-delft-manifest-editor--exhibition-mode'
-              : '',
-            this.state.exhibitionFullView
-              ? 'tu-delft-manifest-editor--exhibition-full-view'
-              : '',
-          ].join(' ')}
-        >
-          <ManifestEditor
-            invokeAction={this.invokeAction2}
-            config={{
-              s3: {
-                AMZN_S3_IDENTITY_POOL_HASH:
-                  '23b9d884-95a2-4d5c-8a38-e847db51217e',
-                AMZN_S3_REGION: 'eu-west-1',
-                AMZN_S3_BUCKET: 'dlcservices-delft-pre-ingest-uploads',
+        <ManifestEditor
+          invokeAction={this.invokeAction2}
+          config={{
+            s3: {
+              AMZN_S3_IDENTITY_POOL_HASH:
+                '23b9d884-95a2-4d5c-8a38-e847db51217e',
+              AMZN_S3_REGION: 'eu-west-1',
+              AMZN_S3_BUCKET: 'dlcservices-delft-pre-ingest-uploads',
+            },
+            hideHeaderForSingleTab: true,
+          }}
+          annotation={{
+            'TextualBody::layout-viewport-focus': TextLayoutViewFocus,
+            'TextualBody::painting': TextPainting,
+            'Image::painting': ImagePainting,
+            'Video::painting': VideoPainting,
+          }}
+          translation={{
+            defaultLanguage: 'en',
+            languages: [
+              {
+                name: 'English',
+                local: 'English',
+                1: 'en',
+                2: 'eng',
+                '2T': 'eng',
+                '2B': 'eng',
+                3: 'eng',
               },
-            }}
-            annotation={{
-              'TextualBody::layout-viewport-focus': TextLayoutViewFocus,
-              'TextualBody::painting': TextPainting,
-              'Image::painting': ImagePainting,
-              'Video::painting': VideoPainting,
-            }}
-            translation={{
-              defaultLanguage: 'en',
-              languages: [
-                {
-                  name: 'English',
-                  local: 'English',
-                  1: 'en',
-                  2: 'eng',
-                  '2T': 'eng',
-                  '2B': 'eng',
-                  3: 'eng',
-                },
-                {
-                  name: 'Dutch',
-                  local: 'Nederlands',
-                  1: 'nl',
-                  2: 'nld',
-                  '2T': 'nld',
-                  '2B': 'dut',
-                  3: 'nld',
-                },
+              {
+                name: 'Dutch',
+                local: 'Nederlands',
+                1: 'nl',
+                2: 'nld',
+                '2T': 'nld',
+                '2B': 'dut',
+                3: 'nld',
+              },
+            ],
+          }}
+          behavior={{
+            Canvas: {
+              groups: [
+                ['row', 'column'],
+                props => <ExhibitionCanvasWidthHeight {...props} />,
+                ['caption-left'],
               ],
-            }}
-            behavior={{
-              Canvas: {
-                groups: [
-                  ['row', 'column'],
-                  props => <ExhibitionCanvasWidthHeight {...props} />,
-                  ['caption-left'],
-                ],
-              },
-            }}
+            },
+          }}
+        >
+          {/** cause elements generated by @fesk/react-bem cannot have other styles or classes than the predefined bem ones... */}
+          <div
+            className={classnames('tu-delft-manifest-editor', {
+              'tu-delft-manifest-editor--exhibition-mode': exhibitionMode,
+              'tu-delft-manifest-editor--exhibition-full-view': exhibitionFullView,
+            })}
           >
-            <AppBar position="static">
-              <Toolbar>
-                <Typography color="secondary" variant="h6">
-                  Manifest Editor
-                </Typography>
-                <div
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'canter',
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <DefaultTooltip title="Load Manifest" placement="bottom">
-                    <IconButton
-                      color="secondary"
-                      onClick={this.toggleManifestDialog}
-                    >
-                      <Input />
-                    </IconButton>
-                  </DefaultTooltip>
-                  <DefaultTooltip title="New Manifest" placement="bottom">
-                    <IconButton color="secondary" onClick={this.newProject}>
-                      <LibraryAdd />
-                    </IconButton>
-                  </DefaultTooltip>
-                  <DefaultTooltip title="Download Manifest" placement="bottom">
-                    <IconButton color="secondary" onClick={this.saveProject}>
-                      <SaveAlt />
-                    </IconButton>
-                  </DefaultTooltip>
-                  <DefaultTooltip title="Preview JSON" placement="bottom">
-                    <IconButton
-                      color="secondary"
-                      onClick={this.togglePreviewDialog}
-                    >
-                      <Visibility />
-                    </IconButton>
-                  </DefaultTooltip>
-                  <DefaultTooltip
-                    title="Exhibition/Standard"
-                    placement="bottom"
-                  >
-                    <IconButton
-                      color="secondary"
-                      onClick={this.toggleExhibitionMode}
-                    >
-                      {this.state.exhibitionMode ? <GridOn /> : <GridOff />}
-                    </IconButton>
-                  </DefaultTooltip>
-                </div>
-              </Toolbar>
-            </AppBar>
-            <div className="tu-delft-manifest-editor__center">
-              <div className="tu-delft-manifest-editor__left-panel">
-                {this.state.exhibitionMode ? (
+            <Layout>
+              <AppBar position="static">
+                <AppBarButton
+                  text="Load Manifest"
+                  onClick={this.toggleManifestDialog}
+                  icon={<Input />}
+                />
+                <AppBarButton
+                  text="New Manifest"
+                  onClick={this.newProject}
+                  icon={<LibraryAdd />}
+                />
+                <AppBarButton
+                  text="Download Manifest"
+                  onClick={this.saveProject}
+                  icon={<SaveAlt />}
+                />
+                <AppBarButton
+                  text="Preview JSON"
+                  onClick={this.togglePreviewDialog}
+                  icon={<Visibility />}
+                />
+                <AppBarButton
+                  text="Exhibition/Standard"
+                  onClick={this.toggleExhibitionMode}
+                  icon={this.state.exhibitionMode ? <GridOn /> : <GridOff />}
+                />
+              </AppBar>
+              <Layout.Middle>
+                <Layout.Left>
                   <TabPanel>
-                    <ExhibitionPreview
-                      title="Exhibition Preview"
-                      canvases={canvases}
-                      manifest={this.state.rootResource}
-                      direction="vertical"
-                      lang={lang}
-                      selected={this.state.selectedIdsByType.Canvas}
-                      select={this.selectResource}
-                      remove={this.deleteResource}
-                      invokeAction={this.invokeAction}
-                      toggleZoom={this.toggleExhibitionFullView}
-                    />
                     <AnnotationList
                       title="annotations"
                       annotations={annotations}
@@ -367,68 +324,74 @@ class TUDelftManifestEditor extends React.Component {
                       remove={this.deleteResource}
                       invokeAction={this.invokeAction2}
                     />
+                    {exhibitionMode && (
+                      <ExhibitionPreview
+                        title="Exhibition Preview"
+                        canvases={canvases}
+                        manifest={this.state.rootResource}
+                        direction="vertical"
+                        lang={lang}
+                        selected={this.state.selectedIdsByType.Canvas}
+                        select={this.selectResource}
+                        remove={this.deleteResource}
+                        invokeAction={this.invokeAction}
+                        toggleZoom={this.toggleExhibitionFullView}
+                      />
+                    )}
                   </TabPanel>
-                ) : (
-                  <AnnotationList
-                    annotations={annotations}
+                </Layout.Left>
+                {!(exhibitionMode && exhibitionFullView) && (
+                  <Layout.Center>
+                    <EditableCanvasPanel
+                      title="annotations"
+                      canvas={selectedCanvas}
+                      selectedAnnotation={
+                        this.state.selectedIdsByType.Annotation
+                      }
+                      select={this.selectResource}
+                      update={this.updateResource}
+                    />
+                  </Layout.Center>
+                )}
+                <Layout.Right>
+                  <TabPanel>
+                    <DLCSPanel
+                      title="DLCS"
+                      //TODO: remove hard wired account
+                      account={{
+                        endpoint: 'https://api.dlc.services/',
+                        customer: 7,
+                      }}
+                    />
+                    <IIIFCollectionExplorer title="IIIF Explorer" />
+                    <Properties
+                      title="Properties"
+                      manifest={this.state.rootResource}
+                      canvas={selectedCanvas}
+                      annotation={selectedAnnotation}
+                      lang={lang}
+                      changeLanguage={this.changeLanguage}
+                      update={this.updateProperty}
+                    />
+                  </TabPanel>
+                </Layout.Right>
+              </Layout.Middle>
+              {!exhibitionMode && (
+                <Layout.Bottom>
+                  <CanvasList
+                    canvases={canvases}
                     lang={lang}
-                    selected={this.state.selectedIdsByType.Annotation}
+                    direction="horizontal"
+                    selected={this.state.selectedIdsByType.Canvas}
                     select={this.selectResource}
                     remove={this.deleteResource}
-                    invokeAction={this.invokeAction2}
+                    invokeAction={this.invokeAction}
                   />
-                )}
-              </div>
-              {!(
-                this.state.exhibitionMode && this.state.exhibitionFullView
-              ) && (
-                <div className="tu-delft-manifest-editor__canvas">
-                  <EditableCanvasPanel
-                    canvas={selectedCanvas}
-                    selectedAnnotation={this.state.selectedIdsByType.Annotation}
-                    select={this.selectResource}
-                    update={this.updateResource}
-                  />
-                </div>
+                </Layout.Bottom>
               )}
-              <div className="tu-delft-manifest-editor__right-panel">
-                <TabPanel>
-                  <DLCSPanel
-                    title="DLCS"
-                    //TODO: remove hard wired account
-                    account={{
-                      endpoint: 'https://api.dlc.services/',
-                      customer: 5,
-                    }}
-                  />
-                  <IIIFCollectionExplorer title="IIIF Explorer" />
-                  <Properties
-                    title="Properties"
-                    manifest={this.state.rootResource}
-                    canvas={selectedCanvas}
-                    annotation={selectedAnnotation}
-                    lang={lang}
-                    changeLanguage={this.changeLanguage}
-                    update={this.updateProperty}
-                  />
-                </TabPanel>
-              </div>
-            </div>
-            {!this.state.exhibitionMode && (
-              <div className="tu-delft-manifest-editor__bottom">
-                <CanvasList
-                  canvases={canvases}
-                  lang={lang}
-                  direction="horizontal"
-                  selected={this.state.selectedIdsByType.Canvas}
-                  select={this.selectResource}
-                  remove={this.deleteResource}
-                  invokeAction={this.invokeAction}
-                />
-              </div>
-            )}
-          </ManifestEditor>
-        </div>
+            </Layout>
+          </div>
+        </ManifestEditor>
         <SourcePreviewDialog
           json={this.state.rootResource}
           open={this.state.previewDialogOpen}

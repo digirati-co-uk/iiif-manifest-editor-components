@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Rnd } from 'react-rnd';
+//import { Rnd } from 'react-rnd';
 import { Droppable } from 'react-beautiful-dnd';
 import { IconButton, withStyles } from '@material-ui/core';
 import { ZoomIn, ZoomOut } from '@material-ui/icons';
@@ -19,14 +19,12 @@ import {
 } from '@canvas-panel/core';
 import EditableAnnotation from './EditableAnnotation';
 
-const style = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: '#f0f0f0',
-};
-
 const styles = theme => ({
+  '@global': {
+    '.navigator': {
+      zIndex: 1000,
+    },
+  },
   noCanvasSelectedMessage: {
     display: 'flex',
     alignItems: 'center',
@@ -35,14 +33,20 @@ const styles = theme => ({
     height: '100%',
   },
   root: {
-    width: '100%',
-    height: '100%',
     overflow: 'hidden',
     position: 'relative',
     webkitUserSelect: 'none',
     mozUserSelect: 'none',
     msUserSelect: 'none',
     userSelect: 'none',
+  },
+  container: {
+    width: '100%',
+    position: 'absolute',
+    height: '100%',
+    flex: 1,
+    top: 0,
+    left: 0,
   },
   canvasBackground: {
     width: '100%',
@@ -132,7 +136,7 @@ class EditableCanvasPanel extends React.Component {
   setViewport = v => (this.viewport = v);
 
   render() {
-    let { classes, canvas } = this.props;
+    let { classes, canvas, style } = this.props;
     if (!canvas) {
       return (
         <div className={classes.noCanvasSelectedMessage}>
@@ -163,102 +167,111 @@ class EditableCanvasPanel extends React.Component {
       this.tileSources = [whiteBG];
     }
     return (
-      <div className={classes.root}>
-        <Droppable droppableId="canvaseditor">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              className={classes.canvasBackground}
-              style={{
-                background: snapshot.isDraggingOver ? 'skyblue' : '',
-              }}
-            >
-              <ContainerDimensions>
-                {({ width, height }) => (
-                  <Viewport
-                    setRef={this.setViewport}
-                    imageUri={whiteBG['@id']}
-                    tileSources={this.tileSources}
-                    width={width}
-                    height={height}
-                    canvas={this.canvas}
-                  >
-                    <OpenSeadragonViewport viewportController={true}>
-                      <OpenSeadragonViewer maxHeight={height} />
-                    </OpenSeadragonViewport>
-                    <CanvasRepresentation ratio={ratio}>
-                      {annotations.map(annotation => {
-                        const bounds = getBounds(annotation, canvas);
-                        // TODO: lock aspect ratio
-                        let lockAspectRatio = this.isAspectRationLocked(
-                          annotation.body.type
-                        );
-                        return (
-                          <EditableAnnotation
-                            key={annotation.id}
-                            x={bounds.x}
-                            y={bounds.y}
-                            width={bounds.w}
-                            height={bounds.h}
-                            target={canvas.id}
-                            ratio={ratio}
-                            setCoords={xywh => {
-                              const meh = {};
-                              if (xywh.hasOwnProperty('x')) {
-                                meh.x = xywh.x;
-                              }
-                              if (xywh.hasOwnProperty('y')) {
-                                meh.y = xywh.y;
-                              }
-                              if (xywh.hasOwnProperty('width')) {
-                                meh.w = xywh.width;
-                              }
-                              if (xywh.hasOwnProperty('height')) {
-                                meh.h = xywh.height;
-                              }
-                              this.updateBounds(annotation, meh, canvas);
-                            }}
-                            boxStyles={
-                              annotation.id === selectedAnnotation
-                                ? {
-                                    outline: '1px solid skyblue',
-                                    background: 'rgba(135, 206, 235, 0.3)',
-                                  }
-                                : {
-                                    outline: '1px solid transparent',
-                                    background: 'rgba(135, 135, 135, 0.1)',
-                                  }
-                            }
-                            onClick={this.selectItem(annotation)}
-                          >
-                            {/* <ReactScrollWheelHandler
-                              upHandler={this.zoomIn}
-                              downHandler={this.zoomOut}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                outline: 0,
+      <div
+        className={classes.root}
+        style={
+          style || {
+            flex: 1,
+          }
+        }
+      >
+        <div className={classes.container}>
+          <Droppable droppableId="canvaseditor">
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                className={classes.canvasBackground}
+                style={{
+                  background: snapshot.isDraggingOver ? 'skyblue' : '',
+                }}
+              >
+                <ContainerDimensions>
+                  {({ width, height }) => (
+                    <Viewport
+                      setRef={this.setViewport}
+                      imageUri={whiteBG['@id']}
+                      tileSources={this.tileSources}
+                      width={width}
+                      height={height}
+                      canvas={this.canvas}
+                    >
+                      <OpenSeadragonViewport viewportController={true}>
+                        <OpenSeadragonViewer maxHeight={height} />
+                      </OpenSeadragonViewport>
+                      <CanvasRepresentation ratio={ratio}>
+                        {annotations.map(annotation => {
+                          const bounds = getBounds(annotation, canvas);
+                          // TODO: lock aspect ratio
+                          let lockAspectRatio = this.isAspectRationLocked(
+                            annotation.body.type
+                          );
+                          return (
+                            <EditableAnnotation
+                              key={annotation.id}
+                              x={bounds.x}
+                              y={bounds.y}
+                              width={bounds.w}
+                              height={bounds.h}
+                              target={canvas.id}
+                              ratio={ratio}
+                              setCoords={xywh => {
+                                const meh = {};
+                                if (xywh.hasOwnProperty('x')) {
+                                  meh.x = xywh.x;
+                                }
+                                if (xywh.hasOwnProperty('y')) {
+                                  meh.y = xywh.y;
+                                }
+                                if (xywh.hasOwnProperty('width')) {
+                                  meh.w = xywh.width;
+                                }
+                                if (xywh.hasOwnProperty('height')) {
+                                  meh.h = xywh.height;
+                                }
+                                this.updateBounds(annotation, meh, canvas);
                               }}
-                            > */}
-                            <AnnotationBodyRenderer annotation={annotation} />
-                            {/* </ReactScrollWheelHandler> */}
-                          </EditableAnnotation>
-                        );
-                      })}
-                    </CanvasRepresentation>
-                  </Viewport>
-                )}
-              </ContainerDimensions>
-            </div>
-          )}
-        </Droppable>
-        <div className={classes.zoomButtons}>
-          <IconButton onClick={this.zoomIn}>
-            <ZoomIn />
-          </IconButton>
-          <IconButton onClick={this.zoomOut}>
-            <ZoomOut />
-          </IconButton>
+                              boxStyles={
+                                annotation.id === selectedAnnotation
+                                  ? {
+                                      outline: '1px solid skyblue',
+                                      background: 'rgba(135, 206, 235, 0.3)',
+                                    }
+                                  : {
+                                      outline: '1px solid transparent',
+                                      background: 'rgba(135, 135, 135, 0.1)',
+                                    }
+                              }
+                              onClick={this.selectItem(annotation)}
+                            >
+                              {/* <ReactScrollWheelHandler
+                                upHandler={this.zoomIn}
+                                downHandler={this.zoomOut}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  outline: 0,
+                                }}
+                              > */}
+                              <AnnotationBodyRenderer annotation={annotation} />
+                              {/* </ReactScrollWheelHandler> */}
+                            </EditableAnnotation>
+                          );
+                        })}
+                      </CanvasRepresentation>
+                    </Viewport>
+                  )}
+                </ContainerDimensions>
+              </div>
+            )}
+          </Droppable>
+          <div className={classes.zoomButtons}>
+            <IconButton onClick={this.zoomIn}>
+              <ZoomIn />
+            </IconButton>
+            <IconButton onClick={this.zoomOut}>
+              <ZoomOut />
+            </IconButton>
+          </div>
         </div>
       </div>
     );

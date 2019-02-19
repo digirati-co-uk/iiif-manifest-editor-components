@@ -1,0 +1,63 @@
+.layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  &__middle {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+  };
+  &__bottom {
+    height: 120px;
+    border-top: 2px solid rgba(0,0,0,0.1);
+    box-sizing: border-box;
+  }
+  &__left {
+    width: 320px;
+    border-right: 2px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  &__center {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+  }
+  &__right {
+    width: 420px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    .panel { // Hack should work out of the box....
+      height: auto;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width:2px;
+    height: 2px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    border-radius:0%;
+    background:rgba(0,0,0,0.1);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius:0;
+    background:rgba(0,0,0,0.2);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background:rgba(0,0,0,0.4);
+  }
+  
+  // ::-webkit-scrollbar-thumb:window-inactive {
+  //   background:rgba(0,0,0,0.05);
+  // }
+}
