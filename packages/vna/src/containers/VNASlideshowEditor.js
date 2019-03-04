@@ -49,8 +49,8 @@ import './VNASlideshowEditor.scss';
 
 // Temporary override until the settings panel hasn't been funded.
 window.rootManifestUrl =
-  //'https://vna-manifests.netlify.com/iiif/';
-  'http://localhost:8181/p3/';
+  'https://vna-manifests.netlify.com/iiif/';
+  //'http://localhost:8181/p3/';
 const emptyFn = () => {};
 
 const theme = createMuiTheme({
