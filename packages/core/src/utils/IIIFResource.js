@@ -224,7 +224,7 @@ export const makeURLHash = obj => {
 
 export const getBounds = (annotation, canvas) => {
   if (annotation.type === 'Annotation' && annotation.target) {
-    let xywh = getHashParams(annotation.target).xywh;
+    let xywh = getHashParams(annotation.target.id || annotation.target).xywh;
     if (xywh) {
       let [x, y, w, h] = xywh.split(',');
       return {
@@ -264,7 +264,7 @@ export const getW3cAnnotationStyle = styleStr =>
 // implementation of this and will return to implement the update
 // properly later on.
 const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail', 'behavior'];
-const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id'];
 
 export const update = (target, property, lang, value) => {
   //TODO: should be just a dispatch,
@@ -491,4 +491,67 @@ export const getAnnotationDimensions = annotation => {
     width: DEFAULT_ANNOTATION_WIDTH,
     height: DEFAULT_ANNOTATION_HEIGHT,
   };
+};
+
+export const fixManifest = manifest => {
+  const idMappings = {};
+  const updateTargetURI = target => {
+    const [targetURI, targetHash] = target.split('#');
+    return [idMappings[targetURI] || targetURI, targetHash].join('#');
+  };
+  const fixLevel = (level, parentResource) => {
+    if (Array.isArray(level)) {
+      level.forEach(item => fixLevel(item, parentResource));
+    }
+    if (level.hasOwnProperty('type')) {
+      let oldURI = null;
+      if (level.hasOwnProperty('id')) {
+        oldURI = level.id;
+      }
+      if (idMappings.hasOwnProperty(oldURI) || !level.hasOwnProperty('id')) {
+        if (level.type === 'Manifest') {
+          level.id = manifest.id || generateURI(level);
+        } else {
+          generateURI(level, parentResource);
+        }
+        if (oldURI) {
+          idMappings[oldURI] = level.id;
+        }
+      }
+    }
+    if (level.hasOwnProperty('target')) {
+      if (typeof level.target === 'string') {
+        level.target = updateTargetURI(level.target);
+      } else if (level.target.hasOwnProperty('id')) {
+        level.target.id = updateTargetURI(level.target.id);
+      }
+    }
+    if (level.hasOwnProperty('annotations')) {
+      level.items[0].items = []
+        .concat(level.items[0].items)
+        .concat(level.annotations[0].items);
+      delete level.annotations;
+    }
+    Object.entries(level).forEach(([name, item]) => {
+      // temp fix for services
+      if (name === 'service') {
+        if (Array.isArray(item)) {
+          level.service = item[0];
+        }
+      }
+      if (
+        typeof item !== 'string' &&
+        typeof item !== 'number' &&
+        typeof item !== 'boolean'
+      ) {
+        if (level.hasOwnProperty('type') && level.hasOwnProperty('id')) {
+          fixLevel(item, level);
+        } else {
+          fixLevel(item, parentResource);
+        }
+      }
+    });
+  };
+  fixLevel(manifest, null);
+  return manifest;
 };

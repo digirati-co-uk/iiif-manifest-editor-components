@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { getW3cAnnotationStyle } from '../../utils/IIIFResource';
 
 const NotSupportedAnnotation = (annotation, type) => (

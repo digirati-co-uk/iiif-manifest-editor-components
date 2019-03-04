@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-const EditorReducer = (state, action) => {
+export const EditorReducer = (state, action) => {
   return produce(state, nextState => {
     switch (action.type) {
       case 'UPDATE_CONFIGURATION':

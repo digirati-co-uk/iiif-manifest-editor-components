@@ -27,7 +27,7 @@ module.exports = {
     '03. Components',
     '04. Reducers',
     '05. Layout',
-    '06. Implementations',
+    '06. Implementations'
   ],
   themeConfig: {
     styles: {

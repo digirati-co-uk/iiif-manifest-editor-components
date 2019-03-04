@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { withStyles, TextField, Button, Select } from '@material-ui/core';
 
 const style = theme => ({

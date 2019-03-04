@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { EditorConsumer, EditorProvider } from '../EditorContext/EditorContext';
 import { LabelProvider } from '../LabelContext/LabelContext';

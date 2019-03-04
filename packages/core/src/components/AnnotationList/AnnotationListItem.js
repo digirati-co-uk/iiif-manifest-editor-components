@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Typography, withStyles } from '@material-ui/core';
 import LocaleString from '../LocaleString/LocaleString';
 import { EditorConsumer } from '../EditorContext/EditorContext';

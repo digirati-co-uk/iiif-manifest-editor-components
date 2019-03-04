@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Audiotrack } from '@material-ui/icons';
 
 import IIIFReducer from '../reducers/iiif';

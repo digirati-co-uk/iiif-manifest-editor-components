@@ -1,212 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import {
   withStyles,
   TextField,
   FormControl,
   FormLabel,
-  RadioGroup,
-  Radio,
-  Checkbox,
-  FormControlLabel,
-  InputAdornment,
-  IconButton,
 } from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
 import { locale, update as rawUpdate } from '../../utils/IIIFResource';
 import { throttle } from 'throttle-debounce';
 import { Label, LabelConsumer } from '../LabelContext/LabelContext';
+import IIIFTextField from '../IIIFTextField/IIIFTextField';
+import IIIFKeyValueField from '../IIIFKeyValueField/IIIFKeyValueField';
+import IIIFBehaviours from '../IIIFBehaviours/IIIFBehaviours';
 
 const styles = theme => ({
   label: {
     backgorund: '#fff',
   },
-  keyValuePair: {
-    border: `1px solid ${theme.palette.action.disabled}`,
-    marginBottom: theme.spacing.unit,
-    marginTop: theme.spacing.unit,
-    borderRadius: theme.shape.borderRadius,
-  },
-  keyValuePairFocus: {
-    border: `2px solid ${theme.palette.primary.main}`,
-    marginBottom: theme.spacing.unit,
-    marginTop: theme.spacing.unit,
-    borderRadius: theme.shape.borderRadius,
-    transition: `border-color ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }, border-width ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }, padding-left ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }`,
-  },
-  keyValuePairContent: {
-    marginTop: -theme.spacing.unit,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  keyValuePairField: {
-    '&>div>fieldset': {
-      border: '0 none !important',
-      '&>legend': {
-        background: '#fff',
-      },
-    },
-  },
 });
-
-const Behavior = ({ config, classes, target, lang, update }) => {
-  if (config) {
-    return (config.groups || []).map((group, index) => {
-      if (Array.isArray(group)) {
-        if (group.length > 1) {
-          return (
-            <RadioGroup
-              aria-label={group.label}
-              //className={classes.group}
-              value={(target.behavior || [])[index]}
-              onChange={ev =>
-                update(target, `behavior.${index}`, null, ev.target.value)
-              }
-              row
-            >
-              {(group || []).map(value => (
-                <FormControlLabel
-                  key={group.label + ' ' + value}
-                  value={value}
-                  control={<Radio color="primary" />}
-                  label={value}
-                  labelPlacement="end"
-                />
-              ))}
-            </RadioGroup>
-          );
-        } else {
-          return (
-            <FormControlLabel
-              label={group[0]}
-              labelPlacement="end"
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={
-                    (target.behavior || []).filter(val => val === group[0])
-                      .length > 0
-                  }
-                  onChange={() => {
-                    const behaviours = target.behavior || [];
-                    if (behaviours.indexOf(group[0]) !== -1) {
-                      update(
-                        target,
-                        'behavior',
-                        null,
-                        behaviours.filter(val => val !== group[0])
-                      );
-                    } else {
-                      update(
-                        target,
-                        'behavior',
-                        null,
-                        [].concat(behaviours).concat(group[0])
-                      );
-                    }
-                  }}
-                  value={group[0]}
-                />
-              }
-            />
-          );
-        }
-      } else if (typeof group === 'string') {
-        return (
-          <TextField
-            label="Freetext behaivor"
-            value={(target.behavior || [])[index]}
-            onChange={ev =>
-              update(target, `behavior.${index}`, null, ev.target.value)
-            }
-            className={classes.textField}
-            margin="dense"
-            multiline
-            variant="outlined"
-          />
-        );
-      } else if (
-        group.hasOwnProperty('label') &&
-        group.hasOwnProperty('values')
-      ) {
-        return (
-          <FormControl component="fieldset">
-            <FormLabel component="legend">{group.label}</FormLabel>
-            <RadioGroup
-              aria-label={group.label}
-              className={classes.group}
-              value={(target.behavior || [])[index]}
-              onChange={ev =>
-                update(target, `behavior.${index}`, null, ev.target.value)
-              }
-              row
-            >
-              {(group.values || []).map(value => (
-                <FormControlLabel
-                  key={group.label + ' ' + value}
-                  value={value}
-                  control={<Radio color="primary" />}
-                  label={value}
-                  labelPlacement="end"
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        );
-      } else if (typeof group === 'function' && !group.name) {
-        return group({
-          target,
-          update,
-        });
-      } else if (typeof group === 'function' && group.name) {
-        console.log('group', group, 'group.name', group.name);
-        //ReactDOM.createEleme
-        return React.createElement(group.name, {
-          target,
-          update,
-          //classes,
-        });
-      }
-    });
-  } else {
-    return (target.behavior || []).concat(['']).map((behaviour, idx, arr) => (
-      <TextField
-        //label="Label"
-        value={behaviour}
-        onChange={ev =>
-          update(target, `behavior.${idx}`, null, ev.target.value)
-        }
-        className={classes.textField}
-        margin="dense"
-        variant="outlined"
-        InputProps={{
-          endAdornment: arr.length - 1 !== idx && (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() =>
-                  update(
-                    target,
-                    'behavior',
-                    null,
-                    (target.behavior || []).filter((el, index) => index !== idx)
-                  )
-                }
-              >
-                <Delete />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-    ));
-  }
-};
 
 class MetadataEditor extends React.Component {
   constructor(props) {
@@ -223,10 +34,8 @@ class MetadataEditor extends React.Component {
     if (
       props.target &&
       state.target.id &&
-      props.target.id !== state.target.id //||
-      //state.lastUpdate + 1000 <= currentTime
+      props.target.id !== state.target.id
     ) {
-      console.log('getDerivedStateFromProps', props, state);
       return {
         // Since this method fires on both props and state changes, local updates
         // to the controlled value will be ignored, because the props version
@@ -278,7 +87,7 @@ class MetadataEditor extends React.Component {
               margin="dense"
               variant="outlined"
             />
-            <TextField
+            <IIIFTextField
               label={labels[type + '.Summary'] || 'Summary'}
               value={locale(this.state.target.summary, lang)}
               onChange={ev =>
@@ -290,76 +99,45 @@ class MetadataEditor extends React.Component {
                 )
               }
               className={classes.textField}
-              margin="dense"
-              multiline
-              variant="outlined"
             />
             <FormControl component="fieldset">
               <FormLabel component="legend">
                 {labels[type + '.RequiredStatement'] || 'Required Statement'}
               </FormLabel>
-              <div className={classes.keyValuePair}>
-                <div className={classes.keyValuePairContent}>
-                  <TextField
-                    label={labels[type + '.RequiredStatement.Label'] || 'Label'}
-                    value={locale(
-                      this.state.target.requiredStatement &&
-                        this.state.target.requiredStatement.label,
-                      lang
-                    )}
-                    onChange={ev =>
-                      this.localUpdate(
-                        this.state.target,
-                        'requiredStatement.label',
-                        lang,
-                        ev.target.value
-                      )
-                    }
-                    onFocus={ev =>
-                      (ev.target.parentNode.parentNode.parentNode.parentNode.className =
-                        classes.keyValuePairFocus)
-                    }
-                    onBlur={ev =>
-                      (ev.target.parentNode.parentNode.parentNode.parentNode.className =
-                        classes.keyValuePair)
-                    }
-                    className={classes.keyValuePairField}
-                    margin="dense"
-                    variant="outlined"
-                  />
-                  <TextField
-                    label={
-                      labels[type + 'Metadata.RequiredStatement.Value'] ||
-                      'Value'
-                    }
-                    value={locale(
-                      this.state.target.requiredStatement &&
-                        this.state.target.requiredStatement.value,
-                      lang
-                    )}
-                    onChange={ev =>
-                      this.localUpdate(
-                        this.state.target,
-                        'requiredStatement.value',
-                        lang,
-                        ev.target.value
-                      )
-                    }
-                    onFocus={ev =>
-                      (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
-                        classes.keyValuePairFocus)
-                    }
-                    onBlur={ev =>
-                      (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
-                        classes.keyValuePair)
-                    }
-                    className={classes.keyValuePairField}
-                    margin="dense"
-                    multiline
-                    variant="outlined"
-                  />
-                </div>
-              </div>
+              <IIIFKeyValueField
+                keyProps={{
+                  label: labels[type + '.RequiredStatement.Label'] || 'Label',
+                  value: locale(
+                    this.state.target.requiredStatement &&
+                      this.state.target.requiredStatement.label,
+                    lang
+                  ),
+                  onChange: ev =>
+                    this.localUpdate(
+                      this.state.target,
+                      'requiredStatement.label',
+                      lang,
+                      ev.target.value
+                    ),
+                }}
+                valueProps={{
+                  label:
+                    labels[type + 'Metadata.RequiredStatement.Value'] ||
+                    'Value',
+                  value: locale(
+                    this.state.target.requiredStatement &&
+                      this.state.target.requiredStatement.value,
+                    lang
+                  ),
+                  onChange: ev =>
+                    this.localUpdate(
+                      this.state.target,
+                      'requiredStatement.value',
+                      lang,
+                      ev.target.value
+                    ),
+                }}
+              />
             </FormControl>
             <FormControl component="fieldset">
               <FormLabel component="legend">
@@ -375,60 +153,31 @@ class MetadataEditor extends React.Component {
                   },
                 })
                 .map((metadata, index) => (
-                  <div
+                  <IIIFKeyValueField
                     key={`metadata_row__${index}`}
-                    className={classes.keyValuePair}
-                  >
-                    <div className={classes.keyValuePairContent}>
-                      <TextField
-                        label={labels[type + '.Metadata.Label'] || 'Label'}
-                        value={locale(metadata.label, lang)}
-                        onChange={ev =>
-                          this.localUpdate(
-                            this.state.target,
-                            `metadata.${index}.label`,
-                            lang,
-                            ev.target.value
-                          )
-                        }
-                        onFocus={ev =>
-                          (ev.target.parentNode.parentNode.parentNode.parentNode.className =
-                            classes.keyValuePairFocus)
-                        }
-                        onBlur={ev =>
-                          (ev.target.parentNode.parentNode.parentNode.parentNode.className =
-                            classes.keyValuePair)
-                        }
-                        className={classes.keyValuePairField}
-                        margin="dense"
-                        variant="outlined"
-                      />
-                      <TextField
-                        label={labels[type + '.Metadata.Value'] || 'Value'}
-                        value={locale(metadata.value, lang)}
-                        onChange={ev =>
-                          this.localUpdate(
-                            this.state.target,
-                            `metadata.${index}.value`,
-                            lang,
-                            ev.target.value
-                          )
-                        }
-                        onFocus={ev =>
-                          (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
-                            classes.keyValuePairFocus)
-                        }
-                        onBlur={ev =>
-                          (ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.className =
-                            classes.keyValuePair)
-                        }
-                        className={classes.keyValuePairField}
-                        margin="dense"
-                        multiline
-                        variant="outlined"
-                      />
-                    </div>
-                  </div>
+                    keyProps={{
+                      label: labels[type + '.Metadata.Label'] || 'Label',
+                      value: locale(metadata.label, lang),
+                      onChange: ev =>
+                        this.localUpdate(
+                          this.state.target,
+                          `metadata.${index}.label`,
+                          lang,
+                          ev.target.value
+                        ),
+                    }}
+                    valueProps={{
+                      label: labels[type + '.Metadata.Value'] || 'Value',
+                      value: locale(metadata.value, lang),
+                      onChange: ev =>
+                        this.localUpdate(
+                          this.state.target,
+                          `metadata.${index}.value`,
+                          lang,
+                          ev.target.value
+                        ),
+                    }}
+                  />
                 ))}
             </FormControl>
             {target.type === 'Manifest' && (
@@ -471,7 +220,7 @@ class MetadataEditor extends React.Component {
               <FormLabel component="legend">
                 {labels[type + '.Behaviors'] || 'Behaviors'}
               </FormLabel>
-              <Behavior
+              <IIIFBehaviours
                 config={behaviorConfig}
                 classes={classes}
                 target={target}

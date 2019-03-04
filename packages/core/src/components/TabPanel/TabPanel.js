@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { Tabs, Tab } from '@material-ui/core';
 
 import Panel from '../Panel/Panel';
@@ -20,7 +21,6 @@ const getTabName = child => {
 
 // NOTE: waiting for docz to be compatible with the new React 16.8.x...
 const TabPanelHook = ({ children, hideHeaderIfSingleTab }) => {
-  console.log('TabPanel - Hook version');
   const [activeIdx, setActiveIndex] = useState(0);
   const tabs = (children || []).filter(child => !!child);
   return (
@@ -73,7 +73,6 @@ class TabPanelComponent extends React.Component {
   };
 
   render() {
-    console.log('TabPanel - Component version');
     const { children, hideHeaderIfSingleTab } = this.props;
     const { activeIdx } = this.state;
     const tabs = (children || []).filter(child => !!child);

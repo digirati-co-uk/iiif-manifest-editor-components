@@ -1,0 +1,22 @@
+.ql-container {
+  height: auto !important;
+}
+
+.ql-editor {
+  height: auto !important;
+}
+
+.ql-toolbar.ql-snow {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+.ql-container.ql-snow {
+  border: 0;
+}
+
+.ql-snow .ql-tooltip {
+  transform: translateY(0px) translateX(50%);
+  z-index: 1;
+}

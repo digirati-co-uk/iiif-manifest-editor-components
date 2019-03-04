@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   createMuiTheme,
   MuiThemeProvider,
@@ -21,7 +21,6 @@ import SourcePreviewDialog from '../components/SourcePreviewDialog/SourcePreview
 import IIIFReducer from '../reducers/iiif';
 import EditorReducer from '../reducers/editor';
 import download from '../utils/download';
-import DefaultTooltip from '../components/DefaultTooltip/DefaultTooltip';
 
 import ImagePainting from '../annotation/ImagePainting';
 import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';

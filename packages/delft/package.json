@@ -1,0 +1,70 @@
+{
+  "name": "@IIIF-MEC/delft",
+  "version": "1.1.0",
+  "description": "Delft Manifest Editor",
+  "author": "Adam Meszaros<adam.meszaros@digirati.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "fesk-start",
+    "release": "NODE_ENV=production fesk-build",
+    "build": "NODE_ENV=production fesk-build",
+    "watch": "fesk-watch",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@fesk/scripts": "1.1.8",
+    "@fesk/webpack-config": "1.1.8",
+    "babel-core": "^7.0.0-bridge",
+    "babel-jest": "^23.6.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "jest": "^23.6.0",
+    "webpack-config": "^7.5.0"
+  },
+  "dependencies": {
+    "@IIIF-MEC/core": "0.0.1",
+    "@canvas-panel/core": "^0.1.1",
+    "@fesk/react-bem": "^1.1.2",
+    "@material-ui/core": "^3.6.1",
+    "@material-ui/icons": "^3.0.1",
+    "classnames": "^2.2.6",
+    "deepmerge": "^3.0.0",
+    "dotenv-webpack": "^1.7.0",
+    "immer": "^1.8.0",
+    "langs": "^2.0.0",
+    "prop-types": "^15.6.2",
+    "react": "16.8.2",
+    "react-beautiful-dnd": "^10.0.2",
+    "react-container-dimensions": "^1.4.1",
+    "react-dom": "16.8.2",
+    "react-dropzone": "7.0.1",
+    "react-input-range": "^1.3.0",
+    "react-lazy-images": "^1.1.0",
+    "react-rnd": "^9.0.4",
+    "react-scroll-wheel-handler": "^1.0.6",
+    "react-virtualized": "^9.21.0",
+    "throttle-debounce": "^2.1.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/jest.transform.js"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>/setup.jest.js",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/",
+      ".*\\.js\\.snap",
+      "jest.transform.js",
+      ".json",
+      "setup.jest.js",
+      "webpack.config.js"
+    ]
+  }
+}
+  

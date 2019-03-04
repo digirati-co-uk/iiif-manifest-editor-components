@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Select, MenuItem } from '@material-ui/core';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 

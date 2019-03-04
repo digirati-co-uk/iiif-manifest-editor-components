@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import * as classnames from 'classnames';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import {

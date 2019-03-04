@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { FormatShapes } from '@material-ui/icons';
 
 import { getW3cAnnotationStyle } from '../utils/IIIFResource';

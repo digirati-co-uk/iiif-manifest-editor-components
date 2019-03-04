@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "name": "iiif-manifest-editor-components",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Common components for editing IIIF manifests",
   "devEngines": {
     "node": "8.x"

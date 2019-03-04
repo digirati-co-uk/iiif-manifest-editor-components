@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { Typography, InputLabel, withStyles } from '@material-ui/core';
 import { Translate } from '@material-ui/icons';
 

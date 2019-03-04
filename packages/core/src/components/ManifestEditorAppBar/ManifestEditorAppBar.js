@@ -1,13 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
-const ManifestEditorAppBar = ({ title, titleColor, children }) => (
+const ManifestEditorAppBar = ({
+  title,
+  titleComponent,
+  titleColor,
+  children,
+}) => (
   <AppBar position="static">
     <Toolbar>
-      <Typography color={titleColor} variant="h6">
-        {title}
-      </Typography>
+      {titleComponent ? (
+        titleComponent
+      ) : (
+        <Typography color={titleColor} variant="h6">
+          {title}
+        </Typography>
+      )}
       <div
         style={{
           flex: 1,
@@ -25,12 +34,14 @@ const ManifestEditorAppBar = ({ title, titleColor, children }) => (
 ManifestEditorAppBar.propTypes = {
   title: PropTypes.string.isRequired,
   titleColor: PropTypes.string.isRequired,
+  titleComponent: PropTypes.any,
   children: PropTypes.any,
 };
 
 ManifestEditorAppBar.defaultProps = {
   title: 'Manifest Editor',
   titleColor: 'secondary',
+  titleComponent: null,
 };
 
 export default ManifestEditorAppBar;

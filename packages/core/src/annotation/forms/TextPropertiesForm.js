@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import {
   withStyles,
   RadioGroup,
@@ -7,6 +7,8 @@ import {
   Radio,
   TextField,
 } from '@material-ui/core';
+
+import IIIFTextFiled from '../../components/IIIFTextField/IIIFTextField';
 
 import styles from './FormStyles';
 
@@ -38,7 +40,13 @@ class TextPropertiesForm extends React.Component {
             labelPlacement="bottom"
           />
         </RadioGroup>
-        <TextField
+        <IIIFTextFiled
+          label="Body Value"
+          className={classes.textFieldFullWidth}
+          value={body}
+          onChange={ev => update(target, 'body.value', null, ev.target.value)}
+        />
+        {/* <TextField
           label="Body Value"
           className={classes.textFieldFullWidth}
           value={body}
@@ -46,7 +54,7 @@ class TextPropertiesForm extends React.Component {
           margin="dense"
           variant="outlined"
           multiline={true}
-        />
+        /> */}
       </div>
     );
   }

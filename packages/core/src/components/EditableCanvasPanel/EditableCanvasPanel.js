@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 //import { Rnd } from 'react-rnd';
 import { Droppable } from 'react-beautiful-dnd';
 import { IconButton, withStyles } from '@material-ui/core';
@@ -128,9 +128,15 @@ class EditableCanvasPanel extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    this.props.update(annotation, {
-      target: `${canvas.id}${hash}`,
-    });
+    if (typeof annotation.target.id === 'string') {
+      this.props.update(annotation.target, {
+        id: `${canvas.id}${hash}`,
+      });
+    } else {
+      this.props.update(annotation, {
+        target: `${canvas.id}${hash}`,
+      });
+    }
   };
 
   setViewport = v => (this.viewport = v);

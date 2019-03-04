@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { withStyles, Button, Select, OutlinedInput } from '@material-ui/core';
 import { Search, AddBox, PermIdentity } from '@material-ui/icons';
 

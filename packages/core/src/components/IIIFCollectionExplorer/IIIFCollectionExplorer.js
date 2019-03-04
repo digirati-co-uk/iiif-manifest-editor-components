@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import {
   withStyles,
   CircularProgress,
@@ -60,6 +60,7 @@ class CollectionExplorer extends React.Component {
 
   //TODO: CORS proxy
   loadResource = url => {
+    console.log('loadResource', url);
     if (url !== '' && url !== this.state.loadedResourceURL) {
       this.setState({
         isLoading: true,
@@ -79,13 +80,18 @@ class CollectionExplorer extends React.Component {
           if (resourceUrlIndex !== -1) {
             history = history.slice(0, resourceUrlIndex);
           }
-          this.setState({
-            resource,
-            loadedResourceURL: url,
-            resourceURL: url,
-            isLoading: false,
-            history: history.concat([url]),
-          });
+          this.setState(
+            {
+              resource,
+              loadedResourceURL: url,
+              resourceURL: url,
+              isLoading: false,
+              history: history.concat([url]),
+            },
+            () => {
+              this.props.onResourceLoaded(url);
+            }
+          );
         })
         .catch(err =>
           this.setState({
@@ -103,12 +109,15 @@ class CollectionExplorer extends React.Component {
   };
 
   openItem = item => {
+    console.log('openItem', item);
     if (item.items) {
       this.setState({
         resource: item.items,
       });
     } else if (item.id) {
-      this.loadResource(item.id);
+      if (!this.props.onItemSelect(item)) {
+        this.loadResource(item.id);
+      }
     }
   };
 
@@ -178,10 +187,14 @@ class CollectionExplorer extends React.Component {
 
 CollectionExplorer.propTypes = {
   url: PropTypes.string,
+  onItemSelect: PropTypes.func,
+  onResourceLoaded: PropTypes.func,
 };
 
 CollectionExplorer.defaultProps = {
   url: '',
+  onItemSelect: () => {},
+  onResourceLoaded: () => {},
 };
 
 export default withStyles(styles)(CollectionExplorer);

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { withStyles, TextField, Button } from '@material-ui/core';
 
 import { getAuthHeader } from './DLCS.utils';

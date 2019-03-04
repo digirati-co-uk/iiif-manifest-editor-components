@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { FormControl, FormLabel, withStyles } from '@material-ui/core';
 import ContainerDimensions from 'react-container-dimensions';
 

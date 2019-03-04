@@ -17,5 +17,45 @@ title: Deflt Manifest Editor
 	*, *:before, *:after {
 		box-sizing: border-box;
 	}
+
+	.layout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+  .layout__middle {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+  }
+  .layout__bottom {
+    height: 120px;
+    border-top: 2px solid rgba(0,0,0,0.1);
+    box-sizing: border-box;
+  }
+  .layout__left {
+    width: 320px;
+    border-right: 2px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  .layout__center {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+  }
+  .layout__right {
+    width: 420px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    .panel { // Hack should work out of the box....
+    height: auto;
+  }
 </style>
 <div id="app"></div>

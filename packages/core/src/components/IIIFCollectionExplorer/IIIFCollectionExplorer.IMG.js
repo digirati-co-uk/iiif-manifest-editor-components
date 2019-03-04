@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { BrokenImage } from '@material-ui/icons';
 
 // Internal image representation

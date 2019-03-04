@@ -2,7 +2,10 @@ import produce from 'immer';
 import renderResource, {
   queryResourceById,
   getParentByChildId,
+  fixManifest,
 } from '../utils/IIIFResource';
+
+import generateURI from '../utils/URIGenerator';
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -116,11 +119,81 @@ const IIIFReducer = (state, action) => {
         );
         break;
       case 'LOAD_MANIFEST':
-        nextState.rootResource = action.manifest;
+        nextState.rootResource = fixManifest(
+          JSON.parse(JSON.stringify(action.manifest))
+        );
         // This is wrong selection should be isolated this, maybe sagas
         nextState.selectedIdsByType.Canvas =
           action.manifest.items.length > 0 ? action.manifest.items[0].id : null;
         nextState.selectedIdsByType.Annotation = null;
+        break;
+      case 'REGENERATE_IDS':
+        const idMappings = {};
+        const updateTargetURI = target => {
+          const [targetURI, targetHash] = target.split('#');
+          return [idMappings[targetURI] || targetURI, targetHash].join('#');
+        };
+        const updateIds = (level, parentResource) => {
+          if (Array.isArray(level)) {
+            level.forEach(item => updateIds(item, parentResource));
+          }
+          if (level.hasOwnProperty('type')) {
+            let oldURI = null;
+            if (level.hasOwnProperty('id')) {
+              oldURI = level.id;
+            }
+            if (level.type === 'Manifest') {
+              level.id = action.manifestId;
+            } else {
+              generateURI(level, parentResource);
+            }
+            if (oldURI) {
+              idMappings[oldURI] = level.id;
+            }
+          }
+          if (level.hasOwnProperty('target')) {
+            if (typeof level.target === 'string') {
+              level.target = updateTargetURI(level.target);
+            } else if (level.target.hasOwnProperty('id')) {
+              level.target.id = updateTargetURI(level.target.id);
+            }
+          }
+          // if (level.hasOwnProperty('target')) {
+          //   const [targetURI, targetHash] = level.target.split('#');
+          //   level.target = [
+          //     idMappings[targetURI] || targetURI,
+          //     targetHash,
+          //   ].join('#');
+          // }
+          Object.values(level).forEach(item => {
+            if (
+              typeof item !== 'string' &&
+              typeof item !== 'number' &&
+              typeof item !== 'boolean'
+            ) {
+              if (level.hasOwnProperty('type') && level.hasOwnProperty('id')) {
+                updateIds(item, level);
+              } else {
+                updateIds(item, parentResource);
+              }
+            }
+          });
+        };
+        updateIds(nextState.rootResource, null);
+        if (
+          nextState.selectedIdsByType.Canvas &&
+          idMappings.hasOwnProperty(nextState.selectedIdsByType.Canvas)
+        ) {
+          nextState.selectedIdsByType.Canvas =
+            idMappings[nextState.selectedIdsByType.Canvas];
+        }
+        if (
+          nextState.selectedIdsByType.Annotation &&
+          idMappings.hasOwnProperty(nextState.selectedIdsByType.Annotation)
+        ) {
+          nextState.selectedIdsByType.Annotation =
+            idMappings[nextState.selectedIdsByType.Annotation];
+        }
         break;
       default:
         break;

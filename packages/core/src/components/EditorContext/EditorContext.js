@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import langs from 'langs';
-import deepmerge from 'deepmerge';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
+import * as langs from 'langs';
+import * as deepmerge from 'deepmerge';
 
 import IIIFReducer from '../../reducers/iiif';
 

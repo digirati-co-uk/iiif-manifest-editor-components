@@ -1,12 +1,13 @@
 {
   "name": "@IIIF-MEC/core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Core components for manifest editing",
   "author": "Adam Meszaros<adam.meszaros@digirati.com>",
   "license": "MIT",
+  "main": "lib/index.js",
   "scripts": {
     "start": "fesk-start",
-    "release": "NODE_ENV=production fesk-build",
+    "release": "NODE_ENV=production fesk-build --cjs",
     "build": "NODE_ENV=production fesk-build && docz build",
     "watch": "fesk-watch",
     "docz:dev": "docz dev",
@@ -17,8 +18,8 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
-    "@fesk/scripts": "1.2.0-pr.9227ce83",
-    "@fesk/webpack-config": "1.2.0-pr.9227ce83",
+    "@fesk/scripts": "1.1.8",
+    "@fesk/webpack-config": "1.1.8",
     "@reach/component-component": "^0.1.1",
     "babel-core": "^7.0.0-bridge",
     "babel-jest": "^23.6.0",
@@ -37,6 +38,9 @@
     "classnames": "^2.2.6",
     "deepmerge": "^3.0.0",
     "dotenv-webpack": "^1.7.0",
+    "draft-js": "^0.10.5",
+    "draftjs-to-html": "^0.8.4",
+    "html-to-draftjs": "^1.4.0",
     "iiif-prezi2to3": "^1.0.8",
     "immer": "^1.8.0",
     "langs": "^2.0.0",
@@ -45,13 +49,18 @@
     "react-beautiful-dnd": "^10.0.2",
     "react-container-dimensions": "^1.4.1",
     "react-dom": "16.8.2",
+    "react-draft-wysiwyg": "^1.13.1",
     "react-dropzone": "7.0.1",
     "react-input-range": "^1.3.0",
     "react-lazy-images": "^1.1.0",
+    "react-quill": "^1.3.3",
     "react-rnd": "^9.0.4",
     "react-scroll-wheel-handler": "^1.0.6",
     "react-virtualized": "^9.21.0",
     "throttle-debounce": "^2.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "jest": {
     "transform": {
