@@ -49,7 +49,7 @@ import './VNASlideshowEditor.scss';
 
 // Temporary override until the settings panel hasn't been funded.
 window.rootManifestUrl = 
-  'https://vna-manifests.netlify.com/iiif/';
+  'http://iiif-collection.ch.digtest.co.uk/p3/';
   //'http://localhost:8181/p3/';
 const emptyFn = () => {};
 
@@ -383,7 +383,7 @@ class VNASlideshowEditor extends React.Component {
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
-                  <IIIFCollectionExplorer url={'https://vna-manifests.netlify.com/p3/'} />
+                  <IIIFCollectionExplorer url={'http://iiif-collection.ch.digtest.co.uk/p3/'} />
                   <Properties
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
@@ -418,7 +418,7 @@ class VNASlideshowEditor extends React.Component {
         <LoadManifestModal
           open={this.state.loadManifestDialogOpen}
           handleClose={this.toggleLoadManifestDialog}
-          collectionURL={'https://vna-manifests.netlify.com/p3/'}
+          collectionURL={'http://iiif-collection.ch.digtest.co.uk/p3/'}
           loadManifest={this.loadManifest}
         />
         <PreviewModal
