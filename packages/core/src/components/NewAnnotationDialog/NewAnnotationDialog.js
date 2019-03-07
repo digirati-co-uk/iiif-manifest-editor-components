@@ -83,7 +83,7 @@ class NewAnnotationDialog extends React.Component {
             )}
             color="primary"
           >
-            Squeeze annotation into canvas
+            FIT CONTENT TO CANVAS
           </Button>
           <Button
             onClick={this.createAnnotation(
@@ -91,7 +91,7 @@ class NewAnnotationDialog extends React.Component {
             )}
             color="primary"
           >
-            Extend canvas to fit annotation
+            FIT CANVAS TO CONTENT
           </Button>
           <Button
             onClick={this.createAnnotation(SIZING_STRATEGY.NONE)}
