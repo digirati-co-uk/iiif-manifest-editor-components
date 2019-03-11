@@ -46,11 +46,14 @@ import SlideEditor from '../components/SlideEditor';
 import TextualBodyDescribing from '../annotation/TextualBodyDescribing';
 import './VNASlideshowEditor.scss';
 
-
+const isLocalhost = () => 
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1" ||
+  window.location.hostname === "0.0.0.0"   
 // Temporary override until the settings panel hasn't been funded.
-window.rootManifestUrl = 
-  'http://iiif-collection.ch.digtest.co.uk/p3/';
-  //'http://localhost:8181/p3/';
+window.rootManifestUrl = isLocalhost()
+  ? 'http://localhost:8181/p3/'
+  : 'http://iiif-collection.ch.digtest.co.uk/p3/';
 const emptyFn = () => {};
 
 const theme = createMuiTheme({
@@ -383,7 +386,7 @@ class VNASlideshowEditor extends React.Component {
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
-                  <IIIFCollectionExplorer url={'http://iiif-collection.ch.digtest.co.uk/p3/'} />
+                  <IIIFCollectionExplorer url={window.rootManifestUrl} />
                   <Properties
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
@@ -418,7 +421,7 @@ class VNASlideshowEditor extends React.Component {
         <LoadManifestModal
           open={this.state.loadManifestDialogOpen}
           handleClose={this.toggleLoadManifestDialog}
-          collectionURL={'http://iiif-collection.ch.digtest.co.uk/p3/'}
+          collectionURL={window.rootManifestUrl}
           loadManifest={this.loadManifest}
         />
         <PreviewModal
