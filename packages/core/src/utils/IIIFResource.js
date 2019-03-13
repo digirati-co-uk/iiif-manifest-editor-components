@@ -729,11 +729,25 @@ export const fixManifest = manifest => {
     const [targetURI, targetHash] = target.split('#');
     return [idMappings[targetURI] || targetURI, targetHash].join('#');
   };
+  const FORBIDDEN_TYPES = [
+    'Image',
+    'Video',
+    'Sound',
+    'Application',
+    'Dataset',
+    'Service',
+    'ImageService',
+    'ImageService2',
+    'ImageService3',
+  ];
   const fixLevel = (level, parentResource) => {
     if (Array.isArray(level)) {
       level.forEach(item => fixLevel(item, parentResource));
     }
-    if (level.hasOwnProperty('type')) {
+    if (
+      level.hasOwnProperty('type') &&
+      FORBIDDEN_TYPES.indexOf(level.type) === -1
+    ) {
       let oldURI = null;
       if (level.hasOwnProperty('id')) {
         oldURI = level.id;

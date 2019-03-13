@@ -133,11 +133,28 @@ const IIIFReducer = (state, action) => {
           const [targetURI, targetHash] = target.split('#');
           return [idMappings[targetURI] || targetURI, targetHash].join('#');
         };
+        // this is not good, need a different way to detext external resources.
+        const FORBIDDEN_TYPES = [
+          'Image',
+          'Video',
+          'Sound',
+          'Application',
+          'Dataset',
+          'Service',
+          'ImageService',
+          'ImageService2',
+          'ImageService3',
+        ];
         const updateIds = (level, parentResource) => {
           if (Array.isArray(level)) {
             level.forEach(item => updateIds(item, parentResource));
+            return;
           }
-          if (level.hasOwnProperty('type')) {
+
+          if (
+            level.hasOwnProperty('type') &&
+            FORBIDDEN_TYPES.indexOf(level.type) === -1
+          ) {
             let oldURI = null;
             if (level.hasOwnProperty('id')) {
               oldURI = level.id;
@@ -180,19 +197,18 @@ const IIIFReducer = (state, action) => {
           });
         };
         updateIds(nextState.rootResource, null);
-        if (
-          nextState.selectedIdsByType.Canvas &&
-          idMappings.hasOwnProperty(nextState.selectedIdsByType.Canvas)
-        ) {
-          nextState.selectedIdsByType.Canvas =
-            idMappings[nextState.selectedIdsByType.Canvas];
+        // TODO: still don't get it why we need recursion here...
+        if (nextState.selectedIdsByType.Canvas) {
+          while (idMappings[nextState.selectedIdsByType.Canvas]) {
+            nextState.selectedIdsByType.Canvas =
+              idMappings[nextState.selectedIdsByType.Canvas];
+          }
         }
-        if (
-          nextState.selectedIdsByType.Annotation &&
-          idMappings.hasOwnProperty(nextState.selectedIdsByType.Annotation)
-        ) {
-          nextState.selectedIdsByType.Annotation =
-            idMappings[nextState.selectedIdsByType.Annotation];
+        if (nextState.selectedIdsByType.Annotation) {
+          while (idMappings[nextState.selectedIdsByType.Annotation]) {
+            nextState.selectedIdsByType.Annotation =
+              idMappings[nextState.selectedIdsByType.Annotation];
+          }
         }
         break;
       default:
