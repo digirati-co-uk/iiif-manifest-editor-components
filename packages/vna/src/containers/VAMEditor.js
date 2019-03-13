@@ -381,7 +381,10 @@ class VAMEditor extends React.Component {
               </Layout.Left>
               <Layout.Center>
                 {editorMode === 'slideshow' ? (
-                  <SlideEditor manifestJSON={this.state.rootResource} canvasId={this.state.selectedIdsByType.Canvas} />
+                  <SlideEditor 
+                    manifestJSON={this.state.rootResource} 
+                    canvasId={this.state.selectedIdsByType.Canvas}
+                  />
                 ) : (
                   <EditableCanvasPanel
                     canvas={selectedCanvas}

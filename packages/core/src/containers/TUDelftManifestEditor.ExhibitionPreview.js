@@ -360,7 +360,6 @@ const ExhibitionPreview = ({
                   >
                     {(provided, snapshot) => {
                       const thumbnails = getCanvasThumbnails(canvas);
-                      console.log('canvas.behavior', canvas.behavior);
                       const behaviouralClasses = (canvas.behavior || []).reduce(
                         (acc, next) => {
                           acc[next] = true;

@@ -60,7 +60,6 @@ class CollectionExplorer extends React.Component {
 
   //TODO: CORS proxy
   loadResource = url => {
-    console.log('loadResource', url);
     if (url !== '' && url !== this.state.loadedResourceURL) {
       this.setState({
         isLoading: true,
@@ -109,7 +108,6 @@ class CollectionExplorer extends React.Component {
   };
 
   openItem = item => {
-    console.log('openItem', item);
     if (item.items) {
       this.setState({
         resource: item.items,

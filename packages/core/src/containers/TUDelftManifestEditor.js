@@ -200,7 +200,6 @@ class TUDelftManifestEditor extends React.Component {
   };
 
   loadManifest = json => {
-    //console.log(json, convertToV3ifNecessary(json));
     this.dispatch(IIIFReducer, {
       type: 'LOAD_MANIFEST',
       manifest: convertToV3ifNecessary(json),

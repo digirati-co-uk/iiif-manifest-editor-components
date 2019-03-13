@@ -164,7 +164,6 @@ class VideoPropertiesForm extends React.Component {
                   return `${hours}:${minutes}:${seconds}`;
                 }}
                 onChange={value => {
-                  console.log('new value', value);
                   update(target, 'body.selector', null, {
                     type: 'FragmentSelector',
                     conformsTo: 'http://www.w3.org/TR/media-frags/',

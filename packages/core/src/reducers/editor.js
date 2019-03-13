@@ -13,7 +13,6 @@ export const EditorReducer = (state, action) => {
           action.resource && action.resource.id ? action.resource.id : null;
         const resourceType =
           action.resource && action.resource.type ? action.resource.type : null;
-        
         if (
           resourceId &&
           resourceType &&

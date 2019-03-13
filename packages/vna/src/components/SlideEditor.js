@@ -11,7 +11,6 @@ import {
 import { Slide } from '@canvas-panel/slideshow';
 
 const SlideEditor = ({ manifestJSON, canvasId }) => {
-	console.log(manifestJSON, canvasId);
 	// Dumb way to update after edit, sorry, deadlines...
 	let manifestJSONLD = canvasId ? {
 		'@context': [

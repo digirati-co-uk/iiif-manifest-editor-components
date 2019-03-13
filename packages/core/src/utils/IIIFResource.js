@@ -589,7 +589,6 @@ export async function updateWithMetaB(target, property, lang, value) {
     //     '/thumbs/'
     //   );
     // } catch (ex) {
-    //   console.log(ex);
     // }
     // const tnSizeString = getSizeStringForValue(tnVal);
     // if (tnVal) {

@@ -297,7 +297,6 @@ export default class EditableAnnotation extends React.Component {
     const Y = this.applyPrecision(y) + this.state.dY;
     //const zam = position ? position.zoom * (1 / ratio) : 1;
     const zam = position && position.zoom ? position.zoom * (1 / ratio) : 1;
-    console.log('zam', zam, position);
     return (
       <div
         style={{

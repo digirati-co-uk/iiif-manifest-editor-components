@@ -48,7 +48,6 @@ class DLCSSearchForm extends React.Component {
   };
 
   searchFormChange = ev => {
-    console.log(ev.target.name, ev.target.value);
     this.setState({
       [ev.target.name]: ev.target.value,
     });

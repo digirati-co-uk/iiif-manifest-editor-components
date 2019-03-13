@@ -149,9 +149,6 @@ export const updateDisplayProperties = (
         result[key] = data ? data[key] || undefined : undefined;
       });
       URL_CACHE[value] = result;
-      // console.log(
-      //   'updateDisplayProperties->response' + JSON.stringify(result, null, 2)
-      // );
       callback(URL_CACHE[value], {
         serviceVersion: determineImageServiceVersion(data),
         dlcs: isDlcs,
@@ -159,7 +156,6 @@ export const updateDisplayProperties = (
       });
     })
     .catch(err => {
-      console.log('fetch(url)', url, err);
       callback(null);
     });
 };
@@ -174,7 +170,6 @@ const extraUpdates = (result, property, lang, extraProps) => {
 };
 
 const updateWithMetaCallbackHell = (target, property, lang, value, ready) => {
-  console.log(value);
   const urlsToFetch = [];
   let val = value;
   let tnVal = value;
@@ -200,9 +195,7 @@ const updateWithMetaCallbackHell = (target, property, lang, value, ready) => {
 };
 
 const updateBodyService = (result, property, lang, value, ready) => {
-  //console.log('updateBodyService', result, property, lang, value, ready);
   result = update(result, 'body.service.id', lang, value);
-  //const val = value.endsWith('/info.json') ? value : value + '/info.json';
   updateDisplayProperties(
     result,
     'body.service.id',
@@ -233,13 +226,10 @@ const updateBodyService = (result, property, lang, value, ready) => {
           }
         );
       } else {
-        console.log('here', data.info);
         try {
           const thumbnailSeriviceId = result.thumbnail[0].service.id;
           if (!thumbnailSeriviceId) {
-            //console.log(data.info);
             if (extraProps.sizes && extraProps.sizes.length) {
-              console.log(extraProps.sizes[0]);
               const { width, height } = extraProps.sizes[0];
 
               updateThumbnailId(
@@ -290,7 +280,6 @@ const updateBodyService = (result, property, lang, value, ready) => {
 };
 
 const updateBodyId = (result, property, lang, value, ready) => {
-  //console.log('updateBodyId', result, property, lang, value, ready);
   result = update(result, 'body.id', lang, value);
   updateDisplayProperties(result, property, lang, value, extraProps => {
     result = extraUpdates(result, property, lang, extraProps);
@@ -299,7 +288,6 @@ const updateBodyId = (result, property, lang, value, ready) => {
 };
 
 const updateThumbnailService = (result, property, lang, value, ready) => {
-  //console.log('updateThumbnailService', result, property, lang, value, ready);
   result = update(result, 'thumbnail.0.service.id', lang, value);
   updateDisplayProperties(result, property, lang, value, (extraProps, data) => {
     if (extraProps === null) {
@@ -319,7 +307,6 @@ const updateThumbnailService = (result, property, lang, value, ready) => {
 };
 
 const updateThumbnailId = (result, property, lang, value, ready) => {
-  //console.log('updateThumbnailId', result, property, lang, value, ready);
   result = update(result, 'thumbnail.0.id', lang, value);
   updateDisplayProperties(result, property, lang, value, extraProps => {
     result = extraUpdates(result, property, lang, extraProps);
