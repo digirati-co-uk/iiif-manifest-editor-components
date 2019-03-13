@@ -38,7 +38,7 @@ const PreviewModal = ({ manifest, handleClose, open }) => (
       {
         manifest && 
         manifest.behavior && 
-        manifest.behavior.filter(behavior=>behavior==='patchwork').length>0 
+        manifest.behavior.filter(behavior=>behavior==='annotated-zoom').length>0 
         ? (
           <PatchworkPlugin
             jsonLd={manifest}

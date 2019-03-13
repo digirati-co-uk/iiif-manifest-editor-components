@@ -29,12 +29,13 @@ const AnnotationListItem = ({
   lang,
   onSelect,
   isSelected,
+  selectedColor,
 }) => {
   const internalAnnotationType = [
     annotation.body.type,
     annotation.motivation,
   ].join('::');
-  const textColor = isSelected ? 'primary' : 'inherit';
+  const textColor = isSelected ? selectedColor : 'inherit';
   return (
     <EditorConsumer>
       {configuration => (
@@ -71,4 +72,9 @@ const AnnotationListItem = ({
     </EditorConsumer>
   );
 };
+
+AnnotationListItem.defaultProps = {
+  selectedColor: 'primary',
+};
+
 export default withStyles(style)(AnnotationListItem);

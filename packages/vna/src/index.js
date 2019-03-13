@@ -3,5 +3,5 @@ import { render } from 'react-dom';
 
 //Start vna manifest editor
 
-import VNASlideshowEditor from './containers/VNASlideshowEditor';
-render(<VNASlideshowEditor />, document.getElementById('app'));
+import VAMEditor from './containers/VAMEditor';
+render(<VAMEditor />, document.getElementById('app'));

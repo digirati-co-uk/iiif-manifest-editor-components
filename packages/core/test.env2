@@ -1,9 +1,0 @@
-# Delft
-# AMZN_S3_IDENTITY_POOL_HASH=23b9d884-95a2-4d5c-8a38-e847db51217e
-# AMZN_S3_REGION=eu-west-1
-# AMZN_S3_BUCKET=dlcservices-delft-pre-ingest-uploads
-
-# Main
-AMZN_S3_IDENTITY_POOL_HASH=4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1
-AMZN_S3_REGION=eu-west-1
-AMZN_S3_BUCKET=dlcs-dlcservices-test-ingest

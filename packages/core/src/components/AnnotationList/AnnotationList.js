@@ -58,6 +58,7 @@ const AnnotationList = ({
   select,
   remove,
   invokeAction,
+  selectedColor,
 }) => (
   <Panel>
     {toolbar ? (
@@ -94,6 +95,7 @@ const AnnotationList = ({
                           lang={lang}
                           onSelect={select}
                           selected={selected === annotation.id}
+                          selectedColor={selectedColor}
                         />
                       )}
                       <Tooltip title="Delete Annotation" placement="right">
@@ -147,6 +149,7 @@ AnnotationList.defaultProps = {
   select: emptyFn,
   remove: emptyFn,
   invokeAction: emptyFn,
+  selectedColor: 'primary',
 };
 
 export default withStyles(style)(AnnotationList);

@@ -15,8 +15,8 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
-    "@fesk/scripts": "1.1.8",
-    "@fesk/webpack-config": "1.1.8",
+    "@fesk/scripts": "1.2.0-pr.1057eaa5",
+    "@fesk/webpack-config": "1.2.0-pr.1057eaa5",
     "babel-core": "^7.0.0-bridge",
     "babel-jest": "^23.6.0",
     "enzyme": "^3.7.0",

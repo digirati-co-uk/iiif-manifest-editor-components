@@ -52,9 +52,13 @@ class Properties extends React.Component {
   };
 
   update = (target, property, lang, value) => {
-    updateWithMeta(target, property, lang, value, (result, prop, lng, val) =>
-      this.props.update(result, prop, lng, val)
-    );
+    updateWithMeta(target, property, lang, value, (result, prop, lng, val) => {
+      console.log(result, prop, lng, val);
+      this.props.update(result, prop, lng, val);
+    });
+    // updateWithMetaB(target, property, lang, value).then(
+    //   ({ result, prop, lan, val }) => this.props.update(result, prop, lan, val)
+    // );
   };
 
   render() {

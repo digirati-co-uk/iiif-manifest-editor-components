@@ -12,6 +12,9 @@ import EditableAnnotation from '../EditableCanvasPanel/EditableAnnotation';
 const imgUrl = iiifUrl =>
   iiifUrl.replace('/info.json', '') + '/full/full/0/default.jpg';
 
+const infoJson = iiifUrl =>
+  iiifUrl.endsWith('/info.json') ? iiifUrl : iiifUrl + '/info.json';
+
 class ImageCropper extends React.Component {
   constructor(props) {
     super(props);
@@ -91,7 +94,7 @@ class ImageCropper extends React.Component {
         getHeight: () => canvas.height,
         __jsonld: canvas,
       };
-      this.tileSources = [iiifUrl || imgUrl];
+      this.tileSources = [infoJson(iiifUrl) || imgUrl];
     }
     return (
       <div>

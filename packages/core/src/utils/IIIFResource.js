@@ -1,5 +1,6 @@
 import generateURI from './URIGenerator';
 import convertToV3ifNecessary from './IIIFUpgrader';
+import updateWithMetaC from './IIIFResource.noasyncawait';
 
 const defaultResourceRenderers = {
   Manifest: props => ({
@@ -315,14 +316,17 @@ export const updateDisplayProperties = (
   value,
   callback
 ) => {
-  console.log(value);
   if (URL_CACHE.hasOwnProperty(value)) {
-    console.log('keshiz');
     callback(URL_CACHE[value]);
     return;
   }
 
-  fetch(value)
+  let url = value;
+  if (property === 'body.service.id' || property === 'thumbnail.0.service.id') {
+    url = value.endsWith('/info.json') ? value : value + '/info.json';
+  }
+
+  fetch(url)
     .then(response => {
       if (!response.ok) {
         callback(null);
@@ -377,16 +381,127 @@ export const updateDisplayProperties = (
       }
     })
     .then(data => {
-      const result = {};
+      const result = {
+        serviceVersion: determineImageServiceVersion(data),
+      };
       PROPS_TO_COPY_IF_EXIST.forEach(key => {
         result[key] = data ? data[key] || undefined : undefined;
       });
       URL_CACHE[value] = result;
+
       callback(URL_CACHE[value]);
     })
     .catch(err => {
       callback(null);
     });
+};
+
+export async function updateDisplayPropertiesAsync(property, value) {
+  if (URL_CACHE.hasOwnProperty(value)) {
+    //callback(URL_CACHE[value]);
+    return URL_CACHE[value];
+  }
+
+  let url = value;
+  if (property === 'body.service.id' || property === 'thumbnail.0.service.id') {
+    url = value.endsWith('/info.json') ? value : value + '/info.json';
+  }
+
+  const response = await fetch(url);
+  const contentType = response.headers.get('Content-Type');
+  if (!response.ok || !contentType) {
+    return null;
+  }
+  if (
+    contentType.startsWith('application/json') ||
+    contentType.startsWith('application/ld+json')
+  ) {
+    const data = await response.json();
+    if (!data) {
+      return null;
+    }
+    const result = {
+      serviceVersion: determineImageServiceVersion(data),
+    };
+    PROPS_TO_COPY_IF_EXIST.forEach(key => {
+      result[key] = data ? data[key] || undefined : undefined;
+    });
+    URL_CACHE[value] = result;
+
+    return result;
+  } else if (contentType.startsWith('image/')) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        URL_CACHE[value] = {
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        };
+        resolve(URL_CACHE[value]);
+      };
+      im.onerror = () => {
+        reject('Image load error');
+      };
+      img.src = value;
+    });
+  } else if (contentType.startsWith('video/')) {
+    return new Promise((resolve, reject) => {
+      const vid = document.createElement('video');
+      vid.onloadedmetadata = () => {
+        URL_CACHE[value] = {
+          width: vid.videoWidth,
+          height: vid.videoHeight,
+          duration: vid.duration,
+        };
+        resolve(URL_CACHE[value]);
+      };
+      vid.onerror = () => reject('Video load error');
+      vid.src = value;
+    });
+  } else if (contentType.startsWith('audio/')) {
+    return new Promise((resolve, reject) => {
+      const au = document.createElement('audio');
+      au.onloadedmetadata = () => {
+        URL_CACHE[value] = {
+          duration: au.duration,
+        };
+        resolve(URL_CACHE[value]);
+      };
+      au.onerror = () => reject('Audio load error');
+      au.src = value;
+    });
+  } else {
+    return {
+      width: undefined,
+      duration: undefined,
+      height: undefined,
+    };
+  }
+}
+
+const IIIF_IMAGE_API_VERSION_MAPPING = {
+  'http://library.stanford.edu/iiif/image-api/1.1/context.json': 1,
+  'http://iiif.io/api/image/2/context.json': 2,
+  'http://iiif.io/api/image/3/context.json': 3,
+};
+
+const determineImageServiceVersion = infoJson => {
+  if (!infoJson || !infoJson.hasOwnProperty('@context')) {
+    return null;
+  }
+  const context = infoJson['@context'];
+  if (typeof context === 'string') {
+    return IIIF_IMAGE_API_VERSION_MAPPING[context];
+  } else if (Array.isArray(context)) {
+    return context.reduce((version, contextItem) => {
+      if (version) {
+        return version;
+      } else {
+        return IIIF_IMAGE_API_VERSION_MAPPING[contextItem];
+      }
+    }, null);
+  }
+  return null;
 };
 
 const REQUIRE_META_UPDATE = [
@@ -396,59 +511,174 @@ const REQUIRE_META_UPDATE = [
   'thumbnail.0.service.id',
 ];
 
-export const updateWithMeta = (target, property, lang, value, ready) => {
-  ready(target, property, lang, value);
-  if (REQUIRE_META_UPDATE.indexOf(property) !== -1) {
-    updateDisplayProperties(target, property, lang, value, extraProps => {
-      let result = target;
-      if (extraProps) {
-        Object.entries(extraProps).forEach(([key, data]) => {
-          result = update(
-            result,
-            property.replace(/\.id$/, `.${key}`),
-            lang,
-            data
-          );
-        });
-      }
-      // TODO: make this as a plugin after the system functionally complete
-      result = dlcsExtras(result, property, lang, value, ready);
-      ready(result, property, lang, value);
+// NOTE: this was the original
+export const updateWithMeta = updateWithMetaC;
+// (target, property, lang, value, ready) => {
+//   ready(target, property, lang, value);
+//   if (REQUIRE_META_UPDATE.indexOf(property) !== -1) {
+//     updateDisplayProperties(target, property, lang, value, extraProps => {
+//       let result = target;
+//       if (extraProps) {
+//         Object.entries(extraProps).forEach(([key, data]) => {
+//           result = update(
+//             result,
+//             property.replace(/\.id$/, `.${key}`),
+//             lang,
+//             data
+//           );
+//         });
+//       }
+//       // TODO: make this as a plugin after the system functionally complete
+//       result = iiifLogic(result, property, lang, value, ready);
+//       result = dlcsExtras(result, property, lang, value, ready);
+//       ready(result, property, lang, value);
+//     });
+//   }
+// };
+
+const extraUpdates = (result, property, lang, extraProps) => {
+  if (extraProps) {
+    Object.entries(extraProps).forEach(([key, data]) => {
+      result = update(result, property.replace(/\.id$/, `.${key}`), lang, data);
     });
   }
+  return result;
 };
 
-const dlcsExtras = (target, property, lang, value, ready) => {
-  if (!(typeof value === 'string' && value.indexOf('//dlc.services/') !== -1)) {
+// NOTE: this was isn't working because fesk-build --cjs misinterprets the async/await polyfill
+// library because the default import issue  which I raised earlier...
+export async function updateWithMetaB(target, property, lang, value) {
+  let result = target;
+  const val = value;
+  const tnVal = value;
+  switch (property) {
+    case 'body.service.id':
+      const bodyServiceExtraProps = await updateDisplayPropertiesAsync(
+        'body.service.id',
+        val
+      );
+      const sizeString = getSizeStringForValue(val);
+      update(result, 'body.service.id', lang, val);
+      val = `${val}${sizeString}0/default.jpg`;
+      // this is dlcs specific
+      tnVal = value.replace('/iiif-img/', '/thumbs/');
+      update(result, 'body.id', lang, val);
+      extraUpdates(result, 'body.service.id', lang, bodyServiceExtraProps);
+    case 'body.id':
+      const bodyExtraProps = await updateDisplayPropertiesAsync('body.id', val);
+      update(result, 'body.id', lang, val);
+      extraUpdates(result, 'body.id', lang, bodyExtraProps);
+    case 'thumbnail.0.service.id':
+      const thumbnailServiceExtraProps = await updateDisplayPropertiesAsync(
+        'thumbnail.0.service.id',
+        tnVal
+      );
+      update(result, 'thumbnail.0.service.id', lang, tnVal);
+      extraUpdates(
+        result,
+        'thumbnail.0.service.id',
+        lang,
+        thumbnailServiceExtraProps
+      );
+      tnVal = tnVal.replace('/iiif-img/', '/thumbs/');
+      update(result, 'thumbnail.0.id', lang, tnVal);
+    case 'thumbnail.0.id':
+    // try {
+    //   tnVal = result.thumbnail[0].service.id.replace(
+    //     '/iiif-img/',
+    //     '/thumbs/'
+    //   );
+    // } catch (ex) {
+    //   console.log(ex);
+    // }
+    // const tnSizeString = getSizeStringForValue(tnVal);
+    // if (tnVal) {
+    //   const thumbnailExtraProps = await updateDisplayPropertiesAsync(
+    //     'thumbnail.0.id',
+    //     tnVal
+    //   );
+    //   extraUpdates(result, 'thumbnail.0.id', lang, thumbnailExtraProps);
+    // }
+    default:
+      return {
+        result,
+        prop: property,
+        lan: lang,
+        val: value,
+      };
+  }
+}
+
+export const updateDisplayPropertiesRequest = (
+  target,
+  property,
+  lang,
+  value,
+  callback
+) => {
+  if (URL_CACHE.hasOwnProperty(value)) {
+    callback(URL_CACHE[value]);
     return;
   }
+
+  let url = value;
+  if (property === 'body.service.id' || property === 'thumbnail.0.service.id') {
+    url = value.endsWith('/info.json') ? value : value + '/info.json';
+  }
+
+  return fetch(url);
+};
+
+const getSizeStringForValue = url =>
+  (url.endsWith('/') ? '' : '/') +
+  (URL_CACHE[url] &&
+  URL_CACHE[url].serviceVersion &&
+  URL_CACHE[url].serviceVersion > 2
+    ? 'full/max/'
+    : 'full/full/');
+
+const iiifLogic = (target, property, lang, value, ready) => {
   var result = target;
   if (property === 'body.service.id') {
+    const sizeString = getSizeStringForValue(value);
+    // update(
     result = update(
       result,
       'body.id',
       lang,
-      value.replace('/info.json', '') + '/full/full/0/default.jpg',
-      ready
+      `${value}${sizeString}0/default.jpg`
     );
+  }
 
+  return result;
+};
+
+const dlcsExtras = (target, property, lang, value, ready) => {
+  if (!(typeof value === 'string' && value.indexOf('//dlc.services/') !== -1)) {
+    return target;
+  }
+  var result = target;
+  if (property === 'body.service.id') {
+    // update(
     result = update(
       result,
       'thumbnail.0.service.id',
       lang,
-      value.replace('/iiif-img/', '/thumbs/'),
-      ready
+      value.replace('/iiif-img/', '/thumbs/')
     );
   }
 
   if (property === 'body.service.id' || property === 'thumbnail.0.service.id') {
+    const sizeString = getSizeStringForValue(value);
+    const dlcsThumbnailUrl = value
+      .replace('/info.json', '')
+      .replace('/iiif-img/', '/thumbs/');
+    //update(
     result = update(
       result,
       'thumbnail.0.id',
       lang,
-      value.replace('/info.json', '').replace('/iiif-img/', '/thumbs/') +
-        '/full/full/0/default.jpg',
-      ready
+      `${dlcsThumbnailUrl}${sizeString}0/default.jpg`
     );
   }
   return result;

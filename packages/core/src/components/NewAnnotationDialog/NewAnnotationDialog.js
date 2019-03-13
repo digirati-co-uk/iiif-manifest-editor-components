@@ -36,6 +36,12 @@ class NewAnnotationDialog extends React.Component {
   }
 
   update = (target, property, lang, value) => {
+    // updateWithMetaB(target, property, lang, value).then(
+    //   ({ result, prop, lan, val }) =>
+    //     this.setState({
+    //       resource: update(result, prop, lan, val),
+    //     })
+    // );
     updateWithMeta(target, property, lang, value, (result, prop, lng, val) => {
       this.setState({
         resource: update(result, prop, lng, val),

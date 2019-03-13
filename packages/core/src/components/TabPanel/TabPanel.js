@@ -45,8 +45,7 @@ const TabPanelHook = ({ children, hideHeaderIfSingleTab }) => {
               onChange={(ev, index) => setActiveIndex(index)}
               indicatorColor="primary"
               textColor="primary"
-              scrollable={children.length > 3}
-              fullWidth={children.length < 4}
+              variant={children.length > 3 ? 'scrollable' : 'fullWidth'}
               scrollButtons={children.length < 4 ? 'off' : 'auto'}
             >
               {tabs.map((child, idx) => (
@@ -102,8 +101,7 @@ class TabPanelComponent extends React.Component {
                 }
                 indicatorColor="primary"
                 textColor="primary"
-                scrollable={children.length > 3}
-                fullWidth={children.length < 4}
+                variant={children.length > 3 ? 'scrollable' : 'fullWidth'}
                 scrollButtons={children.length < 4 ? 'off' : 'auto'}
               >
                 {tabs.map((child, idx) => (

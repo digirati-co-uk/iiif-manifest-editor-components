@@ -2,7 +2,6 @@ import React from 'react';
 import { Select , MenuItem, withStyles } from '@material-ui/core';
 
 const style = theme => {
-  console.log('theme', theme);
   return ({
     input: {
       color: theme.palette.secondary.main
@@ -27,9 +26,9 @@ const EditorModeSelector = ({ classes, selected, onSelect }) => (
       icon: classes.icon,
     }}
   >
-    <MenuItem value="default">IIIF Manifest Editor (No extension)</MenuItem>
-    <MenuItem value="patchwork">Patchwork Editor</MenuItem>
     <MenuItem value="slideshow">Slideshow Editor</MenuItem>
+    <MenuItem value="annotated-zoom">Annotated Zoom</MenuItem>
+    <MenuItem value="default">IIIF Manifest Editor (No extension)</MenuItem>
   </Select>
 );
 
