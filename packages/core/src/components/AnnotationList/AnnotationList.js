@@ -94,7 +94,7 @@ const AnnotationList = ({
                           annotation={annotation}
                           lang={lang}
                           onSelect={select}
-                          selected={selected === annotation.id}
+                          isSelected={selected === annotation.id}
                           selectedColor={selectedColor}
                         />
                       )}
