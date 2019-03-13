@@ -17,8 +17,8 @@ export default class EditableAnnotation extends React.Component {
   };
 
   static defaultStyles = {
-    outline: '1px solid skyblue',
-    background: 'rgba(135, 206, 235, 0.3)',
+    //outline: '1px solid skyblue',
+    //background: 'rgba(135, 206, 235, 0.3)',
     pointerEvents: 'all',
     transformOrigin: '0 0',
     position: 'absolute',

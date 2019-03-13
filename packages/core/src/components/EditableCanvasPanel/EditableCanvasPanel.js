@@ -18,7 +18,13 @@ import {
   CanvasRepresentation,
 } from '@canvas-panel/core';
 import EditableAnnotation from './EditableAnnotation';
-
+const addAlphaToHex = (hex, a) => {
+  let _hex = hex.replace('#', '');
+  let r = parseInt(_hex.substring(0, 2), 16);
+  let g = parseInt(_hex.substring(2, 4), 16);
+  let b = parseInt(_hex.substring(4, 6), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+};
 const styles = theme => ({
   '@global': {
     '.navigator': {
@@ -58,6 +64,22 @@ const styles = theme => ({
     position: 'absolute',
     top: 0,
     right: 0,
+  },
+  boxClass: {
+    outline: '1px solid transparent',
+    background: addAlphaToHex(theme.palette.primary.main, 0.6),
+  },
+  boxClassSelected: {
+    outline: `1px solid ${theme.palette.primary.main}`,
+    background: addAlphaToHex(theme.palette.primary.main, 0.9),
+  },
+  boxClassSecondary: {
+    outline: '1px solid transparent',
+    background: addAlphaToHex(theme.palette.secondary.main, 0.6),
+  },
+  boxClassSecondarySelected: {
+    outline: `1px solid ${theme.palette.secondary.main}`,
+    background: addAlphaToHex(theme.palette.secondary.main, 0.9),
   },
 });
 
@@ -142,7 +164,12 @@ class EditableCanvasPanel extends React.Component {
   setViewport = v => (this.viewport = v);
 
   render() {
-    let { classes, canvas, style } = this.props;
+    let { classes, canvas, style, annotationColor } = this.props;
+    const annotationClasses =
+      annotationColor === 'primary'
+        ? ['boxClass', 'boxClassSelected']
+        : ['boxClassSecondary', 'boxClassSecondarySelected'];
+
     if (!canvas) {
       return (
         <div className={classes.noCanvasSelectedMessage}>
@@ -236,16 +263,17 @@ class EditableCanvasPanel extends React.Component {
                                 }
                                 this.updateBounds(annotation, meh, canvas);
                               }}
-                              boxStyles={
-                                annotation.id === selectedAnnotation
-                                  ? {
-                                      outline: '1px solid skyblue',
-                                      background: 'rgba(135, 206, 235, 0.3)',
-                                    }
-                                  : {
-                                      outline: '1px solid transparent',
-                                      background: 'rgba(135, 135, 135, 0.1)',
-                                    }
+                              boxStyles={{
+                                outlineWidth: this.viewport
+                                  ? (this.viewport.getZoom() / 1) * 3
+                                  : 3,
+                              }}
+                              className={
+                                classes[
+                                  annotation.id === selectedAnnotation
+                                    ? annotationClasses[1]
+                                    : annotationClasses[0]
+                                ]
                               }
                               onClick={this.selectItem(annotation)}
                             >
@@ -291,6 +319,7 @@ EditableCanvasPanel.propTypes = {
   lockAspectRatio: PropTypes.array.isRequired,
   select: PropTypes.func,
   update: PropTypes.func,
+  annotationColor: PropTypes.string,
 };
 
 EditableCanvasPanel.defaultProps = {
@@ -298,6 +327,7 @@ EditableCanvasPanel.defaultProps = {
   select: emptyFn,
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
+  annotationColor: 'primary',
 };
 
 export default withStyles(styles)(EditableCanvasPanel);

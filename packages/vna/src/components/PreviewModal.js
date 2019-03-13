@@ -12,8 +12,9 @@ import {
 import {
   Close
 } from '@material-ui/icons';
-import { PatchworkPlugin } from '@canvas-panel/patchwork-plugin';
+import { FullPageViewer } from '@canvas-panel/full-page-plugin';
 import { SlideShow } from '@canvas-panel/slideshow';
+import  { saveFixtures } from '../utils';
 
 const PreviewModal = ({ manifest, handleClose, open }) => (
   <Dialog
@@ -38,17 +39,27 @@ const PreviewModal = ({ manifest, handleClose, open }) => (
       {
         manifest && 
         manifest.behavior && 
-        manifest.behavior.filter(behavior=>behavior==='annotated-zoom').length>0 
+        manifest.behavior.filter(behavior=>behavior==='vam-annotated-zoom').length>0 
         ? (
-          <PatchworkPlugin
-            jsonLd={manifest}
-            cssClassMap={{
-              annotation: 'annotation-pin',
-            }}
-            cssClassPrefix="patchwork-"
-            height={500}
-            width={1200}
-          />
+          <FullPageViewer
+            jsonLd={saveFixtures(manifest)}
+            title="Preview"
+            annotationPosition="top"
+          >
+            <p>Scroll down to start or click the 'start tour' button.</p>
+            <span className="muted">
+              © Victoria and Albert Museum, London 2018
+            </span>
+          </FullPageViewer>
+          // <PatchworkPlugin
+          //   jsonLdManifest={saveFixtures(manifest)}
+          //   cssClassMap={{
+          //     annotation: 'annotation-pin',
+          //   }}
+          //   cssClassPrefix="patchwork-"
+          //   height={500}
+          //   width={1200}
+          // />
         )
         : (
           <SlideShow jsonLd={manifest} />

@@ -44,6 +44,7 @@ import SaveManifestModal from '../components/SaveManifestModal';
 import PreviewModal from '../components/PreviewModal';
 import SlideEditor from '../components/SlideEditor';
 import TextualBodyDescribing from '../annotation/TextualBodyDescribing';
+import  { saveFixtures } from '../utils';
 import './VAMEditor.scss';
 
 const isLocalhost = () => 
@@ -212,7 +213,7 @@ class VAMEditor extends React.Component {
 
   saveProject = () => {
     download(
-      this.state.rootResource,
+      saveFixtures(this.state.rootResource),
       locale(this.state.rootResource.label, this.state.lang) + '.json'
     );
   };
@@ -391,6 +392,7 @@ class VAMEditor extends React.Component {
                     selectedAnnotation={this.state.selectedIdsByType.Annotation}
                     select={this.selectResource}
                     update={this.updateResource}
+                    annotationColor="secondary"
                   />
                 )}
               </Layout.Center>
@@ -428,7 +430,7 @@ class VAMEditor extends React.Component {
           </Layout>
         </ManifestEditor>
         <SourcePreviewDialog
-          json={this.state.rootResource}
+          json={saveFixtures(this.state.rootResource)}
           open={this.state.previewDialogOpen}
           handleClose={this.togglePreviewDialog}
         />

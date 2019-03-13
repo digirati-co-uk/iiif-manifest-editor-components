@@ -45,7 +45,7 @@ export default class TextualBodyDescribing extends BaseAnnotation {
             type: 'Annotation',
             parent: state.selectedIdsByType.Canvas,
             props: {
-              motivation: 'layout-viewport-focus',
+              motivation: 'describing',
               body: TextPainting.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
             },

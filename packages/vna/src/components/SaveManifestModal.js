@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { IIIFCollectionExplorer } from '@IIIF-MEC/core';
-
+import  { saveFixtures } from '../utils';
 const style = theme => ({
   titleBar: {
     padding: theme.spacing.unit,
@@ -79,7 +79,7 @@ const SaveManifestModal = ({
                   headers: {
                       "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(manifest)
+                  body: JSON.stringify(saveFixtures(manifest))
               })
                 .then(response => response.json())
                 .then(() => handleClose())
