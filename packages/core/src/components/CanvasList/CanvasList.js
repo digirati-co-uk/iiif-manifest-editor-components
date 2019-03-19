@@ -121,7 +121,7 @@ const CanvasList = ({
     style={direction === 'horizontal' ? {} : { height: '100%' }}
   >
     <Panel.Content>
-      <Droppable droppableId="canvaslist" direction={direction}>
+      <Droppable droppableId="canvaslist" direction={direction} style={direction === 'horizontal' ?{ width: '100%'}:{height: '100%'}}>
         {(providedDroppable, snapshotProppable) => (
           <div
             ref={providedDroppable.innerRef}

@@ -3,10 +3,16 @@
 const saveAnnotatedZoom = manifest => {
     manifest.items[0].annotations = [{
         type: 'AnnotationPage',
-        items: manifest.items[0].items[0].items.filter(item => item.motivation === 'describing')
+        items: 
+            manifest.items[0].items[0].items
+                .filter(item => item.motivation === 'describing')
+                .map(item => 
+                    item.body.value.replace('<h2>', '<h2 class=\"annotatedzoom-annotation-detail__label\">')
+                )
     }];
     manifest.items[0].items[0].items = 
         manifest.items[0].items[0].items.filter(item => item.motivation !== 'describing')
+    
 };
 
 const saveSlideshow = manifest => {

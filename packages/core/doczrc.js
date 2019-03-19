@@ -1,13 +1,17 @@
 const sass = require('@fesk/webpack-config/lib/loaders/sass');
 const miniCss = require('@fesk/webpack-config/lib/plugins/mini-css');
 
+const merge = require('webpack-merge');
+const feskPackConfig = require('./webpack.config');
+
 module.exports = {
   title: 'IIIF-MEC/core',
   description: 'IIIF Manifest Editor Core Components',
+  files: '**/*.mdx',
   src: './src/',
   dest: './dist/docs',
   base: '/',
-  debug: false,
+  debug: true,
   port: 5001,
   protocol: 'http',
   menu: [
@@ -29,6 +33,7 @@ module.exports = {
     '05. Layout',
     '06. Implementations'
   ],
+  wrapper: undefined,
   themeConfig: {
     styles: {
       container: {
@@ -36,9 +41,17 @@ module.exports = {
       },
     },
   },
+  modifyBabelRc: (config) => {
+    //console.log(config);
+    config.babelrc = false
+    return config
+  },
   modifyBundlerConfig: config => {
     config.module.rules.push(sass);
     config.plugins.push(miniCss);
-    return config;
+    // console.log(config, feskPackConfig);
+    // const cfg = merge(feskPackConfig, config);
+    console.log(config.entry);
+    return config;//merge(feskPackConfig, config);
   },
 };

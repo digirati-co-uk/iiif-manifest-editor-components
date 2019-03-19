@@ -8,10 +8,10 @@ import DefaultTooltip from './DefaultTooltip/DefaultTooltip';
 import DLCSPanel from './DLCSExplorer/DLCSPanel';
 import EditableCanvas from './EditableCanvas/EditableCanvas';
 import EditableCanvasPanel from './EditableCanvasPanel/EditableCanvasPanel';
-import EditorContext from './EditorContext/EditorContext';
+import { EditorProvider, EditorConsumer } from './EditorContext/EditorContext';
 import IIIFCollectionExplorer from './IIIFCollectionExplorer/IIIFCollectionExplorer';
 import ImageCropper from './ImageCropper/ImageCropper';
-import LabelContext from './LabelContext/LabelContext';
+import { LabelProvider, LabelConsumer } from './LabelContext/LabelContext';
 import LocaleString from './LocaleString/LocaleString';
 import ManifestEditor from './ManifestEditor/ManifestEditor';
 import ManifestEditorAppBar from './ManifestEditorAppBar/ManifestEditorAppBar';
@@ -30,7 +30,8 @@ export {
   // TOP LEVEL Components
   ManifestEditor,
   ManifestEditorAppBar,
-  EditorContext,
+  EditorProvider,
+  EditorConsumer,
   // editor panels
   CanvasList,
   AnnotationList,
@@ -47,7 +48,8 @@ export {
   Panel,
   TabPanel,
   //Translation/customisation
-  LabelContext,
+  LabelProvider,
+  LabelConsumer,
   LocaleString,
   // mostly internal components
   ImageCropper,

@@ -1,7 +1,7 @@
-//import * as React from 'react';
-//import { render } from 'react-dom';
+// import * as React from 'react';
+// import { render } from 'react-dom';
 // import SimpleEditorUI from './containers/SimpleEditorUI';
-//render(<SimpleEditorUI />, document.getElementById('app'));
+// render(<SimpleEditorUI />, document.getElementById('app'));
 //import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
 //render(<TUDelftManifestEditor />, document.getElementById('app'));
 //import VNASlideshowEditor from './containers/VNASlideshowEditor';
@@ -11,7 +11,8 @@ import {
   // TOP LEVEL Components
   ManifestEditor,
   ManifestEditorAppBar,
-  EditorContext,
+  EditorConsumer,
+  EditorProvider,
   // editor panels
   CanvasList,
   AnnotationList,
@@ -28,7 +29,8 @@ import {
   Panel,
   TabPanel,
   //Translation/customisation
-  LabelContext,
+  LabelProvider,
+  LabelConsumer,
   LocaleString,
   // mostly internal components
   ImageCropper,
@@ -84,7 +86,8 @@ export {
   // TOP LEVEL Components
   ManifestEditor,
   ManifestEditorAppBar,
-  EditorContext,
+  EditorConsumer,
+  EditorProvider,
   // editor panels
   CanvasList,
   AnnotationList,
@@ -101,7 +104,8 @@ export {
   Panel,
   TabPanel,
   //Translation/customisation
-  LabelContext,
+  LabelProvider,
+  LabelConsumer,
   LocaleString,
   // mostly internal components
   ImageCropper,

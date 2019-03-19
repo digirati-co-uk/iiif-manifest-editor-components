@@ -16,15 +16,15 @@
     "test:watch": "jest --coverage --watch"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
     "@fesk/scripts": "1.2.0-pr.1057eaa5",
     "@fesk/webpack-config": "1.2.0-pr.1057eaa5",
     "@reach/component-component": "^0.1.1",
     "babel-core": "^7.0.0-bridge",
     "babel-jest": "^23.6.0",
-    "docz": "0.12.17",
-    "docz-theme-default": "0.12.17",
+    "docz": "0.11.1",
+    "docz-theme-default": "0.11.1",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "jest": "^23.6.0",
@@ -37,9 +37,7 @@
     "@fesk/react-bem": "^1.1.2",
     "@material-ui/core": "^3.6.1",
     "@material-ui/icons": "^3.0.1",
-    "babel-plugin-root-import": "^6.1.0",
     "classnames": "^2.2.6",
-    "co-fs-extra": "https://github.com/adam-digirati/co-fs-extra/#feature/update-fs-extra",
     "deepmerge": "^3.0.0",
     "detect-it": "^3.0.5",
     "dotenv-webpack": "^1.7.0",
@@ -60,7 +58,8 @@
     "react-rnd": "^9.0.4",
     "react-scroll-wheel-handler": "^1.0.6",
     "react-virtualized": "^9.21.0",
-    "throttle-debounce": "^2.1.0"
+    "throttle-debounce": "^2.1.0",
+    "webpack-merge": "^4.2.1"
   },
   "publishConfig": {
     "access": "public"
