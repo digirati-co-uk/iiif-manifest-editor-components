@@ -30,6 +30,7 @@ export default class EditableAnnotation extends React.Component {
     boxStyles: PropTypes.object,
     boxSizeInt: PropTypes.bool,
     constrainToCanvasBounds: PropTypes.bool,
+    preserveAspectRatio: PropTypes.bool,
     x: PropTypes.number,
     y: PropTypes.number,
     width: PropTypes.number,
@@ -40,6 +41,7 @@ export default class EditableAnnotation extends React.Component {
     boxStyles: {},
     boxSizeInt: true,
     constrainToCanvasBounds: true,
+    preserveAspectRatio: true,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -204,6 +206,11 @@ export default class EditableAnnotation extends React.Component {
             Math.max(newState.dHeight, -this.props.height)
           );
         }
+        if (this.props.preserveAspectRatio) {
+          newState.dWidth =
+            (this.props.width / this.props.height) * newState.dHeight;
+          newState.dX = (this.props.width / this.props.height) * newState.dY;
+        }
       }
       if (this.state.resizeStarted.startsWith('s')) {
         newState.dHeight = this.applyPrecision((Y - this.state.mouseY) * rzam);
@@ -213,6 +220,10 @@ export default class EditableAnnotation extends React.Component {
             canvas.height * ratio - (this.props.y + this.props.height)
           );
         }
+        if (this.props.preserveAspectRatio) {
+          newState.dWidth =
+            (this.props.width / this.props.height) * newState.dHeight;
+        }
       }
       if (this.state.resizeStarted.endsWith('e')) {
         newState.dWidth = this.applyPrecision((X - this.state.mouseX) * rzam);
@@ -221,6 +232,10 @@ export default class EditableAnnotation extends React.Component {
             Math.max(newState.dWidth, -this.props.width),
             canvas.width * ratio - (this.props.x + this.props.width)
           );
+        }
+        if (this.props.preserveAspectRatio) {
+          newState.dHeight =
+            (this.props.height / this.props.width) * newState.dWidth;
         }
       }
       if (this.state.resizeStarted.endsWith('w')) {
@@ -235,6 +250,11 @@ export default class EditableAnnotation extends React.Component {
             this.props.x,
             Math.max(newState.dWidth, -this.props.width)
           );
+        }
+        if (this.props.preserveAspectRatio) {
+          newState.dHeight =
+            (this.props.height / this.props.width) * newState.dWidth;
+          newState.dY = (this.props.height / this.props.width) * newState.dX;
         }
       }
       this.setState(newState);

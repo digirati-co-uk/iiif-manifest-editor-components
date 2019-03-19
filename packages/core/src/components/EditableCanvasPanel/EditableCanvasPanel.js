@@ -247,6 +247,7 @@ class EditableCanvasPanel extends React.Component {
                               height={bounds.h}
                               target={canvas.id}
                               ratio={ratio}
+                              preserveAspectRatio={lockAspectRatio}
                               setCoords={xywh => {
                                 const meh = {};
                                 if (xywh.hasOwnProperty('x')) {

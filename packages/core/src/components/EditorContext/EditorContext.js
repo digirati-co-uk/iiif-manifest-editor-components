@@ -10,6 +10,7 @@ import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
 import AudioPainting from '../../annotation/AudioPainting';
 import generateURI from '../../utils/URIGenerator';
+import { queryResourceById } from '../../utils/IIIFResource';
 
 const getImageServiceURL = dlcsURL =>
   dlcsURL
@@ -201,15 +202,59 @@ const defaultEditorContext = {
               ],
             };
             generateURI(annotation, state.selectedIdsByType.Canvas);
+            const canvas = queryResourceById(
+              state.selectedIdsByType.Canvas,
+              state.rootResource
+            );
             annotation.target = state.selectedIdsByType.Canvas;
-            dispatch(IIIFReducer, {
-              type: 'ADD_SPECIFIC_RESOURCE',
-              options: {
-                props: annotation,
-                parent: state.selectedIdsByType.Canvas,
-                //index: drop.destination.index,
+            const imgWidth =
+              imageService && imageService.width
+                ? imageService.width
+                : window.draggedData.width;
+            const imgHeight =
+              imageService && imageService.height
+                ? imageService.height
+                : window.draggedData.height;
+            if (canvas.width < imgWidth || canvas.height < imgHeight) {
+              const minRatio = Math.min(
+                canvas.width / imgWidth,
+                canvas.height / imgHeight
+              );
+              const tW = minRatio * imgWidth;
+              const tH = minRatio * imgHeight;
+              annotation.target += `#xywh=0,0,${tW},${tH}`;
+            }
+
+            dispatch(
+              IIIFReducer,
+              {
+                type: 'ADD_SPECIFIC_RESOURCE',
+                options: {
+                  props: annotation,
+                  parent: state.selectedIdsByType.Canvas,
+                  //index: drop.destination.index,
+                },
               },
-            });
+              () => {
+                // uncomment if we want this to behave like the canvas-list drag
+                // dispatch(IIIFReducer, {
+                //   type: 'UPDATE_RESOURCE',
+                //   options: {
+                //     id: state.selectedIdsByType.Canvas,
+                //     props: {
+                //       height:
+                //         imageService && imageService.height
+                //           ? imageService.height
+                //           : window.draggedData.height,
+                //       width:
+                //         imageService && imageService.width
+                //           ? imageService.width
+                //           : window.draggedData.width,
+                //     },
+                //   },
+                // });
+              }
+            );
           });
       }
     },
