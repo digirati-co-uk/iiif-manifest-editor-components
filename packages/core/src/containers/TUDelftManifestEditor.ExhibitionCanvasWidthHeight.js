@@ -76,7 +76,6 @@ class ExhibitionCanvasWidthHeight extends React.Component {
         behaviour.startsWith(WIDTH_PREFIX) ||
         behaviour.startsWith(HEIGHT_PREFIX)
     );
-    console.log('behaviours', behaviours);
     return (
       <FormControl component="fieldset">
         <FormLabel component="legend">

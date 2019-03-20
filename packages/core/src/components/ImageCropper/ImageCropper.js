@@ -1,13 +1,21 @@
 import * as React from 'react';
 import ContainerDimensions from 'react-container-dimensions';
-
+import { FormControlLabel, Switch, withStyles } from '@material-ui/core';
 import {
   Viewport,
   OpenSeadragonViewport,
   OpenSeadragonViewer,
   CanvasRepresentation,
 } from '@canvas-panel/core';
+import { addAlphaToHex } from '../../utils/colors';
 import EditableAnnotation from '../EditableCanvasPanel/EditableAnnotation';
+
+const style = theme => ({
+  boxClass: {
+    outline: `1px solid theme.${theme.palette.primary.main}`,
+    background: addAlphaToHex(theme.palette.primary.main, 0.6),
+  },
+});
 
 const imgUrl = iiifUrl =>
   iiifUrl.replace('/info.json', '') + '/full/full/0/default.jpg';
@@ -55,7 +63,14 @@ class ImageCropper extends React.Component {
   }
 
   render() {
-    const { iiifUrl, imgWidth, imgHeight } = this.props;
+    const {
+      classes,
+      iiifImageUrl,
+      iiifUrl,
+      imgWidth,
+      imgHeight,
+      update,
+    } = this.props;
     const imageId = imgUrl(iiifUrl);
     const canvas = {
       id: 'crop',
@@ -80,6 +95,7 @@ class ImageCropper extends React.Component {
         },
       ],
     };
+    const imageURLParts = (iiifImageUrl || '').split('/');
     const ratio = 1.0;
     if (
       !this.canvas ||
@@ -98,6 +114,27 @@ class ImageCropper extends React.Component {
     }
     return (
       <div>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={
+                imageURLParts.length - 4 > 0
+                  ? imageURLParts[imageURLParts.length - 4] === 'full'
+                  : false
+              }
+              onChange={(event, checked) => {
+                console.log(this.state.annotation, event, checked);
+                const ann = this.state.annotation;
+                imageURLParts[imageURLParts.length - 4] = checked
+                  ? `${ann.x},${ann.y},${ann.width},${ann.height}`
+                  : 'full';
+                this.props.onChange(imageURLParts.join('/'));
+              }}
+              disabled={!iiifImageUrl || iiifImageUrl === ''}
+            />
+          }
+          label="Cropping/partial display"
+        />
         <ContainerDimensions>
           {({ width }) => {
             const cWidth = width;
@@ -120,13 +157,22 @@ class ImageCropper extends React.Component {
                       {...this.state.annotation}
                       ratio={ratio}
                       setCoords={xywh => {
-                        this.setState({
-                          annotation: {
-                            ...this.state.annotation,
-                            ...xywh,
+                        this.setState(
+                          {
+                            annotation: {
+                              ...this.state.annotation,
+                              ...xywh,
+                            },
                           },
-                        });
+                          () => {
+                            const ann = this.state.annotation;
+                            console.log(ann);
+                            imageURLParts[imageURLParts.length - 4] = `${ann.x},${ann.y},${ann.width},${ann.height}`;
+                            this.props.onChange(imageURLParts.join('/'));
+                          }
+                        );
                       }}
+                      className={classes.boxClass}
                     />
                   )}
                 </CanvasRepresentation>
@@ -139,4 +185,4 @@ class ImageCropper extends React.Component {
   }
 }
 
-export default ImageCropper;
+export default withStyles(style)(ImageCropper);

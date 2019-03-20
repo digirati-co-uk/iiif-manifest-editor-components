@@ -10,7 +10,7 @@ import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRend
 import { getBounds, makeURLHash } from '../../utils/IIIFResource';
 //Experimental workaround for again Canvas Panel....
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
-
+import { addAlphaToHex } from '../../utils/colors';
 import {
   Viewport,
   OpenSeadragonViewport,
@@ -18,13 +18,7 @@ import {
   CanvasRepresentation,
 } from '@canvas-panel/core';
 import EditableAnnotation from './EditableAnnotation';
-const addAlphaToHex = (hex, a) => {
-  let _hex = hex.replace('#', '');
-  let r = parseInt(_hex.substring(0, 2), 16);
-  let g = parseInt(_hex.substring(2, 4), 16);
-  let b = parseInt(_hex.substring(4, 6), 16);
-  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-};
+
 const styles = theme => ({
   '@global': {
     '.navigator': {

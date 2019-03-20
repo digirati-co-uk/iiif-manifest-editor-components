@@ -1,11 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import {
-  withStyles,
-  TextField,
-  FormControlLabel,
-  Switch,
-} from '@material-ui/core';
+import { withStyles, TextField } from '@material-ui/core';
 import ImageCropper from '../../components/ImageCropper/ImageCropper';
 
 import styles from './FormStyles';
@@ -77,15 +72,13 @@ class ImagePropertiesForm extends React.Component {
               width: '100%',
             }}
           >
-            <FormControlLabel
-              control={<Switch value="checkedC" />}
-              label="Cropping/partial display"
-            />
             {imageServiceUrl && serviceBody.width && serviceBody.height && (
               <ImageCropper
+                iiifImageUrl={imageUrl}
                 iiifUrl={imageServiceUrl}
                 imgWidth={serviceBody.width}
                 imgHeight={serviceBody.height}
+                onChange={value => update(target, 'body.id', null, value)}
               />
             )}
           </div>

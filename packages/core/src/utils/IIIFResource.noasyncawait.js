@@ -144,7 +144,10 @@ export const updateDisplayProperties = (
       }
     })
     .then(data => {
-      const result = {};
+      const result = {
+        type: `ImageService` + determineImageServiceVersion(data),
+        profile: data.profile,
+      };
       PROPS_TO_COPY_IF_EXIST.forEach(key => {
         result[key] = data ? data[key] || undefined : undefined;
       });

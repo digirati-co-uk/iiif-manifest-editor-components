@@ -87,6 +87,11 @@ const SLIDESHOW_BEHAVIOURS = {
   Canvas: {
     groups: [
       {
+        label: 'layout', 
+        values: ['layout-overlay', 'layout-split'],
+        default: 'layout-split',
+      },
+      {
         label: 'info position',
         values: [
           'info-position-left',
@@ -94,11 +99,6 @@ const SLIDESHOW_BEHAVIOURS = {
           'info-position-center',
         ],
         default: 'info-position-left',
-      },
-      {
-        label: 'layout', 
-        values: ['layout-overlay', 'layout-split'],
-        default: 'layout-split',
       },
       '*',
     ],
@@ -113,7 +113,7 @@ const SLIDESHOW_PROPERTIES_LABEL = {
   'Canvas.Label': 'Title',
   'Canvas.RequiredStatement': 'Legal notice',
   'Canvas.RequiredStatement.Label': 'Title',
-  'Canvas.RequiredStatement.Label': 'Body',
+  'Canvas.RequiredStatement.Value': 'Body',
   'Canvas.Metadata': 'Additional info',
   'Canvas.Metadata.Label': 'Title',
 };
