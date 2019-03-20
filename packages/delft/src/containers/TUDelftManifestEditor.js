@@ -278,7 +278,7 @@ class TUDelftManifestEditor extends React.Component {
               groups: [
                 ['row', 'column'],
                 props => <ExhibitionCanvasWidthHeight {...props} />,
-                ['caption-left'],
+                ['caption-left', 'info'],
               ],
             },
           }}
@@ -319,6 +319,7 @@ class TUDelftManifestEditor extends React.Component {
                 />
               </AppBar>
               <Layout.Middle>
+                {!(exhibitionMode && exhibitionFullView) && (
                 <Layout.Left>
                   <TabPanel>
                     <AnnotationList
@@ -346,7 +347,9 @@ class TUDelftManifestEditor extends React.Component {
                     )}
                   </TabPanel>
                 </Layout.Left>
-                {!(exhibitionMode && exhibitionFullView) && (
+                )}
+
+                {!(exhibitionMode && exhibitionFullView) ? (
                   <Layout.Center>
                     <EditableCanvasPanel
                       title="annotations"
@@ -357,6 +360,34 @@ class TUDelftManifestEditor extends React.Component {
                       select={this.selectResource}
                       update={this.updateResource}
                     />
+                  </Layout.Center>
+                ) : (
+                  <Layout.Center>
+                    <TabPanel>
+                      <AnnotationList
+                        title="annotations"
+                        annotations={annotations}
+                        lang={lang}
+                        selected={this.state.selectedIdsByType.Annotation}
+                        select={this.selectResource}
+                        remove={this.deleteResource}
+                        invokeAction={this.invokeAction2}
+                      />
+                      {exhibitionMode && (
+                        <ExhibitionPreview
+                          title="Exhibition Preview"
+                          canvases={canvases}
+                          manifest={this.state.rootResource}
+                          direction="vertical"
+                          lang={lang}
+                          selected={this.state.selectedIdsByType.Canvas}
+                          select={this.selectResource}
+                          remove={this.deleteResource}
+                          invokeAction={this.invokeAction}
+                          toggleZoom={this.toggleExhibitionFullView}
+                        />
+                      )}
+                    </TabPanel>
                   </Layout.Center>
                 )}
                 <Layout.Right>

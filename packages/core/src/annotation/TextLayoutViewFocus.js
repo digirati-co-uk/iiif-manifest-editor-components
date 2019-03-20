@@ -17,7 +17,7 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
         pointerEvents: 'none',
       }}
     >
-      {annotation.body.value || 'Text Annotation'}
+      {annotation.body.value || 'Viewport Focus'}
     </p>
   );
 
@@ -30,7 +30,7 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
     </ButtonWithTooltip>
   );
 
-  static icon = ({ color, title = 'Text Annotation /w layout view focus' }) => (
+  static icon = ({ color, title = 'Viewport focus' }) => (
     <Tooltip title={title}>
       <FormatShapes color={color} />
     </Tooltip>

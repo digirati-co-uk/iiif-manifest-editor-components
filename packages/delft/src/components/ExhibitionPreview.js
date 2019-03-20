@@ -5,10 +5,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Toolbar, withStyles } from '@material-ui/core';
 import { Cancel, AddCircle, ZoomIn } from '@material-ui/icons';
 
-import { Panel, LocaleString, Tooltip } from '@IIIF-MEC/core';
-// import Panel from '../components/Panel/Panel';
-// import LocaleString from '../components/LocaleString/LocaleString';
-// import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
+import { Panel, LocaleString, DefaultTooltip as Tooltip } from '@IIIF-MEC/core';
 
 const XYWHRx = /(?:.*xywh\=(\d+),(\d+),(\d+),(\d+).*)/;
 
@@ -344,14 +341,6 @@ const ExhibitionPreview = ({
               </div>
               <div />
             </div>
-            <div className="block info cutcorners w-4 h-4">
-              <div className="boxtitle">About</div>
-              <div className="text">
-                <LocaleString fallback={manifest.id} lang={lang}>
-                  {manifest.summary}
-                </LocaleString>
-              </div>
-            </div>
             {canvases && canvases.length > 0 ? (
               <React.Fragment>
                 {canvases.map((canvas, index) => (
@@ -372,7 +361,8 @@ const ExhibitionPreview = ({
                       );
                       if (
                         !behaviouralClasses.column &&
-                        !behaviouralClasses.row
+                        !behaviouralClasses.row &&
+                        !behaviouralClasses.info
                       ) {
                         behaviouralClasses.row = true;
                       }
@@ -405,61 +395,79 @@ const ExhibitionPreview = ({
                               }
                               onClick={() => select(canvas)}
                             >
-                              {canvas.summary && canvas.summary[lang] ? (
-                                <React.Fragment>
-                                  <div
-                                    className={classnames(
-                                      itemClass,
-                                      'image',
-                                      imageClasses(behaviouralClasses)
+                                {
+                                (canvas.behavior|| []).indexOf('info') !== -1 ? (
+                                  <React.Fragment>
+                                    <div className="boxtitle">
+                                      <LocaleString fallback={'About'} lang={lang}>
+                                        {canvas.label}
+                                      </LocaleString>
+                                    </div>
+                                    <div className="text">
+                                      <LocaleString fallback={canvas.id} lang={lang}>
+                                        {canvas.summary}
+                                      </LocaleString>
+                                    </div>
+                                  </React.Fragment>
+                                ) : (
+                                  <React.Fragment>
+                                    {canvas.summary && canvas.summary[lang] ? (
+                                      <React.Fragment>
+                                        <div
+                                          className={classnames(
+                                            itemClass,
+                                            'image',
+                                            imageClasses(behaviouralClasses)
+                                          )}
+                                        >
+                                          <CanvasPreview
+                                            canvasPercentageRatio={
+                                              canvasPercentageRatio
+                                            }
+                                            thumbnails={thumbnails}
+                                            canvasWidth={canvasWidth}
+                                            canvasHeight={canvasHeight}
+                                            canvas={canvas}
+                                          />
+                                        </div>
+                                        <div
+                                          className={classnames(
+                                            itemClass,
+                                            'info',
+                                            summaryClasses(behaviouralClasses)
+                                          )}
+                                        >
+                                          <LocaleString
+                                            fallback={canvas.id}
+                                            lang={lang}
+                                          >
+                                            {canvas.summary}
+                                          </LocaleString>
+                                        </div>
+                                      </React.Fragment>
+                                    ) : (
+                                      <React.Fragment>
+                                        <CanvasPreview
+                                          canvasPercentageRatio={
+                                            canvasPercentageRatio
+                                          }
+                                          thumbnails={thumbnails}
+                                          canvasWidth={canvasWidth}
+                                          canvasHeight={canvasHeight}
+                                          canvas={canvas}
+                                        />
+                                        <span className={classes.canvasLabel}>
+                                          <LocaleString
+                                            fallback={canvas.id}
+                                            lang={lang}
+                                          >
+                                            {canvas.label}
+                                          </LocaleString>
+                                        </span>
+                                      </React.Fragment>
                                     )}
-                                  >
-                                    <CanvasPreview
-                                      canvasPercentageRatio={
-                                        canvasPercentageRatio
-                                      }
-                                      thumbnails={thumbnails}
-                                      canvasWidth={canvasWidth}
-                                      canvasHeight={canvasHeight}
-                                      canvas={canvas}
-                                    />
-                                  </div>
-                                  <div
-                                    className={classnames(
-                                      itemClass,
-                                      'info',
-                                      summaryClasses(behaviouralClasses)
-                                    )}
-                                  >
-                                    <LocaleString
-                                      fallback={canvas.id}
-                                      lang={lang}
-                                    >
-                                      {canvas.summary}
-                                    </LocaleString>
-                                  </div>
-                                </React.Fragment>
-                              ) : (
-                                <React.Fragment>
-                                  <CanvasPreview
-                                    canvasPercentageRatio={
-                                      canvasPercentageRatio
-                                    }
-                                    thumbnails={thumbnails}
-                                    canvasWidth={canvasWidth}
-                                    canvasHeight={canvasHeight}
-                                    canvas={canvas}
-                                  />
-                                  <span className={classes.canvasLabel}>
-                                    <LocaleString
-                                      fallback={canvas.id}
-                                      lang={lang}
-                                    >
-                                      {canvas.label}
-                                    </LocaleString>
-                                  </span>
-                                </React.Fragment>
-                              )}
+                                  </React.Fragment>
+                                )}                              
                             </div>
                           )}
                           <Tooltip title="Delete Canvas">
