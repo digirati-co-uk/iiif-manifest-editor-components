@@ -398,10 +398,6 @@ class VAMEditor extends React.Component {
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
-                  <IIIFCollectionExplorer
-                    title="IIIF Collection Explorer"
-                    url={window.rootManifestUrl}
-                  />
                   <Properties
                     title="Properties"
                     manifest={this.state.rootResource}
@@ -411,6 +407,10 @@ class VAMEditor extends React.Component {
                     changeLanguage={this.changeLanguage}
                     update={this.updateProperty}
                     noTranslation={true}
+                  />
+                  <IIIFCollectionExplorer
+                    title="IIIF Collection Explorer"
+                    url={window.rootManifestUrl}
                   />
                 </TabPanel>
               </Layout.Right>
