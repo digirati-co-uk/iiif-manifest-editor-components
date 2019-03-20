@@ -452,6 +452,14 @@ const defaultEditorContext = {
     languages: langs.all(),
     defaultLanguage: 'en',
   },
+  annotationFormButtons: {
+    NewAnnotationForm: [
+      'dismiss',
+      'fitContentToCanvas',
+      'fitCanvasToContent',
+      'add',
+    ],
+  },
 };
 
 const EditorContext = React.createContext(defaultEditorContext);
@@ -464,6 +472,7 @@ export class EditorProvider extends React.Component {
       translation,
       dragDrop,
       behavior,
+      annotationFormButtons,
     } = this.props;
 
     const aggregatedConfig = deepmerge.all([
@@ -482,6 +491,9 @@ export class EditorProvider extends React.Component {
     if (behavior) {
       aggregatedConfig.behavior = behavior;
     }
+    if (annotationFormButtons) {
+      aggregatedConfig.annotationFormButtons = annotationFormButtons;
+    }
 
     return (
       <EditorContext.Provider value={aggregatedConfig}>
@@ -498,6 +510,8 @@ EditorProvider.propTypes = {
   configuration: PropTypes.object,
   /** annotation configuration override (replaces the default) */
   annotation: PropTypes.object,
+  /** new annotation form buttons */
+  annotationFormButtons: PropTypes.object,
   /** translation configuration override (replaces the default)  */
   translation: PropTypes.object,
   /** Drag and drop configuration override (replaces the default) */
@@ -509,6 +523,7 @@ EditorProvider.propTypes = {
 EditorProvider.defaultProps = {
   configuration: {},
   annotation: null,
+  annotationFormButtons: null,
   translation: null,
   dragDrop: null,
   behavior: null,

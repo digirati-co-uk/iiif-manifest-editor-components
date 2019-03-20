@@ -116,6 +116,7 @@ const SLIDESHOW_PROPERTIES_LABEL = {
   'Canvas.RequiredStatement.Value': 'Body',
   'Canvas.Metadata': 'Additional info',
   'Canvas.Metadata.Label': 'Title',
+  'NewAnnotationForm.fitCanvasToContent': 'add',
 };
 
 class VAMEditor extends React.Component {
@@ -327,6 +328,14 @@ class VAMEditor extends React.Component {
           annotation={annotationConfig}
           metaOntology={editorMode === 'slideshow' ? SLIDESHOW_PROPERTIES_LABEL: {}}
           behavior={editorMode === 'slideshow' ? SLIDESHOW_BEHAVIOURS:  {}}
+          annotationFormButtons={
+            editorMode === 'slideshow' 
+              ? {
+                  NewAnnotationForm: ['dismiss', 'fitCanvasToContent'],
+                  'TextualBodyDescribing.NewAnnotationForm': ['dismiss', 'add'],
+                }
+              : null
+          }
         >
           <Layout>
             <AppBar titleComponent={

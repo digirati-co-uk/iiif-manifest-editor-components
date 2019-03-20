@@ -8,8 +8,10 @@ import {
   Button,
 } from '@material-ui/core';
 
+import { EditorConsumer } from '../EditorContext/EditorContext';
 import { update, updateWithMeta } from '../../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../../constants/sizing';
+import { Label } from '../LabelContext/LabelContext';
 
 class NewAnnotationDialog extends React.Component {
   state = {
@@ -59,6 +61,8 @@ class NewAnnotationDialog extends React.Component {
   render() {
     const { handleClose, form } = this.props;
     const { resource } = this.state;
+    const resourceType = resource.type;
+    const formName = form ? form.name : 'noform';
     return (
       <Dialog
         open={!!form}
@@ -69,7 +73,7 @@ class NewAnnotationDialog extends React.Component {
         aria-labelledby="new-annotation-dialog"
       >
         <DialogTitle id="new-annotation-dialog">
-          Create new {this.state.resource.type}
+          Create new {resourceType}
         </DialogTitle>
         <DialogContent>
           {form &&
@@ -80,31 +84,79 @@ class NewAnnotationDialog extends React.Component {
             })}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            dismiss
-          </Button>
-          <Button
-            onClick={this.createAnnotation(
-              SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS
-            )}
-            color="primary"
-          >
-            FIT CONTENT TO CANVAS
-          </Button>
-          <Button
-            onClick={this.createAnnotation(
-              SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
-            )}
-            color="primary"
-          >
-            FIT CANVAS TO CONTENT
-          </Button>
-          <Button
-            onClick={this.createAnnotation(SIZING_STRATEGY.NONE)}
-            color="primary"
-          >
-            Add
-          </Button>
+          <EditorConsumer>
+            {configuration =>
+              (
+                configuration.annotationFormButtons[
+                  formName + '.NewAnnotationForm'
+                ] || configuration.annotationFormButtons.NewAnnotationForm
+              ).map(button => (
+                <React.Fragment>
+                  {button === 'dismiss' && (
+                    <Button onClick={handleClose} color="primary">
+                      <Label
+                        names={[
+                          `${formName}.NewAnnotationForm.dismiss`,
+                          'NewAnnotationForm.dismiss',
+                        ]}
+                      >
+                        dismiss
+                      </Label>
+                    </Button>
+                  )}
+                  {button === 'fitContentToCanvas' && (
+                    <Button
+                      onClick={this.createAnnotation(
+                        SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS
+                      )}
+                      color="primary"
+                    >
+                      <Label
+                        names={[
+                          `${formName}.NewAnnotationForm.fitContentToCanvas`,
+                          'NewAnnotationForm.fitContentToCanvas',
+                        ]}
+                      >
+                        FIT CONTENT TO CANVAS
+                      </Label>
+                    </Button>
+                  )}
+                  {button === 'fitCanvasToContent' && (
+                    <Button
+                      onClick={this.createAnnotation(
+                        SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
+                      )}
+                      color="primary"
+                    >
+                      <Label
+                        names={[
+                          `${formName}.NewAnnotationForm.fitCanvasToContent`,
+                          'NewAnnotationForm.fitCanvasToContent',
+                        ]}
+                      >
+                        FIT CANVAS TO CONTENT
+                      </Label>
+                    </Button>
+                  )}
+                  {button === 'add' && (
+                    <Button
+                      onClick={this.createAnnotation(SIZING_STRATEGY.NONE)}
+                      color="primary"
+                    >
+                      <Label
+                        names={[
+                          `${formName}.NewAnnotationForm.add`,
+                          'NewAnnotationForm.add',
+                        ]}
+                      >
+                        Add
+                      </Label>
+                    </Button>
+                  )}
+                </React.Fragment>
+              ))
+            }
+          </EditorConsumer>
         </DialogActions>
       </Dialog>
     );

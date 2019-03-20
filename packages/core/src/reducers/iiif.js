@@ -66,6 +66,12 @@ const IIIFReducer = (state, action) => {
             }
             targetCollection = parent.structures;
           } else if (
+            parent.type === 'Manifest' &&
+            newResource.type === 'Canvas'
+          ) {
+            nextState.selectedIdsByType.Annotation = null;
+            nextState.selectedIdsByType.Canvas = newResource.id;
+          } else if (
             parent.type === 'Canvas' &&
             newResource.type === 'Annotation'
           ) {

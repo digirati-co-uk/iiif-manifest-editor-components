@@ -13,6 +13,7 @@ const ManifestEditor = ({
   translation,
   metaOntology,
   behavior,
+  annotationFormButtons,
   dragDrop,
 }) => (
   <EditorProvider
@@ -21,6 +22,7 @@ const ManifestEditor = ({
     translation={translation}
     dragDrop={dragDrop}
     behavior={behavior}
+    annotationFormButtons={annotationFormButtons}
   >
     <LabelProvider value={metaOntology}>
       <EditorConsumer>
@@ -55,6 +57,7 @@ const ManifestEditor = ({
 
 ManifestEditor.defaultProps = {
   metaOntology: {},
+  annotationFormButtons: null,
 };
 
 export default ManifestEditor;
