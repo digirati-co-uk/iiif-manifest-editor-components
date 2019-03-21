@@ -333,6 +333,7 @@ class VAMEditor extends React.Component {
               ? {
                   NewAnnotationForm: ['dismiss', 'fitCanvasToContent'],
                   'TextualBodyDescribing.NewAnnotationForm': ['dismiss', 'add'],
+                  'TextLayoutViewFocus.NewAnnotationForm': ['dismiss', 'add'],
                 }
               : null
           }
@@ -425,7 +426,7 @@ class VAMEditor extends React.Component {
                 />
               </Layout.Left>
               <Layout.Center>
-                {editorMode === 'slideshow' ? (
+                {editorMode === 'slideshow' && (!selectedAnnotation||(selectedAnnotation && selectedAnnotation.motivation !== 'layout-viewport-focus')) ? (
                   <SlideEditor 
                     manifestJSON={this.state.rootResource} 
                     canvasId={this.state.selectedIdsByType.Canvas}
