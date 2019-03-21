@@ -59,12 +59,16 @@ const AnnotationList = ({
   remove,
   invokeAction,
   selectedColor,
+  isEditingAllowed,
 }) => (
   <Panel>
     {toolbar ? (
       toolbar
     ) : (
-      <DefaultAnnotationListToolbar invokeAction={invokeAction} />
+      <DefaultAnnotationListToolbar
+        invokeAction={invokeAction}
+        disableActions={!isEditingAllowed}
+      />
     )}
     <Divider />
     <Panel.Content>
@@ -142,6 +146,8 @@ AnnotationList.propTypes = {
   remove: PropTypes.func,
   /* toolbar action dispacher */
   invokeAction: PropTypes.func.isRequired,
+  /* Sets the toolbar buttons disabled and TODO: disable delete and drag and drop */
+  isEditingAllowed: PropTypes.bool,
 };
 
 AnnotationList.defaultProps = {
@@ -150,6 +156,7 @@ AnnotationList.defaultProps = {
   remove: emptyFn,
   invokeAction: emptyFn,
   selectedColor: 'primary',
+  isEditingAllowed: true,
 };
 
 export default withStyles(style)(AnnotationList);

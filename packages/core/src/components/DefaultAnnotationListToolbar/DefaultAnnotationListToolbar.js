@@ -13,7 +13,7 @@ import {
 } from '../../utils/IIIFResource';
 
 // NOTE: waiting for docz to be compatible with the new React 16.8.x...
-const DefaultAnnotationListToolbarHook = ({ invokeAction }) => {
+const DefaultAnnotationListToolbarHook = ({ invokeAction, disableActions }) => {
   const [dialog, setDialog] = useState(null);
   return (
     <EditorConsumer>
@@ -35,6 +35,7 @@ const DefaultAnnotationListToolbarHook = ({ invokeAction }) => {
                       })
                     : invokeAction(config.actions.add),
                 key: `DefaultAnnotationListToolbar_${index}_${type}`,
+                disabled: disableActions,
               })
           )}
           <NewAnnotationDialog
@@ -127,7 +128,7 @@ class DefaultAnnotationListToolbarComponent extends React.Component {
   };
 
   render() {
-    const { invokeAction } = this.props;
+    const { invokeAction, disableActions } = this.props;
     const { dialog } = this.state;
     return (
       <EditorConsumer>
@@ -141,16 +142,22 @@ class DefaultAnnotationListToolbarComponent extends React.Component {
             {Object.entries(configuration.annotation).map(
               ([type, config], index) =>
                 config.button({
-                  onClick: () =>
-                    config.propertyEditor
-                      ? this.setState({
-                          dialog: {
-                            form: config,
-                            type,
-                          },
-                        })
-                      : invokeAction(config.actions.add),
+                  onClick: disableActions
+                    ? () => {}
+                    : () => {
+                        if (config.propertyEditor) {
+                          this.setState({
+                            dialog: {
+                              form: config,
+                              type,
+                            },
+                          });
+                        } else {
+                          invokeAction(config.actions.add);
+                        }
+                      },
                   key: `DefaultAnnotationListToolbar_${index}_${type}`,
+                  disabled: disableActions,
                 })
             )}
             <NewAnnotationDialog
@@ -251,10 +258,12 @@ const DefaultAnnotationListToolbar =
 
 DefaultAnnotationListToolbar.propTypes = {
   invokeAction: PropTypes.func.isRequired,
+  disableActions: PropTypes.bool,
 };
 
 DefaultAnnotationListToolbar.defaultProps = {
   invokeAction: () => {},
+  disableActions: false,
 };
 
 export default DefaultAnnotationListToolbar;

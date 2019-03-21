@@ -387,6 +387,7 @@ class VAMEditor extends React.Component {
                   remove={this.deleteResource}
                   invokeAction={this.invokeAction2}
                   selectedColor="secondary"
+                  isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
                 />
               </Layout.Left>
               <Layout.Center>

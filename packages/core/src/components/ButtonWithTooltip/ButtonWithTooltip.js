@@ -6,9 +6,16 @@ import Tooltip from '../DefaultTooltip/DefaultTooltip';
 
 const emptyFn = () => {};
 
-const ButtonWithTooltip = ({ title, children, onClick = emptyFn }) => (
+const ButtonWithTooltip = ({
+  title,
+  children,
+  onClick = emptyFn,
+  ...props
+}) => (
   <Tooltip title={title}>
-    <IconButton onClick={onClick}>{children}</IconButton>
+    <IconButton onClick={onClick} {...props}>
+      {children}
+    </IconButton>
   </Tooltip>
 );
 

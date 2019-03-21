@@ -322,6 +322,7 @@ class TUDelftManifestEditor extends React.Component {
                       select={this.selectResource}
                       remove={this.deleteResource}
                       invokeAction={this.invokeAction2}
+                      isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
                     />
                     {exhibitionMode && (
                       <ExhibitionPreview
