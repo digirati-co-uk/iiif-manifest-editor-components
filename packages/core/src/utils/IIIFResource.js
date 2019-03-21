@@ -292,7 +292,11 @@ export const update = (target, property, lang, value) => {
     if (keys.length === 0) {
       // if no property set we just pass the value...
       // this is a hack for now. Fix it later.
-      return Object.apply(targetClone, value);
+      if (targetClone.items) {
+        value.items = targetClone.items;
+      }
+      return value;
+      //return Object.apply(targetClone, value);
     } else if (lang === null) {
       targetClone[property] =
         SINGLE_VALUE_KEYS.indexOf(property) !== -1 ? value : value.split('\n');
