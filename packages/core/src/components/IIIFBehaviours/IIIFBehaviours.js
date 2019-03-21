@@ -77,7 +77,7 @@ const Behavior = ({ config, classes, target, lang, update }) => {
       } else if (typeof group === 'string') {
         return (
           <TextField
-            label="Freetext behaivor"
+            label="Freetext behavior"
             value={(target.behavior || [])[index]}
             onChange={ev =>
               update(target, `behavior.${index}`, null, ev.target.value)
