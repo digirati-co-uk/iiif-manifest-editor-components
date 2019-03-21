@@ -54,7 +54,7 @@ const isLocalhost = () =>
 // Temporary override until the settings panel hasn't been funded.
 window.rootManifestUrl = isLocalhost()
   ? 'http://localhost:8181/p3/'
-  : 'https://977q74eqr5.execute-api.eu-west-1.amazonaws.com/staging/p3/';
+  : 'https://nhbv322uy3.execute-api.eu-west-1.amazonaws.com/staging/p3/';
   //: ///'http://iiif-collection.ch.digtest.co.uk/p3/';
 const emptyFn = () => {};
 
