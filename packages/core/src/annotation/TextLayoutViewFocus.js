@@ -21,10 +21,7 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
     </p>
   );
 
-  static button = ({
-    title = 'Text Annotation /w layout view focus',
-    ...props
-  }) => (
+  static button = ({ title = 'Viewport focus', ...props }) => (
     <ButtonWithTooltip title={title} {...props}>
       <FormatShapes />
     </ButtonWithTooltip>
