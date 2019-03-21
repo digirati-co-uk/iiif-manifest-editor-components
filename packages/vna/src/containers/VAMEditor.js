@@ -336,6 +336,40 @@ class VAMEditor extends React.Component {
                 }
               : null
           }
+          propertyFields={editorMode === 'slideshow' ? {
+            Manifest: [
+              'label',
+              'summary',
+              'requiredStatement',
+              'metadata',
+              'navDate',
+              'rights',
+              'behavior',
+            ],
+            Canvas: [
+              'behavior',
+              'label',
+              'summary',
+              'requiredStatement',
+            ],
+            Annotation: [
+              'label',
+              'summary',
+            ],
+            AudioPropertiesFrom: ['body.id'],
+            VideoPropertiesFrom: [
+              'body.id',
+              'thumbnail.0.service.id',
+              'thumbnail.0.id',
+            ],
+            TextPropertiesForm: ['body.id', 'body.value'],
+            ImagePropertiesForm: [
+              'body.id',
+              'body.service.id',
+              'thumbnail.0.service.id',
+              'thumbnail.0.id',
+            ],
+          } : null}
         >
           <Layout>
             <AppBar titleComponent={

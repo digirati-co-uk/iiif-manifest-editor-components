@@ -110,6 +110,7 @@ class Properties extends React.Component {
                       lang={lang}
                       update={update}
                       behaviorConfig={configuration.behavior.Annotation}
+                      fieldConfig={configuration.propertyFields.Annotation}
                     />
                     {annotationType}
                     {form &&
@@ -130,6 +131,7 @@ class Properties extends React.Component {
                       lang={lang}
                       update={update}
                       behaviorConfig={configuration.behavior.Canvas}
+                      fieldConfig={configuration.propertyFields.Canvas}
                     />
                   </div>
                 )}
@@ -142,6 +144,7 @@ class Properties extends React.Component {
                     lang={lang}
                     update={update}
                     behaviorConfig={configuration.behavior.Manifest}
+                    fieldConfig={configuration.propertyFields.Manifest}
                   />
                 </div>
               </React.Fragment>

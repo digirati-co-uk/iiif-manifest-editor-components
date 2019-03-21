@@ -14,6 +14,7 @@ const ManifestEditor = ({
   metaOntology,
   behavior,
   annotationFormButtons,
+  propertyFields,
   dragDrop,
 }) => (
   <EditorProvider
@@ -23,6 +24,7 @@ const ManifestEditor = ({
     dragDrop={dragDrop}
     behavior={behavior}
     annotationFormButtons={annotationFormButtons}
+    propertyFields={propertyFields}
   >
     <LabelProvider value={metaOntology}>
       <EditorConsumer>

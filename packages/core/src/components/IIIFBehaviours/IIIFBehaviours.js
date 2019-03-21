@@ -132,6 +132,7 @@ const Behavior = ({ config, classes, target, lang, update }) => {
     return (target.behavior || []).concat(['']).map((behaviour, idx, arr) => (
       <TextField
         value={behaviour}
+        key={`${target.id}.behavior.${idx}`}
         onChange={ev =>
           update(target, `behavior.${idx}`, null, ev.target.value)
         }

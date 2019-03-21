@@ -460,6 +460,46 @@ const defaultEditorContext = {
       'add',
     ],
   },
+  propertyFields: {
+    Manifest: [
+      'label',
+      'summary',
+      'requiredStatement',
+      'metadata',
+      'navDate',
+      'rights',
+      'behavior',
+    ],
+    Canvas: [
+      'label',
+      'summary',
+      'requiredStatement',
+      'metadata',
+      'rights',
+      'behavior',
+    ],
+    Annotation: [
+      'label',
+      'summary',
+      'requiredStatement',
+      'metadata',
+      'rights',
+      'behavior',
+    ],
+    AudioPropertiesFrom: ['body.id'],
+    VideoPropertiesFrom: [
+      'body.id',
+      'thumbnail.0.service.id',
+      'thumbnail.0.id',
+    ],
+    TextPropertiesForm: ['body.id', 'body.value'],
+    ImagePropertiesForm: [
+      'body.id',
+      'body.service.id',
+      'thumbnail.0.service.id',
+      'thumbnail.0.id',
+    ],
+  },
 };
 
 const EditorContext = React.createContext(defaultEditorContext);
@@ -473,6 +513,7 @@ export class EditorProvider extends React.Component {
       dragDrop,
       behavior,
       annotationFormButtons,
+      propertyFields,
     } = this.props;
 
     const aggregatedConfig = deepmerge.all([
@@ -493,6 +534,9 @@ export class EditorProvider extends React.Component {
     }
     if (annotationFormButtons) {
       aggregatedConfig.annotationFormButtons = annotationFormButtons;
+    }
+    if (propertyFields) {
+      aggregatedConfig.propertyFields = propertyFields;
     }
 
     return (
@@ -527,6 +571,7 @@ EditorProvider.defaultProps = {
   translation: null,
   dragDrop: null,
   behavior: null,
+  propertyFields: null,
 };
 
 export const EditorConsumer = EditorContext.Consumer;
