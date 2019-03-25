@@ -9,7 +9,9 @@ import {
   DialogActions,
   Button,
   TextField,
+  Snackbar,
 } from '@material-ui/core';
+import { LibraryBooks } from '@material-ui/icons';
 import { IIIFCollectionExplorer } from '@IIIF-MEC/core';
 import  { saveFixtures } from '../utils';
 const style = theme => ({
@@ -24,6 +26,7 @@ const SaveManifestModal = ({
   open, 
   handleClose, 
   classes,
+  enqueueSnackbar,
 }) => {
   const manifestId = manifest.id;
   const folderUrl = manifestId.substring(0, manifestId.lastIndexOf("/") + 1);
@@ -33,7 +36,7 @@ const SaveManifestModal = ({
   const didSave = () => {
     window.lastPersist = new Date().getTime();
     handleClose();
-    //alert('Save successful.');
+    enqueueSnackbar('Save successful.', { variant: 'success'});
   }
   return (
     <Dialog
@@ -63,7 +66,7 @@ const SaveManifestModal = ({
                 })
                   .then(response => response.json())
                   .then(didSave)
-                  .catch(error => alert(error));
+                  .catch(error => enqueueSnackbar(error, { variant: 'error'}));
                 return true;
               } else if (resource.type === 'Collection') {
                 setURL(resource.id);
@@ -71,6 +74,7 @@ const SaveManifestModal = ({
             })
           }
           onResourceLoaded={loadedResourceURL => setURL(loadedResourceURL)}
+          manifestIcon={LibraryBooks}
         />
       </DialogContent>
       <DialogActions>
@@ -88,7 +92,7 @@ const SaveManifestModal = ({
               })
                 .then(response => response.json())
                 .then(didSave)
-                .catch(error => alert(error));
+                .catch(error => enqueueSnackbar(error, { variant: 'error'}));
             });
         }} color="primary">
           Save
@@ -98,5 +102,8 @@ const SaveManifestModal = ({
   );
 }
 
+SaveManifestModal.defaultProps = {
+  enqueueSnackbar: () => {},
+};
 
 export default withStyles(style)(SaveManifestModal);

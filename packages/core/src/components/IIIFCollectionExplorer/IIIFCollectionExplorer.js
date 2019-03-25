@@ -45,6 +45,8 @@ class CollectionExplorer extends React.Component {
     isLoading: false,
     history: [],
     error: null,
+    manifestIcon: null,
+    collectionIcon: null,
   };
 
   constructor(props) {
@@ -126,7 +128,7 @@ class CollectionExplorer extends React.Component {
   };
 
   render() {
-    const { classes, style } = this.props;
+    const { classes, style, manifestIcon, collectionIcon } = this.props;
     const {
       history,
       loadedResourceURL,
@@ -135,6 +137,14 @@ class CollectionExplorer extends React.Component {
       resource,
       error,
     } = this.state;
+
+    const collectionListExtraProps = {};
+    if (manifestIcon) {
+      collectionListExtraProps.manifestIcon = manifestIcon;
+    }
+    if (collectionIcon) {
+      collectionListExtraProps.collectionIcon = collectionIcon;
+    }
 
     const items =
       resource && isManifestOrCollection(resource) && resource.items
@@ -158,7 +168,11 @@ class CollectionExplorer extends React.Component {
         ) : resource && resource.type === 'Manifest' ? (
           <CanvasList items={items} manifestId={resource.id} />
         ) : (
-          <CollectionLister items={items} openItem={this.openItem} />
+          <CollectionLister
+            items={items}
+            openItem={this.openItem}
+            {...collectionListExtraProps}
+          />
         )}
         {!!error && (
           <Dialog
@@ -187,12 +201,16 @@ CollectionExplorer.propTypes = {
   url: PropTypes.string,
   onItemSelect: PropTypes.func,
   onResourceLoaded: PropTypes.func,
+  manifestIcon: PropTypes.any,
+  collectionIcon: PropTypes.any,
 };
 
 CollectionExplorer.defaultProps = {
   url: '',
   onItemSelect: () => {},
   onResourceLoaded: () => {},
+  manifestIcon: null,
+  collectionIcon: null,
 };
 
 export default withStyles(styles)(CollectionExplorer);

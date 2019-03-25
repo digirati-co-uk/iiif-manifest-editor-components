@@ -8,6 +8,7 @@ import {
   Visibility,
   Input,
 } from '@material-ui/icons';
+import { withSnackbar } from 'notistack';
 
 import {
   // components
@@ -341,6 +342,7 @@ class VAMEditor extends React.Component {
   };
 
   render() {
+    const { enqueueSnackbar } = this.props; 
     const canvases = this.state.rootResource
       ? this.state.rootResource.items
       : [];
@@ -427,22 +429,22 @@ class VAMEditor extends React.Component {
               <EditorModeSelector selected={editorMode} onSelect={this.setEditorMode} />
             }>
               <AppBarButton
-                text="New Manifest"
+                text="New"
                 onClick={this.newProject}
                 icon={<LibraryAdd />}
               />
               <AppBarButton
-                text="Load Manifest"
+                text="Load"
                 onClick={this.toggleLoadManifestDialog}
                 icon={<LibraryBooks />}
               />
               <AppBarButton
-                text="Save Manifest"
+                text="Save"
                 onClick={this.toggleSaveManifestDialog}
                 icon={<LibraryBooks />}
               />
               <AppBarButton
-                text="Download Manifest"
+                text="Download"
                 onClick={this.saveProject}
                 icon={<SaveAlt />}
               />
@@ -546,6 +548,7 @@ class VAMEditor extends React.Component {
             open={this.state.saveManifestDialogOpen}
             handleClose={this.toggleSaveManifestDialog}
             regenerateIds={this.regenerateIds}
+            enqueueSnackbar={enqueueSnackbar}
           />
         )}
         <DefaultLoadManifestDialog
@@ -558,4 +561,4 @@ class VAMEditor extends React.Component {
   }
 }
 
-export default VAMEditor;
+export default withSnackbar(VAMEditor);

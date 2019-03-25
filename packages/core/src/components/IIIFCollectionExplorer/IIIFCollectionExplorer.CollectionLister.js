@@ -56,19 +56,35 @@ const style = theme => ({
   },
 });
 
-const CollectionLister = ({ classes, items, openItem }) => (
+const CollectionLister = ({
+  classes,
+  items,
+  openItem,
+  manifestIcon,
+  collectionIcon,
+}) => (
   <div className={classes.list}>
     {items.map(item => {
       const thumbnail = getCollectionThumbnail(item);
+      let icon = null;
+      switch (item.type) {
+        case 'Manifest':
+          icon = manifestIcon;
+          break;
+        case 'Collection':
+          icon = collectionIcon;
+          break;
+        default:
+          icon = ArrowForwardIos;
+          break;
+      }
       return (
         <div
           key={item.id}
           onClick={() => openItem(item)}
           className={classes.listItem}
         >
-          <div className={classes.moreVert}>
-            <ArrowForwardIos />
-          </div>
+          <div className={classes.moreVert}>{React.createElement(icon)}</div>
           <div className={thumbnail ? classes.info : classes.infoLong}>
             <Typography component="h5" variant="h5">
               <LocaleString>{item.label}</LocaleString>
@@ -86,5 +102,10 @@ const CollectionLister = ({ classes, items, openItem }) => (
     })}
   </div>
 );
+
+CollectionLister.defaultProps = {
+  manifestIcon: ArrowForwardIos,
+  collectionIcon: ArrowForwardIos,
+};
 
 export default withStyles(style)(CollectionLister);

@@ -8,6 +8,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { IIIFCollectionExplorer } from '@IIIF-MEC/core';
+import { LibraryBooks } from '@material-ui/icons';
 
 
 const LoadManifestModal = ({ 
@@ -27,15 +28,19 @@ const LoadManifestModal = ({
     >
       <DialogTitle id="load-manifest-dialog-title">Load Manifest</DialogTitle>
       <DialogContent>
-        <IIIFCollectionExplorer url={collectionURL} onItemSelect={(resource=>{
-          if (resource.type === "Manifest") {
-            fetch(resource.id)
-              .then(response => response.json())
-              .then(response => loadManifest(response))
-              .catch(error => alert(error));
-            return true;
-          }
-        })}/>
+        <IIIFCollectionExplorer 
+          url={collectionURL} 
+          onItemSelect={(resource=>{
+            if (resource.type === "Manifest") {
+              fetch(resource.id)
+                .then(response => response.json())
+                .then(response => loadManifest(response))
+                .catch(error => alert(error));
+              return true;
+            }
+          })}
+          manifestIcon={LibraryBooks}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
