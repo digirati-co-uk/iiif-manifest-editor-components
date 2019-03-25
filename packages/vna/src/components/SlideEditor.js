@@ -6,7 +6,9 @@ import {
     RangeNavigationProvider,
     //withBemClass,
     //Responsive,
-  } from '@canvas-panel/core';
+	} from '@canvas-panel/core';
+	
+import { transformSlideCanvas } from '../utils';
 
 import { Slide } from '@canvas-panel/slideshow';
 
@@ -23,6 +25,7 @@ const SlideEditor = ({ manifestJSON, canvasId }) => {
 			JSON.stringify(
 				(manifestJSON.items || [])
 					.filter(canvas=> canvas.id === canvasId)
+					.map(transformSlideCanvas)
 			)
 		)
 	}: null;

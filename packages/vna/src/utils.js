@@ -12,17 +12,35 @@ const saveAnnotatedZoom = manifest => {
     return manifest;
 };
 
-const saveSlideshow = manifest => {
-    manifest.items[0].annotations = [{
+
+export const transformSlideCanvas = canvas => {
+    const canvasResult = JSON.parse(JSON.stringify(canvas));
+    canvasResult.annotations = [{
         type: 'AnnotationPage',
         items: 
-            manifest.items[0].items[0].items
+            canvas.items[0].items
                 .filter(item => item.motivation === 'layout-viewport-focus')
     }];
-    manifest.items[0].items[0].items = 
-        manifest.items[0].items[0].items.filter(item => item.motivation !== 'layout-viewport-focus')
+    canvasResult.items[0].items = 
+        canvas.items[0].items.filter(item => item.motivation !== 'layout-viewport-focus')
+    return canvasResult;
+}
+
+const saveSlideshow = manifest => {
+    manifest.items = manifest.items.map(canvas => {
+        canvas.annotations = [{
+            type: 'AnnotationPage',
+            items: 
+                canvas.items[0].items
+                    .filter(item => item.motivation === 'layout-viewport-focus')
+        }];
+        canvas.items[0].items = 
+            canvas.items[0].items.filter(item => item.motivation !== 'layout-viewport-focus')
+        return canvas;
+    });
     return manifest;
 };
+ 
 
 export const saveFixtures = manifest => {
     if (!manifest) {
