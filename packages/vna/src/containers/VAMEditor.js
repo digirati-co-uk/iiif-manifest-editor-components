@@ -44,7 +44,7 @@ import SaveManifestModal from '../components/SaveManifestModal';
 import PreviewModal from '../components/PreviewModal';
 import SlideEditor from '../components/SlideEditor';
 import TextualBodyDescribing from '../annotation/TextualBodyDescribing';
-import  { saveFixtures } from '../utils';
+import  { saveFixtures, loadManifestHacks } from '../utils';
 import './VAMEditor.scss';
 
 const isLocalhost = () => 
@@ -327,9 +327,10 @@ class VAMEditor extends React.Component {
 
 
   loadManifest = json => {
+
     this.dispatch(IIIFReducer, {
       type: 'LOAD_MANIFEST',
-      manifest: convertToV3ifNecessary(json),
+      manifest: loadManifestHacks(convertToV3ifNecessary(json)),
     });
     if (this.state.loadManifestDialogOpen) {
       this.toggleLoadManifestDialog();
@@ -455,11 +456,11 @@ class VAMEditor extends React.Component {
                 onClick={this.toggleItemPreview}
                 icon={<Visibility />}
               />
-              {/* <AppBarButton
+              <AppBarButton
                 text="Load Manifest"
                 onClick={this.toggleLoadManifestDialog2}
                 icon={<Input />}
-              /> */}
+              />
             </AppBar>
             <Layout.Middle>
               <Layout.Left>

@@ -30,6 +30,11 @@ const SaveManifestModal = ({
   const fileName = manifestId.substring(manifestId.lastIndexOf("/") + 1, manifestId.length);
   const [url, setURL ] = useState(folderUrl);
   const [file, setFile] = useState(fileName);
+  const didSave = () => {
+    window.lastPersist = new Date().getTime();
+    handleClose();
+    //alert('Save successful.');
+  }
   return (
     <Dialog
       open={open}
@@ -42,7 +47,7 @@ const SaveManifestModal = ({
       <DialogTitle id="load-manifest-dialog-title">Save Manifest</DialogTitle>
       <DialogContent>
         <div className={classes.titleBar}>
-          <TextField label="Manifest Name" defaultValue={fileName} onChange={(ev=>setFile(ev.target.value))}/>
+          <TextField label="Manifest Name" defaultValue={fileName} onChange={(ev=>setFile(ev.target.value))} style={{width: '50%'}}/>
         </div>
         <IIIFCollectionExplorer 
           url={folderUrl} 
@@ -57,10 +62,7 @@ const SaveManifestModal = ({
                     body: JSON.stringify(manifest)
                 })
                   .then(response => response.json())
-                  .then(() => {
-                    handleClose();
-                    window.lastPersist = new Date().getTime();
-                  })
+                  .then(didSave)
                   .catch(error => alert(error));
                 return true;
               } else if (resource.type === 'Collection') {
@@ -85,10 +87,7 @@ const SaveManifestModal = ({
                   body: JSON.stringify(saveFixtures(manifest))
               })
                 .then(response => response.json())
-                .then(() => {
-                  window.lastPersist = new Date().getTime();
-                  handleClose();
-                })
+                .then(didSave)
                 .catch(error => alert(error));
             });
         }} color="primary">

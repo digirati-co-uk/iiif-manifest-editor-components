@@ -71,6 +71,11 @@ class NavBar extends React.Component {
             autoComplete="on"
             value={resourceURL}
             onChange={onResourceUrlChange}
+            onKeyDown={ev => {
+              if (ev.which === 13) {
+                onLoadResource();
+              }
+            }}
             margin="dense"
             variant="outlined"
             className={classes.urlInputStyles}
