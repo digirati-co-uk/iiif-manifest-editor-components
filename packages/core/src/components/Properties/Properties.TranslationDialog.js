@@ -39,6 +39,9 @@ const processLevel = (obj, key_prefix) => {
 };
 
 const TranslationDialog = ({ manifest, open, handleClose, update }) => {
+  if (!manifest) {
+    return null;
+  }
   let languageProps = processLevel(manifest).filter(
     ([key]) => !key.endsWith('.service')
   );

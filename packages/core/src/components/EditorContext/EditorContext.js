@@ -10,7 +10,7 @@ import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
 import AudioPainting from '../../annotation/AudioPainting';
 import generateURI from '../../utils/URIGenerator';
-import { queryResourceById } from '../../utils/IIIFResource';
+import { queryResourceById, updateDefaults } from '../../utils/IIIFResource';
 
 const getImageServiceURL = dlcsURL =>
   dlcsURL
@@ -514,6 +514,7 @@ export class EditorProvider extends React.Component {
       behavior,
       annotationFormButtons,
       propertyFields,
+      iiifResourceDefaults,
     } = this.props;
 
     const aggregatedConfig = deepmerge.all([
@@ -539,6 +540,13 @@ export class EditorProvider extends React.Component {
       aggregatedConfig.propertyFields = propertyFields;
     }
 
+    if (iiifResourceDefaults) {
+      aggregatedConfig.iiifResourceDefaults = iiifResourceDefaults;
+      Object.entries(iiifResourceDefaults).forEach(([resourceType, props]) =>
+        updateDefaults(resourceType, props)
+      );
+    }
+
     return (
       <EditorContext.Provider value={aggregatedConfig}>
         {children}
@@ -562,6 +570,8 @@ EditorProvider.propTypes = {
   dragDrop: PropTypes.object,
   /** Behaviour definitions */
   behavior: PropTypes.object,
+  /** To override the default IIIF Resource Properties */
+  iiifResourceDefaults: PropTypes.object,
 };
 
 EditorProvider.defaultProps = {

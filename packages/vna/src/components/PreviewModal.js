@@ -31,7 +31,7 @@ const RenderManifest = ({manifest, isDemoPage}) => {
   if (isAnnotatedZoom && isDemoPage) {
     return (
       <FullPageViewer
-        jsonLd={saveFixtures(manifest)}
+        jsonLd={manifest}
         title="Preview"
         annotationPosition="top"
       >
@@ -45,7 +45,7 @@ const RenderManifest = ({manifest, isDemoPage}) => {
     return (
       <div className="patchwork-container">
         <PatchworkPlugin
-          jsonLdManifest={saveFixtures(manifest)}
+          jsonLdManifest={manifest}
           cssClassMap={{
             annotation: 'annotation-pin',
           }}
@@ -65,6 +65,7 @@ const RenderManifest = ({manifest, isDemoPage}) => {
 
 const PreviewModal = ({ manifest, handleClose, open }) => {
   const [isPage, setIsPage] = useState(false);
+  const _manifest = saveFixtures(manifest);
   return (
     <Dialog
       open={open}
@@ -84,9 +85,15 @@ const PreviewModal = ({ manifest, handleClose, open }) => {
           </Typography>
           <IconButton onClick={()=>setIsPage(!isPage)} color="inherit" aria-label={isPage ? "Web" : "Fullscreen"}>
             {isPage ? (
-              <React.Fragment><Web /><Typography variant="h6" color="inherit">Show In context</Typography></React.Fragment>
+              <React.Fragment>
+                <Web />
+                <Typography variant="h6" color="inherit">Show In context</Typography
+              ></React.Fragment>
             ): (
-              <React.Fragment><Fullscreen /><Typography variant="h6" color="inherit">FullPage</Typography></React.Fragment>
+              <React.Fragment>
+                <Fullscreen />
+                <Typography variant="h6" color="inherit">FullPage</Typography>
+              </React.Fragment>
             )}
           </IconButton>
         </Toolbar>
@@ -94,11 +101,11 @@ const PreviewModal = ({ manifest, handleClose, open }) => {
       {isPage 
         ? (
           <div style={{flex: 1, width: '100%'}}>
-            <RenderManifest manifest={manifest} isDemoPage={isPage}/>
+            <RenderManifest manifest={_manifest} isDemoPage={isPage}/>
           </div>
         ) : (
           <PreviewInPageContext>
-            <RenderManifest manifest={manifest} />
+            <RenderManifest manifest={_manifest} />
           </PreviewInPageContext>
         )}
     </Dialog>

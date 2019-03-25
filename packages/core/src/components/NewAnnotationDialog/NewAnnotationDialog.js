@@ -55,6 +55,14 @@ class NewAnnotationDialog extends React.Component {
     const { addNewResource } = this.props;
     if (addNewResource) {
       addNewResource(this.state.resource, sizingStrategy);
+      //TODO: make this configurable...
+      this.setState({
+        resource: {
+          body: {
+            type: 'none',
+          },
+        },
+      });
     }
   };
 

@@ -131,7 +131,11 @@ class EditableCanvasPanel extends React.Component {
     }
   };
 
-  selectItem = item => () => this.props.select(item);
+  selectItem = item => isSelected => {
+    if (!isSelected) {
+      this.props.select(item);
+    }
+  };
 
   isAspectRationLocked = type => this.props.lockAspectRatio.includes(type);
 
@@ -270,7 +274,11 @@ class EditableCanvasPanel extends React.Component {
                                     : annotationClasses[0]
                                 ]
                               }
-                              onClick={this.selectItem(annotation)}
+                              onClick={() =>
+                                this.selectItem(annotation)(
+                                  annotation.id === selectedAnnotation
+                                )
+                              }
                             >
                               {/* <ReactScrollWheelHandler
                                 upHandler={this.zoomIn}

@@ -19,42 +19,21 @@ class TextPropertiesForm extends React.Component {
     const format = target.body ? target.body.format || '' : '';
     return (
       <div className={classes.root}>
-        <RadioGroup
-          aria-label="Format"
-          name="format"
-          className={classes.group}
-          value={format}
-          onChange={ev => update(target, 'body.format', null, ev.target.value)}
-          row
-        >
-          <FormControlLabel
-            value="text/html"
-            control={<Radio color="primary" />}
-            label="HTML"
-            labelPlacement="bottom"
-          />
-          <FormControlLabel
-            value="text/plain"
-            control={<Radio color="primary" />}
-            label="Plain text"
-            labelPlacement="bottom"
-          />
-        </RadioGroup>
         <IIIFTextFiled
           label="Body Value"
           className={classes.textFieldFullWidth}
           value={body}
-          onChange={ev => update(target, 'body.value', null, ev.target.value)}
+          onChange={ev => {
+            update(target, 'body.value', null, ev.target.value, () => {
+              update(
+                target,
+                'body.format',
+                null,
+                /\<[^>]+\>/.test(ev.target.value) ? 'text/html' : 'text/plain'
+              );
+            });
+          }}
         />
-        {/* <TextField
-          label="Body Value"
-          className={classes.textFieldFullWidth}
-          value={body}
-          onChange={ev => update(target, 'body.value', null, ev.target.value)}
-          margin="dense"
-          variant="outlined"
-          multiline={true}
-        /> */}
       </div>
     );
   }

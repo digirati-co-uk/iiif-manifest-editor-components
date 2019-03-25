@@ -41,7 +41,7 @@ module.exports = {
       },
     },
   },
-  modifyBabelRc: (config) => {
+  modifyBabelRc: config => {
     //console.log(config);
     config.babelrc = false
     return config
@@ -52,6 +52,6 @@ module.exports = {
     // console.log(config, feskPackConfig);
     // const cfg = merge(feskPackConfig, config);
     console.log(config.entry);
-    return config;//merge(feskPackConfig, config);
+    return config; //merge(feskPackConfig, config);
   },
 };

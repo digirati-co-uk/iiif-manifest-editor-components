@@ -80,9 +80,6 @@ const theme = createMuiTheme({
   },
 });
 
-const demoManifest = renderResource('Manifest');
-const demoCanvas = renderResource('Canvas', { parent: demoManifest });
-demoManifest.items.push(demoCanvas);
 
 const SLIDESHOW_BEHAVIOURS = {
   Canvas: {
@@ -90,7 +87,6 @@ const SLIDESHOW_BEHAVIOURS = {
       {
         label: 'layout', 
         values: ['layout-overlay', 'layout-split'],
-        default: 'layout-split',
       },
       {
         label: 'info position',
@@ -99,9 +95,8 @@ const SLIDESHOW_BEHAVIOURS = {
           'info-position-right',
           'info-position-center',
         ],
-        default: 'info-position-left',
       },
-      '*',
+      //'*',
     ],
   },
 };
@@ -117,22 +112,46 @@ const SLIDESHOW_PROPERTIES_LABEL = {
   'Canvas.RequiredStatement.Value': 'Body',
   'Canvas.Metadata': 'Additional info',
   'Canvas.Metadata.Label': 'Title',
+  'Canvas.Behaviors': 'Positioning',
   'NewAnnotationForm.fitCanvasToContent': 'add',
+  'NewAnnotationForm.fitContentToCanvas': 'add',
+  'Canvas.behavior.label.layout': 'Slide layout',
+  'Canvas.behavior.value.layout-overlay': 'text overlay',
+  'Canvas.behavior.value.layout-split': 'split',
+  'Canvas.behavior.value.info-position-left': 'left',
+  'Canvas.behavior.value.info-position-center': 'center',
+  'Canvas.behavior.value.info-position-right': 'right',
+};
+
+const ANNOTATED_ZOOM_PROPERTIES_LABEL = {
+  'NewAnnotationForm.fitCanvasToContent': 'add',
+  'NewAnnotationForm.fitContentToCanvas': 'add',
+};
+
+const UI_LABELS = {
+  'slideshow': SLIDESHOW_PROPERTIES_LABEL,
+  'annotated-zoom': ANNOTATED_ZOOM_PROPERTIES_LABEL,
 };
 
 class VAMEditor extends React.Component {
-  state = {
-    rootResource: demoManifest,
-    selectedIdsByType: {
-      Canvas: demoCanvas.id,
-      Annotation: null, //demoAnnotation1.id,
-    },
-    lang: 'en',
-    editorMode: 'slideshow', 
-    loadManifestDialogOpen: false,
-    saveManifestDialogOpen: false,
-    previewModalOpen: false,
-  };
+  
+
+  constructor(props) {
+    super(props);
+    const initialNewManifest = this.newManifest();
+    this.state = {
+      rootResource: initialNewManifest,
+      selectedIdsByType: {
+        Canvas: initialNewManifest.items[0].id,
+        Annotation: null,
+      },
+      lang: 'en',
+      editorMode: 'slideshow',
+      loadManifestDialogOpen: false,
+      saveManifestDialogOpen: false,
+      previewModalOpen: false,
+    };
+  }
 
   changeLanguage = lang => {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
@@ -220,13 +239,17 @@ class VAMEditor extends React.Component {
     );
   };
 
-  newProject = () => {
+  newManifest = () => {
     const newManifest = renderResource('Manifest');
-    const newCanvas = renderResource('Canvas', { parent: demoManifest });
+    const newCanvas = renderResource('Canvas', { parent: newManifest });
     newManifest.items.push(newCanvas);
+    return newManifest;
+  };
+
+  newProject = () => {
     this.dispatch(IIIFReducer, {
       type: 'LOAD_MANIFEST',
-      manifest: newManifest,
+      manifest: this.newManifest(),
     });
   };
 
@@ -312,11 +335,16 @@ class VAMEditor extends React.Component {
     const annotationConfig = {
       'Image::painting': ImagePainting,
     };
+    const annotationFormButtons = {
+      NewAnnotationForm: ['dismiss', 'fitCanvasToContent'],
+    };
     if (editorMode !== 'slideshow') {
       annotationConfig['TextualBody::describing'] =  TextualBodyDescribing;
+      annotationFormButtons['TextualBodyDescribing.NewAnnotationForm'] = ['dismiss', 'fitContentToCanvas'];
     }
     if (editorMode !== 'annotated-zoom') {
       annotationConfig['TextualBody::layout-viewport-focus'] = TextLayoutViewFocus;
+      annotationFormButtons['TextLayoutViewFocus.NewAnnotationForm'] = ['dismiss', 'fitContentToCanvas'];
     }
     return (
       <MuiThemeProvider theme={theme}>
@@ -327,17 +355,9 @@ class VAMEditor extends React.Component {
             hideHeaderForSingleTab: true,
           }}
           annotation={annotationConfig}
-          metaOntology={editorMode === 'slideshow' ? SLIDESHOW_PROPERTIES_LABEL: {}}
+          metaOntology={UI_LABELS[editorMode] || {}}
           behavior={editorMode === 'slideshow' ? SLIDESHOW_BEHAVIOURS:  {}}
-          annotationFormButtons={
-            editorMode === 'slideshow' 
-              ? {
-                  NewAnnotationForm: ['dismiss', 'fitCanvasToContent'],
-                  'TextualBodyDescribing.NewAnnotationForm': ['dismiss', 'add'],
-                  'TextLayoutViewFocus.NewAnnotationForm': ['dismiss', 'add'],
-                }
-              : null
-          }
+          annotationFormButtons={annotationFormButtons}
           propertyFields={editorMode === 'slideshow' ? {
             Manifest: [
               'label',
@@ -346,7 +366,6 @@ class VAMEditor extends React.Component {
               'metadata',
               'navDate',
               'rights',
-              'behavior',
             ],
             Canvas: [
               'behavior',
@@ -366,12 +385,17 @@ class VAMEditor extends React.Component {
             ],
             TextPropertiesForm: ['body.id', 'body.value'],
             ImagePropertiesForm: [
-              'body.id',
               'body.service.id',
+              'body.id',
               'thumbnail.0.service.id',
               'thumbnail.0.id',
             ],
           } : null}
+          iiifResourceDefaults={{
+            Canvas: {
+              behavior: ['layout-split', 'info-position-left'],
+            },
+          }}
         >
           <Layout>
             <AppBar titleComponent={
@@ -407,11 +431,11 @@ class VAMEditor extends React.Component {
                 onClick={this.toggleItemPreview}
                 icon={<Visibility />}
               />
-              <AppBarButton
+              {/* <AppBarButton
                 text="Load Manifest"
                 onClick={this.toggleLoadManifestDialog2}
                 icon={<Input />}
-              />
+              /> */}
             </AppBar>
             <Layout.Middle>
               <Layout.Left>

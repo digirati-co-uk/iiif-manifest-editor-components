@@ -1,9 +1,8 @@
 import generateURI from './URIGenerator';
-import convertToV3ifNecessary from './IIIFUpgrader';
 import updateWithMetaC from './IIIFResource.noasyncawait';
 
-const defaultResourceRenderers = {
-  Manifest: props => ({
+const DEFAULT_RESOURCES = {
+  Manifest: {
     '@context': [
       'http://www.w3.org/ns/anno.jsonld',
       'http://iiif.io/api/presentation/3/context.json',
@@ -13,9 +12,8 @@ const defaultResourceRenderers = {
       en: ['Untitled Manifest'],
     },
     items: [],
-    ...props,
-  }),
-  Canvas: props => ({
+  },
+  Canvas: {
     label: {
       en: ['Untitled Canvas'],
     },
@@ -28,9 +26,8 @@ const defaultResourceRenderers = {
         items: [],
       },
     ],
-    ...props,
-  }),
-  Annotation: props => ({
+  },
+  Annotation: {
     type: 'Annotation',
     motivation: 'painting',
     label: {
@@ -41,8 +38,35 @@ const defaultResourceRenderers = {
       value: 'Untitled Annotation Body',
       format: 'text/plain',
     },
+  },
+};
+
+const RUNTIME_DEFAULTS = {
+  Manifest: {},
+  Canvas: {},
+  Annotation: {},
+};
+
+const defaultResourceRenderers = {
+  Manifest: props => ({
+    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Manifest)),
+    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Manifest)),
     ...props,
   }),
+  Canvas: props => ({
+    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Canvas)),
+    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Canvas)),
+    ...props,
+  }),
+  Annotation: props => ({
+    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Annotation)),
+    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Annotation)),
+    ...props,
+  }),
+};
+
+export const updateDefaults = (resourceType, props) => {
+  RUNTIME_DEFAULTS[resourceType] = props;
 };
 
 /**
@@ -56,12 +80,14 @@ const defaultResourceRenderers = {
  */
 const renderResource = (type, options = { props: {} }) => {
   let resource;
+  const props = options ? options.props || {} : {};
   //TODO: make it overridable
   if (defaultResourceRenderers.hasOwnProperty(type)) {
-    resource = defaultResourceRenderers[type](options.props);
+    resource = defaultResourceRenderers[type](props);
   } else {
     resource = {
       type,
+      ...{ props },
     };
   }
   generateURI(resource, options.parent);

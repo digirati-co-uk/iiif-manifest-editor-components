@@ -123,7 +123,6 @@ class ImageCropper extends React.Component {
                   : false
               }
               onChange={(event, checked) => {
-                console.log(this.state.annotation, event, checked);
                 const ann = this.state.annotation;
                 imageURLParts[imageURLParts.length - 4] = checked
                   ? `${ann.x},${ann.y},${ann.width},${ann.height}`
@@ -166,7 +165,6 @@ class ImageCropper extends React.Component {
                           },
                           () => {
                             const ann = this.state.annotation;
-                            console.log(ann);
                             imageURLParts[imageURLParts.length - 4] = `${ann.x},${ann.y},${ann.width},${ann.height}`;
                             this.props.onChange(imageURLParts.join('/'));
                           }

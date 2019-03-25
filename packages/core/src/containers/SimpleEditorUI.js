@@ -50,7 +50,9 @@ const theme = createMuiTheme({
 const emptyFn = () => {};
 
 const demoManifest = renderResource('Manifest');
-const demoCanvas = renderResource('Canvas', { parent: demoManifest });
+const demoCanvas = renderResource('Canvas', {
+  parent: demoManifest,
+});
 demoManifest.items.push(demoCanvas);
 
 class SimpleEditorUI extends React.Component {
@@ -193,6 +195,31 @@ class SimpleEditorUI extends React.Component {
                 '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
               AMZN_S3_REGION: 'eu-west-1',
               AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+            },
+          }}
+          behavior={{
+            Canvas: {
+              groups: [
+                {
+                  label: 'layout',
+                  values: ['layout-overlay', 'layout-split'],
+                },
+                {
+                  label: 'info position',
+                  values: [
+                    'info-position-left',
+                    'info-position-right',
+                    'info-position-center',
+                  ],
+                },
+                // ['test-this', 'test-that'],
+                '*',
+              ],
+            },
+          }}
+          iiifResourceDefaults={{
+            Canvas: {
+              behavior: ['layout-split', 'info-position-left'],
             },
           }}
         >

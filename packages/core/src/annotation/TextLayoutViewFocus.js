@@ -7,8 +7,6 @@ import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
-import TextPropertiesForm from './forms/TextPropertiesForm';
-
 export default class TextLayoutViewFocus extends BaseAnnotation {
   static contentRenderer = annotation => (
     <p
@@ -33,11 +31,11 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
     </Tooltip>
   );
 
-  static propertyEditor = TextPropertiesForm;
+  static propertyEditor = null;
 
   static defaultBody = {
     type: 'TextualBody',
-    value: 'new annotation',
+    value: '',
     format: 'text/plain',
     language: 'en',
   };
@@ -52,7 +50,7 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
             parent: state.selectedIdsByType.Canvas,
             props: {
               motivation: 'layout-viewport-focus',
-              body: TextPainting.defaultBody,
+              body: TextLayoutViewFocus.defaultBody,
               target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
             },
           },

@@ -135,18 +135,20 @@ class Properties extends React.Component {
                     />
                   </div>
                 )}
-                <div className={classes.resourceBlock}>
-                  <Typography variant="h6">
-                    <Label name="Properties.Manifest">Manifest</Label>
-                  </Typography>
-                  <MetadataEditor
-                    target={manifest}
-                    lang={lang}
-                    update={update}
-                    behaviorConfig={configuration.behavior.Manifest}
-                    fieldConfig={configuration.propertyFields.Manifest}
-                  />
-                </div>
+                {manifest && (
+                  <div className={classes.resourceBlock}>
+                    <Typography variant="h6">
+                      <Label name="Properties.Manifest">Manifest</Label>
+                    </Typography>
+                    <MetadataEditor
+                      target={manifest}
+                      lang={lang}
+                      update={update}
+                      behaviorConfig={configuration.behavior.Manifest}
+                      fieldConfig={configuration.propertyFields.Manifest}
+                    />
+                  </div>
+                )}
               </React.Fragment>
             );
           }}

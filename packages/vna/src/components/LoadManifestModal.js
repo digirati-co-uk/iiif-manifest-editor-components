@@ -44,7 +44,14 @@ const LoadManifestModal = ({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+LoadManifestModal.propTypes = {
+  collectionURL: PropTypes.string,
+  open: PropTypes.bool,
+  handleClose: PropTypes.func,
+  loadManifest: PropTypes.func,
+};
   
 
 export default LoadManifestModal;
