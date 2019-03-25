@@ -57,7 +57,10 @@ const SaveManifestModal = ({
                     body: JSON.stringify(manifest)
                 })
                   .then(response => response.json())
-                  .then(() => handleClose())
+                  .then(() => {
+                    handleClose();
+                    window.lastPersist = new Date().getTime();
+                  })
                   .catch(error => alert(error));
                 return true;
               } else if (resource.type === 'Collection') {
@@ -82,7 +85,10 @@ const SaveManifestModal = ({
                   body: JSON.stringify(saveFixtures(manifest))
               })
                 .then(response => response.json())
-                .then(() => handleClose())
+                .then(() => {
+                  window.lastPersist = new Date().getTime();
+                  handleClose();
+                })
                 .catch(error => alert(error));
             });
         }} color="primary">

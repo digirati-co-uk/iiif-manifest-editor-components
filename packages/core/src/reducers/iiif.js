@@ -22,6 +22,7 @@ const reorder = (list, startIndex, endIndex) => {
  * @param {*} action - action object with the parametes
  */
 const IIIFReducer = (state, action) => {
+  window.lastOperation = new Date().getTime();
   return produce(state, nextState => {
     const options = action.options;
     switch (action.type) {
@@ -132,6 +133,7 @@ const IIIFReducer = (state, action) => {
         nextState.selectedIdsByType.Canvas =
           action.manifest.items.length > 0 ? action.manifest.items[0].id : null;
         nextState.selectedIdsByType.Annotation = null;
+        window.lastPersist = new Date().getTime();
         break;
       case 'REGENERATE_IDS':
         const idMappings = {};

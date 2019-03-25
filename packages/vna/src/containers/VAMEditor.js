@@ -153,6 +153,25 @@ class VAMEditor extends React.Component {
     };
   }
 
+  onUnload = (ev) => { // the method that will be used for both add and remove event
+    const result = (window.lastPersist || 0) < window.lastOperation;
+    if (result) {
+      ev.returnValue = result;
+      return result;
+    } else {
+      ev.preventDefault();
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener("beforeunload", this.onUnload);
+  }
+
+  componentWillUnmount() {
+      window.removeEventListener("beforeunload", this.onUnload);
+  }
+
+
   changeLanguage = lang => {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
   };
@@ -247,6 +266,11 @@ class VAMEditor extends React.Component {
   };
 
   newProject = () => {
+    if ((window.lastPersist || 0) < window.lastOperation) {
+      if (!window.confirm(`Your project hasn't been saved, would you like to continue`)) {
+        return;
+      }
+    }
     this.dispatch(IIIFReducer, {
       type: 'LOAD_MANIFEST',
       manifest: this.newManifest(),
