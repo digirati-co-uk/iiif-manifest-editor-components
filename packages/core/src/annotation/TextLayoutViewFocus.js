@@ -2,7 +2,10 @@ import * as React from 'react';
 import { FormatShapes } from '@material-ui/icons';
 
 import { getW3cAnnotationStyle } from '../utils/IIIFResource';
-import IIIFReducer from '../reducers/iiif';
+//import IIIFReducer from '../reducers/iiif';
+import { addResource } from '../utils/addResource';
+import renderResource from '../utils/IIIFResource';
+import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
@@ -33,6 +36,8 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
 
   static propertyEditor = null;
 
+  static defaultSizing = SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS;
+
   static defaultBody = {
     type: 'TextualBody',
     value: '',
@@ -43,18 +48,31 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
   static actions = {
     add: ({ state, dispatch }, options) => {
       if (state.selectedIdsByType.Canvas) {
-        dispatch(IIIFReducer, {
-          type: 'ADD_RESOURCE',
-          options: {
-            type: 'Annotation',
+        const current = TextLayoutViewFocus;
+        addResource(
+          state,
+          dispatch,
+          renderResource('Annotation', {
             parent: state.selectedIdsByType.Canvas,
             props: {
               motivation: 'layout-viewport-focus',
-              body: TextLayoutViewFocus.defaultBody,
-              target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
+              body: current.defaultBody,
             },
-          },
-        });
+          }),
+          current.defaultSizing
+        );
+        // dispatch(IIIFReducer, {
+        //   type: 'ADD_RESOURCE',
+        //   options: {
+        //     type: 'Annotation',
+        //     parent: state.selectedIdsByType.Canvas,
+        //     props: {
+        //       motivation: 'layout-viewport-focus',
+        //       body: TextLayoutViewFocus.defaultBody,
+        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
+        //     },
+        //   },
+        // });
       }
     },
   };

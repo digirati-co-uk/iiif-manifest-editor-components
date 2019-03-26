@@ -77,10 +77,11 @@ import {
   generateURI,
   // parse video
   parseVideo,
+  addResource,
 } from './utils';
 import IIIFReducer from './reducers/iiif';
 import EditorReducer from './reducers/editor';
-
+import { SIZING_STRATEGY } from './constants/sizing';
 export {
   // Components
   // TOP LEVEL Components
@@ -153,4 +154,6 @@ export {
   generateURI,
   // parse video
   parseVideo,
+  addResource,
+  SIZING_STRATEGY,
 };

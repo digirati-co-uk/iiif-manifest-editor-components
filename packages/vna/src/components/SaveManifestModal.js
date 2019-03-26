@@ -28,7 +28,10 @@ const SaveManifestModal = ({
   classes,
   enqueueSnackbar,
 }) => {
-  const manifestId = manifest.id;
+  let manifestId = manifest.id;
+  if (manifestId.endsWith('/manifest')) {
+    manifestId = manifestId.replace('/manifest', '') + '.json';
+  }
   const folderUrl = manifestId.substring(0, manifestId.lastIndexOf("/") + 1);
   const fileName = manifestId.substring(manifestId.lastIndexOf("/") + 1, manifestId.length);
   const [url, setURL ] = useState(folderUrl);

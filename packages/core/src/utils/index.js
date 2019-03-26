@@ -16,6 +16,7 @@ import renderResource, {
 import convertToV3ifNecessary from './IIIFUpgrader';
 import generateURI from './URIGenerator';
 import { parseVideo } from './VideoServices';
+import { addResource } from './addResource';
 
 export {
   //download
@@ -40,4 +41,5 @@ export {
   generateURI,
   // parse video
   parseVideo,
+  addResource,
 };

@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Image } from '@material-ui/icons';
 
-import IIIFReducer from '../reducers/iiif';
+// import IIIFReducer from '../reducers/iiif';
+import { addResource } from '../utils/addResource';
+import renderResource from '../utils/IIIFResource';
+import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
 import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
@@ -42,20 +45,35 @@ export default class ImagePainting extends BaseAnnotation {
     height: 300,
   };
 
+  static defaultSizing = SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION;
+
   static actions = {
     add: ({ state, dispatch }, options) => {
       if (state.selectedIdsByType.Canvas) {
-        dispatch(IIIFReducer, {
-          type: 'ADD_RESOURCE',
-          options: {
-            type: 'Annotation',
+        const current = ImagePainting;
+        addResource(
+          state,
+          dispatch,
+          renderResource('Annotation', {
             parent: state.selectedIdsByType.Canvas,
             props: {
-              body: ImagePainting.defaultBody,
-              target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
+              motivation: 'painting',
+              body: current.defaultBody,
             },
-          },
-        });
+          }),
+          current.defaultSizing
+        );
+        // dispatch(IIIFReducer, {
+        //   type: 'ADD_RESOURCE',
+        //   options: {
+        //     type: 'Annotation',
+        //     parent: state.selectedIdsByType.Canvas,
+        //     props: {
+        //       body: ImagePainting.defaultBody,
+        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
+        //     },
+        //   },
+        // });
       }
     },
   };

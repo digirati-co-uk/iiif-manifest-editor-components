@@ -56,7 +56,7 @@ const isLocalhost = () =>
 window.rootManifestUrl = isLocalhost()
   ? 'http://localhost:8181/p3/'
   //: 'https://nhbv322uy3.execute-api.eu-west-1.amazonaws.com/staging/p3/';
-  : 'http://iiif-collection.ch.digtest.co.uk/p3/';
+  : 'https://iiif-collection.ch.digtest.co.uk/p3/';
 const emptyFn = () => {};
 
 const theme = createMuiTheme({
@@ -216,7 +216,6 @@ class VAMEditor extends React.Component {
     if (!fn) {
       return;
     }
-
     fn(
       {
         state: this.state,
@@ -225,6 +224,7 @@ class VAMEditor extends React.Component {
       options
     );
   };
+
   //TODO: deprecated replaced by the above
   invokeAction = (action, options) => {
     switch (action) {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { SIZING_STRATEGY } from '../constants/sizing';
 
 class BaseAnnotation {
   static contentRenderer = annotation => {
@@ -14,6 +15,8 @@ class BaseAnnotation {
   };
 
   static propertyEditor = 'TODO: custom property editor';
+
+  static defaultSizing = SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION;
 
   static actions = {
     add: ({ state, dispatch }, options) => {
