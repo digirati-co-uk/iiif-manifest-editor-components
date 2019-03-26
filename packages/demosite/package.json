@@ -1,6 +1,6 @@
 {
   "name": "@IIIF-MEC/demosite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Digirati Manifest Editor Demosite",
   "author": "Adam Meszaros<adam.meszaros@digirati.com>",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "webpack-config": "^7.5.0"
   },
   "dependencies": {
-    "@IIIF-MEC/core": "^1.0.0",
+    "@IIIF-MEC/core": "^1.0.1",
     "@canvas-panel/core": "^0.1.1",
     "@fesk/react-bem": "^1.1.2",
     "@material-ui/core": "^3.6.1",
