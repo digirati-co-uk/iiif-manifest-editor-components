@@ -373,6 +373,62 @@ class VAMEditor extends React.Component {
       annotationConfig['TextualBody::layout-viewport-focus'] = TextLayoutViewFocus;
       annotationFormButtons['TextLayoutViewFocus.NewAnnotationForm'] = ['dismiss', 'fitContentToCanvas'];
     }
+    let propertyFields = null; 
+    if (editorMode === 'slideshow') {
+      propertyFields = {
+        Manifest: [
+          'label',
+          'summary',
+          'requiredStatement',
+          'metadata',
+          'navDate',
+          'rights',
+        ],
+        Canvas: [
+          'behavior',
+          'label',
+          'summary',
+          'requiredStatement',
+        ],
+        Annotation: [
+          'label',
+          'summary',
+        ],
+        TextPropertiesForm: ['body.id', 'body.value'],
+        ImagePropertiesForm: [
+          'body.service.id',
+          'body.id',
+          'thumbnail.0.service.id',
+          'thumbnail.0.id',
+        ],
+      };
+    }
+    if (editorMode === 'annotated-zoom') {
+      propertyFields = {
+        Manifest: [
+          'label',
+          'summary',
+          'requiredStatement',
+          'metadata',
+          'navDate',
+          'rights',
+        ],
+        Canvas: [
+          'label',
+        ],
+        Annotation: [
+          'label',
+          'requiredStatement',
+        ],
+        TextPropertiesForm: ['body.id', 'body.value'],
+        ImagePropertiesForm: [
+          'body.service.id',
+          'body.id',
+          'thumbnail.0.service.id',
+          'thumbnail.0.id',
+        ],
+      };
+    }
     return (
       <MuiThemeProvider theme={theme}>
         <ManifestEditor
@@ -385,39 +441,7 @@ class VAMEditor extends React.Component {
           metaOntology={UI_LABELS[editorMode] || {}}
           behavior={editorMode === 'slideshow' ? SLIDESHOW_BEHAVIOURS:  {}}
           annotationFormButtons={annotationFormButtons}
-          propertyFields={editorMode === 'slideshow' ? {
-            Manifest: [
-              'label',
-              'summary',
-              'requiredStatement',
-              'metadata',
-              'navDate',
-              'rights',
-            ],
-            Canvas: [
-              'behavior',
-              'label',
-              'summary',
-              'requiredStatement',
-            ],
-            Annotation: [
-              'label',
-              'summary',
-            ],
-            AudioPropertiesFrom: ['body.id'],
-            VideoPropertiesFrom: [
-              'body.id',
-              'thumbnail.0.service.id',
-              'thumbnail.0.id',
-            ],
-            TextPropertiesForm: ['body.id', 'body.value'],
-            ImagePropertiesForm: [
-              'body.service.id',
-              'body.id',
-              'thumbnail.0.service.id',
-              'thumbnail.0.id',
-            ],
-          } : null}
+          propertyFields={propertyFields}
           iiifResourceDefaults={{
             Canvas: {
               behavior: ['layout-split', 'info-position-left'],
@@ -460,11 +484,11 @@ class VAMEditor extends React.Component {
                 onClick={this.toggleItemPreview}
                 icon={<Visibility />}
               />
-              {/* <AppBarButton
+              <AppBarButton
                 text="Load Manifest"
                 onClick={this.toggleLoadManifestDialog2}
                 icon={<Input />}
-              /> */}
+              />
             </AppBar>
             <Layout.Middle>
               <Layout.Left>
