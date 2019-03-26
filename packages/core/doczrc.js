@@ -42,14 +42,13 @@ module.exports = {
     },
   },
   modifyBabelRc: config => {
-    //console.log(config);
     config.babelrc = false
     return config
   },
   modifyBundlerConfig: config => {
     config.module.rules.push(sass);
     config.plugins.push(miniCss);
-    // console.log(config, feskPackConfig);
+
     // const cfg = merge(feskPackConfig, config);
     console.log(config.entry);
     return config; //merge(feskPackConfig, config);

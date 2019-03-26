@@ -34,10 +34,10 @@ const SlideEditor = ({ manifestJSON, canvasId }) => {
 		// this is a hack, first thing to remove,
 		// the modification requires to retrofit delft as well.
 		try {
-			console.log(
-				'manifestJSONLD.items[0].items[0].items[0]',
-				manifestJSONLD.items[0].items[0].items[0]
-			)
+			// console.log(
+			// 	'manifestJSONLD.items[0].items[0].items[0]',
+			// 	manifestJSONLD.items[0].items[0].items[0]
+			// )
 
 		} catch (err) {}
 		if (
@@ -71,12 +71,12 @@ const SlideEditor = ({ manifestJSON, canvasId }) => {
 						nextRange,
 						region,
 					} = rangeProps;
-					console.log(
-						'RangeNavigationProvider',
-						manifest,
-						canvas,
-						region,
-					)
+					// console.log(
+					// 	'RangeNavigationProvider',
+					// 	manifest,
+					// 	canvas,
+					// 	region,
+					// )
 					return (
 						<Slide
 							fullscreenProps={{
