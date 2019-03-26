@@ -140,7 +140,8 @@ class VAMEditor extends React.Component {
   constructor(props) {
     super(props);
     const initialNewManifest = this.newManifest();
-    this.state = {
+    const crashPrevention = JSON.parse(localStorage.getItem('autoSave'));
+    this.state = crashPrevention ? crashPrevention : {
       rootResource: initialNewManifest,
       selectedIdsByType: {
         Canvas: initialNewManifest.items[0].id,
@@ -178,7 +179,16 @@ class VAMEditor extends React.Component {
   };
 
   dispatch = (reducer, action, afterStateChange) => {
-    this.setState(reducer(this.state, action), afterStateChange);
+    this.setState(reducer(this.state, action), ()=> {
+      const currentTime = new Date().getTime();
+      if ((window.lastStateSave  || 0) < currentTime - 10000 || action.type === 'LOAD_MANIFEST') {
+        localStorage.setItem('autoSave', JSON.stringify(this.state));
+        window.lastStateSave = currentTime;
+      }
+      if (afterStateChange) {
+        afterStateChange();
+      }
+    });
   };
 
   selectResource = resource => {
