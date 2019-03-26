@@ -150,6 +150,7 @@ class VAMEditor extends React.Component {
       lang: 'en',
       editorMode: 'slideshow',
       loadManifestDialogOpen: false,
+      loadManifestDialogOpen2: false,
       saveManifestDialogOpen: false,
       previewModalOpen: false,
     };
@@ -183,11 +184,12 @@ class VAMEditor extends React.Component {
       const currentTime = new Date().getTime();
       const lastSaveWasMoreThanTenSecondsBefore = (window.lastStateSave  || 0) < (currentTime - 10000);
       if (lastSaveWasMoreThanTenSecondsBefore || action.type === 'LOAD_MANIFEST') {
-        localStorage.setItem('autoSave', Object.assign(JSON.stringify(this.state), {
+        localStorage.setItem('autoSave', JSON.stringify(Object.assign({}, this.state, {
           loadManifestDialogOpen: false,
+          loadManifestDialogOpen2: false,
           saveManifestDialogOpen: false,
           previewModalOpen: false,
-        });
+        })));
         window.lastStateSave = currentTime;
       }
       if (afterStateChange) {
