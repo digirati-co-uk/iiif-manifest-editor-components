@@ -502,11 +502,11 @@ class VAMEditor extends React.Component {
                 onClick={this.toggleItemPreview}
                 icon={<Visibility />}
               />
-              <AppBarButton
+              {/* <AppBarButton
                 text="Load Manifest"
                 onClick={this.toggleLoadManifestDialog2}
                 icon={<Input />}
-              />
+              /> */}
             </AppBar>
             <Layout.Middle>
               <Layout.Left>
