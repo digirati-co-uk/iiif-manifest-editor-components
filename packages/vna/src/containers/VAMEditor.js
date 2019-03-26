@@ -181,8 +181,13 @@ class VAMEditor extends React.Component {
   dispatch = (reducer, action, afterStateChange) => {
     this.setState(reducer(this.state, action), ()=> {
       const currentTime = new Date().getTime();
-      if ((window.lastStateSave  || 0) < currentTime - 10000 || action.type === 'LOAD_MANIFEST') {
-        localStorage.setItem('autoSave', JSON.stringify(this.state));
+      const lastSaveWasMoreThanTenSecondsBefore = (window.lastStateSave  || 0) < (currentTime - 10000);
+      if (lastSaveWasMoreThanTenSecondsBefore || action.type === 'LOAD_MANIFEST') {
+        localStorage.setItem('autoSave', Object.assign(JSON.stringify(this.state), {
+          loadManifestDialogOpen: false,
+          saveManifestDialogOpen: false,
+          previewModalOpen: false,
+        });
         window.lastStateSave = currentTime;
       }
       if (afterStateChange) {
