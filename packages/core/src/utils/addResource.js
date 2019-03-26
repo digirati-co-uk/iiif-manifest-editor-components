@@ -2,6 +2,7 @@ import { queryResourceById, getAnnotationDimensions } from './IIIFResource';
 import generateURI from './URIGenerator';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import IIIFReducer from '../reducers/iiif';
+import EditorReducer from '../reducers/editor';
 
 export const addResource = (
   state,
@@ -45,6 +46,12 @@ export const addResource = (
   if (!newProps.motivation) {
     newProps.motivation = motivation; //dialog && dialog.type ? dialog.type.split('::')[1] : '';
   }
+  const selectDispatch = () => {
+    dispatch(EditorReducer, {
+      type: 'TOGGLE_SELECT_RESOURCE',
+      resource: newProps,
+    });
+  };
   dispatch(
     IIIFReducer,
     {
@@ -56,16 +63,22 @@ export const addResource = (
     },
     () => {
       if (sizingStrategy === SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION) {
-        dispatch(IIIFReducer, {
-          type: 'UPDATE_RESOURCE',
-          options: {
-            id: state.selectedIdsByType.Canvas,
-            props: {
-              width: width,
-              height: height,
+        dispatch(
+          IIIFReducer,
+          {
+            type: 'UPDATE_RESOURCE',
+            options: {
+              id: state.selectedIdsByType.Canvas,
+              props: {
+                width: width,
+                height: height,
+              },
             },
           },
-        });
+          selectDispatch
+        );
+      } else {
+        selectDispatch();
       }
     }
   );
