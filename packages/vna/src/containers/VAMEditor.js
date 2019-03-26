@@ -448,21 +448,23 @@ class VAMEditor extends React.Component {
                 onClick={this.saveProject}
                 icon={<SaveAlt />}
               />
-              <AppBarButton
-                text="Preview JSON"
-                onClick={this.togglePreviewDialog}
-                icon={<Visibility />}
-              />
+              {editorMode === 'default' && (
+                <AppBarButton
+                  text="Preview JSON"
+                  onClick={this.togglePreviewDialog}
+                  icon={<Visibility />}
+                />
+              )}
               <AppBarButton
                 text="Preview"
                 onClick={this.toggleItemPreview}
                 icon={<Visibility />}
               />
-              <AppBarButton
+              {/* <AppBarButton
                 text="Load Manifest"
                 onClick={this.toggleLoadManifestDialog2}
                 icon={<Input />}
-              />
+              /> */}
             </AppBar>
             <Layout.Middle>
               <Layout.Left>
