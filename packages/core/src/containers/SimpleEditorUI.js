@@ -222,6 +222,14 @@ class SimpleEditorUI extends React.Component {
               behavior: ['layout-split', 'info-position-left'],
             },
           }}
+          propertyPanel={{
+            selectionType: 'accordion',
+            selectionVisibility: {
+              null: ['Manifest'],
+              Canvas: ['Canvas', 'Manifest'],
+              Annotation: ['Annotation', 'Canvas', 'Manifest'],
+            },
+          }}
         >
           <Layout>
             <AppBar>

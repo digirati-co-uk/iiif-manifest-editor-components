@@ -447,6 +447,14 @@ class VAMEditor extends React.Component {
               behavior: ['layout-split', 'info-position-left'],
             },
           }}
+          propertyPanel={editorMode === 'annotated-zoom' && {
+            selectionType: 'accordion',
+            selectionVisibility: {
+              null: ['Manifest'],
+              Canvas: ['Manifest'],
+              Annotation: ['Annotation', 'Manifest'],
+            },
+          }}
         >
           <Layout>
             <AppBar titleComponent={

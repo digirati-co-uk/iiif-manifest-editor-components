@@ -500,6 +500,14 @@ const defaultEditorContext = {
       'thumbnail.0.id',
     ],
   },
+  propertyPanel: {
+    selectionType: 'list',
+    selectionVisibility: {
+      null: ['Manifest'],
+      Canvas: ['Canvas', 'Manifest'],
+      Annotation: ['Annotation', 'Canvas', 'Manifest'],
+    },
+  },
 };
 
 const EditorContext = React.createContext(defaultEditorContext);
@@ -508,37 +516,54 @@ export class EditorProvider extends React.Component {
     const {
       children,
       configuration,
-      annotation,
-      translation,
-      dragDrop,
-      behavior,
-      annotationFormButtons,
-      propertyFields,
       iiifResourceDefaults,
+      ...configOverrides
+      // Which can contain contain:
+      // annotation,
+      // translation,
+      // dragDrop,
+      // behavior,
+      // annotationFormButtons,
+      // propertyFields,
+      // iiifResourceDefaults,
+      // propertyPanel,
     } = this.props;
 
     const aggregatedConfig = deepmerge.all([
       defaultEditorContext,
       configuration,
     ]);
-    if (annotation) {
-      aggregatedConfig.annotation = annotation;
-    }
-    if (translation) {
-      aggregatedConfig.translation = translation;
-    }
-    if (dragDrop) {
-      aggregatedConfig.dragDrop = dragDrop;
-    }
-    if (behavior) {
-      aggregatedConfig.behavior = behavior;
-    }
-    if (annotationFormButtons) {
-      aggregatedConfig.annotationFormButtons = annotationFormButtons;
-    }
-    if (propertyFields) {
-      aggregatedConfig.propertyFields = propertyFields;
-    }
+    console.log('configOverrides', configOverrides);
+    Object.entries(configOverrides).forEach(
+      ([configPropertyName, configValue]) => {
+        if (configValue) {
+          aggregatedConfig[configPropertyName] = configValue;
+        }
+      }
+    );
+
+    // if (annotation) {
+    //   aggregatedConfig.annotation = annotation;
+    // }
+    // if (translation) {
+    //   aggregatedConfig.translation = translation;
+    // }
+    // if (dragDrop) {
+    //   aggregatedConfig.dragDrop = dragDrop;
+    // }
+    // if (behavior) {
+    //   aggregatedConfig.behavior = behavior;
+    // }
+    // if (annotationFormButtons) {
+    //   aggregatedConfig.annotationFormButtons = annotationFormButtons;
+    // }
+    // if (propertyFields) {
+    //   aggregatedConfig.propertyFields = propertyFields;
+    // }
+
+    // if (propertyPanel) {
+    //   aggregatedConfig.propertyPanel = propertyPanel;
+    // }
 
     if (iiifResourceDefaults) {
       aggregatedConfig.iiifResourceDefaults = iiifResourceDefaults;
@@ -572,6 +597,8 @@ EditorProvider.propTypes = {
   behavior: PropTypes.object,
   /** To override the default IIIF Resource Properties */
   iiifResourceDefaults: PropTypes.object,
+  /** Property panel configuration */
+  propertyPanel: PropTypes.object,
 };
 
 EditorProvider.defaultProps = {

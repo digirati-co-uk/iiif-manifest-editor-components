@@ -17,6 +17,7 @@ const ManifestEditor = ({
   propertyFields,
   dragDrop,
   iiifResourceDefaults,
+  propertyPanel,
 }) => (
   <EditorProvider
     configuration={config}
@@ -27,6 +28,7 @@ const ManifestEditor = ({
     annotationFormButtons={annotationFormButtons}
     propertyFields={propertyFields}
     iiifResourceDefaults={iiifResourceDefaults}
+    propertyPanel={propertyPanel}
   >
     <LabelProvider value={metaOntology}>
       <EditorConsumer>

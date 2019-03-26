@@ -1,7 +1,14 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { Typography, InputLabel, withStyles } from '@material-ui/core';
-import { Translate } from '@material-ui/icons';
+import {
+  Typography,
+  InputLabel,
+  withStyles,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+} from '@material-ui/core';
+import { Translate, ExpandMore } from '@material-ui/icons';
 
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
@@ -30,9 +37,31 @@ const style = theme => ({
   resourceBlock: {
     paddingBottom: theme.spacing.unit,
     display: 'flex',
+    width: '100%',
     flexDirection: 'column',
   },
 });
+
+const StyledExpansionPanel = withStyles(theme => ({
+  root: {
+    //border: '1px solid rgba(0,0,0,.125)',
+    borderLeft: 0,
+    borderRight: 0,
+    borderTop: '1px solid rgba(0,0,0,.125)',
+    borderBottom: '1px solid rgba(0,0,0,.125)',
+    boxShadow: 'none',
+    margin: `0 -${2 * theme.spacing.unit}px`,
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&:before': {
+      display: 'none',
+    },
+  },
+  expanded: {
+    margin: `auto -${2 * theme.spacing.unit}px`,
+  },
+}))(ExpansionPanel);
 
 class Properties extends React.Component {
   state = {
@@ -98,59 +127,217 @@ class Properties extends React.Component {
         <EditorConsumer>
           {configuration => {
             const form = configuration.annotation[annotationType];
-            return (
-              <React.Fragment>
-                {annotation && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Annotation">Annotation</Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={annotation}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={configuration.behavior.Annotation}
-                      fieldConfig={configuration.propertyFields.Annotation}
-                    />
-                    {annotationType}
-                    {form &&
-                      typeof form.propertyEditor === 'function' &&
-                      React.createElement(form.propertyEditor, {
-                        update: this.update,
-                        target: annotation,
-                      })}
-                  </div>
-                )}
-                {canvas && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Canvas">Canvas</Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={canvas}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={configuration.behavior.Canvas}
-                      fieldConfig={configuration.propertyFields.Canvas}
-                    />
-                  </div>
-                )}
-                {manifest && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Manifest">Manifest</Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={manifest}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={configuration.behavior.Manifest}
-                      fieldConfig={configuration.propertyFields.Manifest}
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            );
+            const propertyPanelConfig = configuration.propertyPanel;
+            let smallestSelectedType = 'null';
+            if (canvas) {
+              smallestSelectedType = 'Canvas';
+            }
+            if (annotation) {
+              smallestSelectedType = 'Annotation';
+            }
+            const propertyTables =
+              propertyPanelConfig.selectionVisibility[smallestSelectedType];
+            if (propertyPanelConfig.selectionType === 'list') {
+              return (
+                <React.Fragment>
+                  {propertyTables.map(resourceType => {
+                    switch (resourceType) {
+                      case 'Annotation':
+                        return (
+                          annotation && (
+                            <div className={classes.resourceBlock}>
+                              <Typography variant="h6">
+                                <Label name="Properties.Annotation">
+                                  Annotation
+                                </Label>
+                              </Typography>
+                              <MetadataEditor
+                                target={annotation}
+                                lang={lang}
+                                update={update}
+                                behaviorConfig={
+                                  configuration.behavior.Annotation
+                                }
+                                fieldConfig={
+                                  configuration.propertyFields.Annotation
+                                }
+                              />
+                              {annotationType}
+                              {form &&
+                                typeof form.propertyEditor === 'function' &&
+                                React.createElement(form.propertyEditor, {
+                                  update: this.update,
+                                  target: annotation,
+                                })}
+                            </div>
+                          )
+                        );
+                      case 'Canvas':
+                        return (
+                          canvas && (
+                            <div className={classes.resourceBlock}>
+                              <Typography variant="h6">
+                                <Label name="Properties.Canvas">Canvas</Label>
+                              </Typography>
+                              <MetadataEditor
+                                target={canvas}
+                                lang={lang}
+                                update={update}
+                                behaviorConfig={configuration.behavior.Canvas}
+                                fieldConfig={
+                                  configuration.propertyFields.Canvas
+                                }
+                              />
+                            </div>
+                          )
+                        );
+                      case 'Manifest':
+                        return (
+                          manifest && (
+                            <div className={classes.resourceBlock}>
+                              <Typography variant="h6">
+                                <Label name="Properties.Manifest">
+                                  Manifest
+                                </Label>
+                              </Typography>
+                              <MetadataEditor
+                                target={manifest}
+                                lang={lang}
+                                update={update}
+                                behaviorConfig={configuration.behavior.Manifest}
+                                fieldConfig={
+                                  configuration.propertyFields.Manifest
+                                }
+                              />
+                            </div>
+                          )
+                        );
+                      default:
+                        return '';
+                    }
+                  })}
+                </React.Fragment>
+              );
+            } else if (propertyPanelConfig.selectionType === 'accordion') {
+              return (
+                <React.Fragment>
+                  {propertyTables.map((resourceType, index) => {
+                    switch (resourceType) {
+                      case 'Annotation':
+                        return (
+                          annotation && (
+                            <StyledExpansionPanel
+                              key="annotation_property_editor"
+                              defaultExpanded={index === 0}
+                            >
+                              <ExpansionPanelSummary
+                                expandIcon={<ExpandMore />}
+                              >
+                                <Typography variant="h6">
+                                  <Label name="Properties.Annotation">
+                                    Annotation
+                                  </Label>
+                                </Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails>
+                                <div className={classes.resourceBlock}>
+                                  <MetadataEditor
+                                    target={annotation}
+                                    lang={lang}
+                                    update={update}
+                                    behaviorConfig={
+                                      configuration.behavior.Annotation
+                                    }
+                                    fieldConfig={
+                                      configuration.propertyFields.Annotation
+                                    }
+                                  />
+                                  {annotationType}
+                                  {form &&
+                                    typeof form.propertyEditor === 'function' &&
+                                    React.createElement(form.propertyEditor, {
+                                      update: this.update,
+                                      target: annotation,
+                                    })}
+                                </div>
+                              </ExpansionPanelDetails>
+                            </StyledExpansionPanel>
+                          )
+                        );
+                      case 'Canvas':
+                        return (
+                          canvas && (
+                            <StyledExpansionPanel
+                              key="canvas_property_editor"
+                              defaultExpanded={index === 0}
+                            >
+                              <ExpansionPanelSummary
+                                expandIcon={<ExpandMore />}
+                              >
+                                <Typography variant="h6">
+                                  <Label name="Properties.Canvas">Canvas</Label>
+                                </Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails>
+                                <div className={classes.resourceBlock}>
+                                  <MetadataEditor
+                                    target={canvas}
+                                    lang={lang}
+                                    update={update}
+                                    behaviorConfig={
+                                      configuration.behavior.Canvas
+                                    }
+                                    fieldConfig={
+                                      configuration.propertyFields.Canvas
+                                    }
+                                  />
+                                </div>
+                              </ExpansionPanelDetails>
+                            </StyledExpansionPanel>
+                          )
+                        );
+                      case 'Manifest':
+                        return (
+                          manifest && (
+                            <StyledExpansionPanel
+                              key="manifest_property_editor"
+                              defaultExpanded={index === 0}
+                            >
+                              <ExpansionPanelSummary
+                                expandIcon={<ExpandMore />}
+                              >
+                                <Typography variant="h6">
+                                  <Label name="Properties.Manifest">
+                                    Manifest
+                                  </Label>
+                                </Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails>
+                                <div className={classes.resourceBlock}>
+                                  <MetadataEditor
+                                    target={manifest}
+                                    lang={lang}
+                                    update={update}
+                                    behaviorConfig={
+                                      configuration.behavior.Manifest
+                                    }
+                                    fieldConfig={
+                                      configuration.propertyFields.Manifest
+                                    }
+                                  />
+                                </div>
+                              </ExpansionPanelDetails>
+                            </StyledExpansionPanel>
+                          )
+                        );
+                      default:
+                        return '';
+                    }
+                  })}
+                </React.Fragment>
+              );
+            }
+            return 'invalid selection configuration';
           }}
         </EditorConsumer>
         <TranslationDialog
