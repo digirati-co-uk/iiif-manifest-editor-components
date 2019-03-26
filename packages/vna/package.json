@@ -1,9 +1,10 @@
 {
   "name": "@IIIF-MEC/vna",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "V&A Manifest Editor",
   "author": "Adam Meszaros<adam.meszaros@digirati.com>",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "fesk-start",
     "release": "NODE_ENV=production fesk-build",
@@ -25,7 +26,7 @@
     "webpack-config": "^7.5.0"
   },
   "dependencies": {
-    "@IIIF-MEC/core": "0.0.1",
+    "@IIIF-MEC/core": "^1.0.0",
     "@canvas-panel/core": "^0.1.1",
     "@canvas-panel/full-page-plugin": "^0.1.1",
     "@canvas-panel/patchwork-plugin": "^0.1.1",
