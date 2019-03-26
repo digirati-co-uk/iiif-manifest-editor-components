@@ -63,17 +63,6 @@ export default class ImagePainting extends BaseAnnotation {
           }),
           current.defaultSizing
         );
-        // dispatch(IIIFReducer, {
-        //   type: 'ADD_RESOURCE',
-        //   options: {
-        //     type: 'Annotation',
-        //     parent: state.selectedIdsByType.Canvas,
-        //     props: {
-        //       body: ImagePainting.defaultBody,
-        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
-        //     },
-        //   },
-        // });
       }
     },
   };

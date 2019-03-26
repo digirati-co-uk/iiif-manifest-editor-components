@@ -83,17 +83,6 @@ export default class VideoPainting extends BaseAnnotation {
           }),
           current.defaultSizing
         );
-        // dispatch(IIIFReducer, {
-        //   type: 'ADD_RESOURCE',
-        //   options: {
-        //     type: 'Annotation',
-        //     parent: state.selectedIdsByType.Canvas,
-        //     props: {
-        //       body: VideoPainting.defaultBody,
-        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,320,176',
-        //     },
-        //   },
-        // });
       }
     },
   };

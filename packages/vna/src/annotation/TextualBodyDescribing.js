@@ -11,6 +11,7 @@ import {
   //import IIIFReducer from '../reducers/iiif';
   addResource,
   renderResource,
+  queryResourceById,
   SIZING_STRATEGY,
 } from '@IIIF-MEC/core';
 
@@ -47,6 +48,7 @@ export default class TextualBodyDescribing extends BaseAnnotation {
     add: ({ state, dispatch }, options) => {
       if (state.selectedIdsByType.Canvas) {
         const current = TextualBodyDescribing;
+        const {width, height} = queryResourceById(state.selectedIdsByType.Canvas, state.rootResource);
         addResource(
           state,
           dispatch,
@@ -55,22 +57,12 @@ export default class TextualBodyDescribing extends BaseAnnotation {
             props: {
               motivation: 'describing',
               body: current.defaultBody,
+              width, 
+              height,
             },
           }),
           current.defaultSizing
         );
-        // dispatch(IIIFReducer, {
-        //   type: 'ADD_RESOURCE',
-        //   options: {
-        //     type: 'Annotation',
-        //     parent: state.selectedIdsByType.Canvas,
-        //     props: {
-        //       motivation: 'describing',
-        //       body: TextualBodyDescribing.defaultBody,
-        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
-        //     },
-        //   },
-        // });
       }
     },
   };

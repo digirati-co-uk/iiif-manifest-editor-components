@@ -61,18 +61,6 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
           }),
           current.defaultSizing
         );
-        // dispatch(IIIFReducer, {
-        //   type: 'ADD_RESOURCE',
-        //   options: {
-        //     type: 'Annotation',
-        //     parent: state.selectedIdsByType.Canvas,
-        //     props: {
-        //       motivation: 'layout-viewport-focus',
-        //       body: TextLayoutViewFocus.defaultBody,
-        //       target: state.selectedIdsByType.Canvas + '#xywh=0,0,200,300',
-        //     },
-        //   },
-        // });
       }
     },
   };
