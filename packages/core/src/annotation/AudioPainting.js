@@ -12,6 +12,7 @@ import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip
 import AudioPropertiesForm from './forms/AudioPropertiesForm';
 
 export default class AudioPainting extends BaseAnnotation {
+  static formName = 'AudioPainting';
   static contentRenderer = annotation => (
     <audio
       controls

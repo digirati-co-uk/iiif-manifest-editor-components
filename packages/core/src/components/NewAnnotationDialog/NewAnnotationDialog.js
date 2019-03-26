@@ -70,7 +70,8 @@ class NewAnnotationDialog extends React.Component {
     const { handleClose, form } = this.props;
     const { resource } = this.state;
     const resourceType = resource.type;
-    const formName = form ? form.name : 'noform';
+    const formName = form ? form.formName : 'noform';
+    console.log(form, formName);
     return (
       <Dialog
         open={!!form}

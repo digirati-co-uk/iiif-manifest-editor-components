@@ -11,6 +11,7 @@ import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 export default class TextLayoutViewFocus extends BaseAnnotation {
+  static formName = 'TextLayoutViewFocus';
   static contentRenderer = annotation => (
     <p
       style={{

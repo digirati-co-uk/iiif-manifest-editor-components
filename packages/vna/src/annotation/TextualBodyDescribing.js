@@ -16,6 +16,7 @@ import {
 } from '@IIIF-MEC/core';
 
 export default class TextualBodyDescribing extends BaseAnnotation {
+  static formName = 'TextualBodyDescribing';
   static contentRenderer = annotation => ('');
 
   static button = ({

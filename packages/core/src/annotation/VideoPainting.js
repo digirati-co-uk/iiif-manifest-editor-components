@@ -13,6 +13,7 @@ import VideoPropertiesForm from './forms/VideoPropertiesForm';
 import { parseVideo } from '../utils/VideoServices';
 
 export default class VideoPainting extends BaseAnnotation {
+  static formName = 'VideoPainting';
   static contentRenderer = annotation => {
     const videoServiceResult = parseVideo(annotation.body.id);
     return videoServiceResult && videoServiceResult.type ? (

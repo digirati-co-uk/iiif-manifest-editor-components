@@ -13,6 +13,7 @@ import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip
 import TextPropertiesForm from './forms/TextPropertiesForm';
 
 export default class TextPainting extends BaseAnnotation {
+  static formName = 'TextPainting';
   static contentRenderer = annotation => (
     <p
       style={{

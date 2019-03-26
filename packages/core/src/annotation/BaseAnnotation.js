@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SIZING_STRATEGY } from '../constants/sizing';
 
 class BaseAnnotation {
+  static formName = 'BaseAnnotation';
   static contentRenderer = annotation => {
     throw 'Not Implemented error';
   };

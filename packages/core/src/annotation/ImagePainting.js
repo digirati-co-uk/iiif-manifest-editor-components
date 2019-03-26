@@ -12,6 +12,7 @@ import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip
 import ImagePropertiesForm from './forms/ImagePropertiesForm';
 
 export default class ImagePainting extends BaseAnnotation {
+  static formName = 'ImagePainting';
   static contentRenderer = annotation => (
     <img
       src={annotation.body.id || 'https://picsum.photos/g/200/300'}
