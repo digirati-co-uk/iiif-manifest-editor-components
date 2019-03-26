@@ -6,8 +6,6 @@ import {
   Button,
   AppBar,
   Toolbar,
-  IconButton,
-  CloseIcon,
   Typography
 } from '@material-ui/core';
 import {
@@ -62,8 +60,13 @@ const RenderManifest = ({manifest, isDemoPage}) => {
   }
 };
   
+const styles = theme => ({
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+});
 
-const PreviewModal = ({ manifest, handleClose, open }) => {
+const PreviewModal = ({ classes, manifest, handleClose, open }) => {
   const [isPage, setIsPage] = useState(false);
   const _manifest = saveFixtures(manifest);
   return (
@@ -77,25 +80,28 @@ const PreviewModal = ({ manifest, handleClose, open }) => {
     >
       <AppBar position="static">
         <Toolbar>
-          <IconButton color="inherit" onClick={handleClose} aria-label="Close">
-            <Close />
-          </IconButton>
-          <Typography variant="h6" color="inherit" >
-            Preview Experience
+          <Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+            Preview
           </Typography>
-          <IconButton onClick={()=>setIsPage(!isPage)} color="inherit" aria-label={isPage ? "Web" : "Fullscreen"}>
+          <Button onClick={()=>setIsPage(!isPage)} color="inherit" aria-label={isPage ? "Web" : "Fullscreen"}>
             {isPage ? (
               <React.Fragment>
-                <Web />
-                <Typography variant="h6" color="inherit">Show In context</Typography
-              ></React.Fragment>
+                <Web className={classes.leftIcon}/>
+                <Typography variant="h6" color="inherit">Show In context</Typography>
+              </React.Fragment>
             ): (
               <React.Fragment>
-                <Fullscreen />
+                <Fullscreen className={classes.leftIcon}/>
                 <Typography variant="h6" color="inherit">FullPage</Typography>
               </React.Fragment>
             )}
-          </IconButton>
+          </Button>
+          <Button color="inherit" onClick={handleClose} aria-label="Close">
+            <Close className={classes.leftIcon} />
+            <Typography variant="h6" color="inherit" >
+              Close Preview
+            </Typography>
+          </Button>
         </Toolbar>
       </AppBar>
       {isPage 
@@ -112,4 +118,4 @@ const PreviewModal = ({ manifest, handleClose, open }) => {
   );
 }
 
-export default PreviewModal;
+export default withStyles(styles)(PreviewModal);
