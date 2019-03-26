@@ -48,9 +48,7 @@ module.exports = {
   modifyBundlerConfig: config => {
     config.module.rules.push(sass);
     config.plugins.push(miniCss);
-
     // const cfg = merge(feskPackConfig, config);
-    console.log(config.entry);
     return config; //merge(feskPackConfig, config);
   },
 };

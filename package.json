@@ -3,7 +3,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "name": "iiif-manifest-editor-components",
+  "name": "iiif-mec",
   "version": "1.1.0",
   "description": "Common components for editing IIIF manifests",
   "devEngines": {

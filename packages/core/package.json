@@ -2,7 +2,7 @@
   "name": "@iiif-mec/core",
   "version": "1.0.5",
   "description": "Core components for manifest editing",
-  "author": "Adam Meszaros<adam.meszaros@digirati.com>",
+  "author": "Adam Meszaros <adam.meszaros@digirati.com>",
   "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
@@ -81,5 +81,21 @@
       "setup.jest.js",
       "webpack.config.js"
     ]
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digirati-co-uk/iiif-manifest-editor-components.git"
+  },
+  "keywords": [
+    "manifest",
+    "editor",
+    "components"
+  ],
+  "bugs": {
+    "url": "https://github.com/digirati-co-uk/iiif-manifest-editor-components/issues"
+  },
+  "homepage": "https://github.com/digirati-co-uk/iiif-manifest-editor-components#readme"
 }
