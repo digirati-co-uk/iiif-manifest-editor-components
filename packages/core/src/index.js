@@ -31,6 +31,7 @@ import {
   //Translation/customisation
   LabelProvider,
   LabelConsumer,
+  Label,
   LocaleString,
   // mostly internal components
   ImageCropper,
@@ -107,6 +108,7 @@ export {
   //Translation/customisation
   LabelProvider,
   LabelConsumer,
+  Label,
   LocaleString,
   // mostly internal components
   ImageCropper,

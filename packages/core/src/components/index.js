@@ -11,7 +11,7 @@ import EditableCanvasPanel from './EditableCanvasPanel/EditableCanvasPanel';
 import { EditorProvider, EditorConsumer } from './EditorContext/EditorContext';
 import IIIFCollectionExplorer from './IIIFCollectionExplorer/IIIFCollectionExplorer';
 import ImageCropper from './ImageCropper/ImageCropper';
-import { LabelProvider, LabelConsumer } from './LabelContext/LabelContext';
+import { LabelProvider, LabelConsumer, Label as Label } from './LabelContext/LabelContext';
 import LocaleString from './LocaleString/LocaleString';
 import ManifestEditor from './ManifestEditor/ManifestEditor';
 import ManifestEditorAppBar from './ManifestEditorAppBar/ManifestEditorAppBar';
@@ -50,6 +50,7 @@ export {
   //Translation/customisation
   LabelProvider,
   LabelConsumer,
+  Label,
   LocaleString,
   // mostly internal components
   ImageCropper,
