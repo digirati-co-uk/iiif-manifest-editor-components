@@ -45,8 +45,8 @@ class CollectionExplorer extends React.Component {
     isLoading: false,
     history: [],
     error: null,
-    manifestIcon: null,
-    collectionIcon: null,
+    // manifestIcon: null,
+    // collectionIcon: null,
   };
 
   constructor(props) {
@@ -84,7 +84,10 @@ class CollectionExplorer extends React.Component {
           if (
             !this.props.autoSelectIfManifestFromUrl ||
             (this.props.autoSelectIfManifestFromUrl &&
-              !this.props.onItemSelect(resource))
+              !this.props.onItemSelect({
+                type: resource.type,
+                id: url,
+              }))
           ) {
             this.setState(
               {
@@ -134,7 +137,14 @@ class CollectionExplorer extends React.Component {
   };
 
   render() {
-    const { classes, style, manifestIcon, collectionIcon } = this.props;
+    const {
+      classes,
+      style,
+      manifestIcon,
+      collectionIcon,
+      canvasListDroppableId,
+      autoSelectIfManifestFromUrl,
+    } = this.props;
     const {
       history,
       loadedResourceURL,
@@ -171,8 +181,14 @@ class CollectionExplorer extends React.Component {
           <div className={classes.loadingIndicatorContainer}>
             <CircularProgress />
           </div>
-        ) : resource && resource.type === 'Manifest' ? (
-          <CanvasList items={items} manifestId={resource.id} />
+        ) : resource &&
+          resource.type === 'Manifest' &&
+          !autoSelectIfManifestFromUrl ? (
+          <CanvasList
+            items={items}
+            manifestId={resource.id}
+            droppableId={canvasListDroppableId}
+          />
         ) : (
           <CollectionLister
             items={items}
@@ -207,6 +223,7 @@ CollectionExplorer.propTypes = {
   url: PropTypes.string,
   onItemSelect: PropTypes.func,
   autoSelectIfManifestFromUrl: PropTypes.bool,
+  canvasListDroppableId: PropTypes.string,
   onResourceLoaded: PropTypes.func,
   manifestIcon: PropTypes.any,
   collectionIcon: PropTypes.any,
@@ -219,6 +236,7 @@ CollectionExplorer.defaultProps = {
   manifestIcon: null,
   collectionIcon: null,
   autoSelectIfManifestFromUrl: false,
+  canvasListDroppableId: 'iiifimagelist',
 };
 
 export default withStyles(styles)(CollectionExplorer);

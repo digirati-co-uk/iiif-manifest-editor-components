@@ -181,9 +181,9 @@ class CanvasList extends React.Component {
   };
 
   render() {
-    const { classes, items, theme } = this.props;
+    const { classes, items, theme, droppableId } = this.props;
     return (
-      <Droppable droppableId="iiifimagelist" isDropDisabled={true}>
+      <Droppable droppableId={droppableId} isDropDisabled={true}>
         {providedDroppable => (
           <div
             ref={providedDroppable.innerRef}
@@ -209,5 +209,10 @@ class CanvasList extends React.Component {
     );
   }
 }
+
+CanvasList.defaultProps = {
+  items: [],
+  droppableId: 'iiifimagelist',
+};
 
 export default withStyles(styles)(withTheme()(CanvasList));
