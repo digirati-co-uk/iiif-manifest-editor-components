@@ -13,7 +13,7 @@ Possible next packages:
 @IIIF-MEC/presley-integration - in order to have "Super Sorting Room".
 
 
-## Requirements and dependencies
+## Requirements and dependencies
 
 - **nodejs** > 8.15.1
 - **yarn** > 1.7.0
@@ -58,7 +58,7 @@ To run the documentation:
 yarn docz
 ```
 
-## References
+## References
 
 [nodejs.org](https://nodejs.org/en/download/)
 [yarn](https://yarnpkg.com/en/docs/install)
