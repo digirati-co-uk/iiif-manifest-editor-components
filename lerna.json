@@ -6,8 +6,11 @@
       "message": "chore(release): publish"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.13"
+  "version": "1.0.14"
 }
