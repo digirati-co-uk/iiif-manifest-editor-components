@@ -81,18 +81,24 @@ class CollectionExplorer extends React.Component {
           if (resourceUrlIndex !== -1) {
             history = history.slice(0, resourceUrlIndex);
           }
-          this.setState(
-            {
-              resource,
-              loadedResourceURL: url,
-              resourceURL: url,
-              isLoading: false,
-              history: history.concat([url]),
-            },
-            () => {
-              this.props.onResourceLoaded(url);
-            }
-          );
+          if (
+            !this.props.autoSelectIfManifestFromUrl ||
+            (this.props.autoSelectIfManifestFromUrl &&
+              !this.props.onItemSelect(resource))
+          ) {
+            this.setState(
+              {
+                resource,
+                loadedResourceURL: url,
+                resourceURL: url,
+                isLoading: false,
+                history: history.concat([url]),
+              },
+              () => {
+                this.props.onResourceLoaded(url);
+              }
+            );
+          }
         })
         .catch(err =>
           this.setState({
@@ -200,6 +206,7 @@ class CollectionExplorer extends React.Component {
 CollectionExplorer.propTypes = {
   url: PropTypes.string,
   onItemSelect: PropTypes.func,
+  autoSelectIfManifestFromUrl: PropTypes.bool,
   onResourceLoaded: PropTypes.func,
   manifestIcon: PropTypes.any,
   collectionIcon: PropTypes.any,
@@ -211,6 +218,7 @@ CollectionExplorer.defaultProps = {
   onResourceLoaded: () => {},
   manifestIcon: null,
   collectionIcon: null,
+  autoSelectIfManifestFromUrl: false,
 };
 
 export default withStyles(styles)(CollectionExplorer);
