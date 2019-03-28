@@ -1,16 +1,25 @@
 # IIIF Manifest Editor Components
 
 
-The project provides components to create editing tools for IIIF Manifests.
+The project provides components to create editing tools for **IIIF Manifests**.
 
-The following sub projects/npm packages handled under this repository:
 
-@IIIF-MEC/core - core components for manifest editing
-@IIIF-MEC/dlcs - dlcs extensions
-@IIIF-MEC/collection-server-integration - collection server integration tools
+## Demos and Implementations
 
-Possible next packages:
-@IIIF-MEC/presley-integration - in order to have "Super Sorting Room".
+**Demo**
+
+[https://iiif-manifest-editor-live-demo.netlify.com/](https://iiif-manifest-editor-live-demo.netlify.com/)
+
+
+This [article](https://medium.com/digirati-ch/reaching-into-collections-to-tell-stories-3dc32a1772af) explains the motivation behind the following implementations.
+
+**Victoria and Albert Museum - Slideshow and Annotated Zoom editor**
+
+[https://vam-manifest-editor.netlify.com/](https://vam-manifest-editor.netlify.com/)
+
+**Delft University of Technology - Exhibition Editor**
+
+[https://delft-manifest-editor.netlify.com/](https://delft-manifest-editor.netlify.com/)
 
 
 ## Requirements and dependencies
@@ -19,7 +28,7 @@ Possible next packages:
 - **yarn** > 1.7.0
 - **lerna** > 2.11.0
 
-## Build the project locally:
+## Build the project locally
 
 Clone the git repository:
 
@@ -61,5 +70,7 @@ yarn docz
 ## References
 
 [nodejs.org](https://nodejs.org/en/download/)
+
 [yarn](https://yarnpkg.com/en/docs/install)
+
 [lerna](https://lernajs.io/)
