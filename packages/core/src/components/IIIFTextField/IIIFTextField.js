@@ -120,6 +120,8 @@ class IIIFTextField extends React.Component {
 
   shouldComponentUpdate = (nextProps, nextState) => {
     return (
+      this.state.htmlFieldFocus !== nextState.htmlFieldFocus ||
+      this.state.htmlEditor !== nextState.htmlEditor ||
       this.state.promptLabel !== nextState.promptLabel ||
       this.state.promptValue !== nextState.promptValue ||
       this.state.promptVisible !== nextState.promptVisible ||

@@ -17,6 +17,10 @@ import convertToV3ifNecessary from './IIIFUpgrader';
 import generateURI from './URIGenerator';
 import { parseVideo } from './VideoServices';
 import { addResource } from './addResource';
+import {
+  isCanvasChangedEditor,
+  isCanvasChangedAnnotationList,
+} from './changeDetection';
 
 export {
   //download
@@ -42,4 +46,7 @@ export {
   // parse video
   parseVideo,
   addResource,
+  // Change detection
+  isCanvasChangedEditor,
+  isCanvasChangedAnnotationList,
 };

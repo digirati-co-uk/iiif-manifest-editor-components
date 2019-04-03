@@ -535,7 +535,6 @@ export class EditorProvider extends React.Component {
       defaultEditorContext,
       configuration,
     ]);
-    console.log('configOverrides', configOverrides);
     Object.entries(configOverrides).forEach(
       ([configPropertyName, configValue]) => {
         if (configValue) {

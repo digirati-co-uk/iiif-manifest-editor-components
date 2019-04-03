@@ -267,7 +267,6 @@ class MetadataEditor extends React.Component {
                       />
                     );
                   case 'behavior':
-                    console.log('behaviour');
                     return (
                       <FormControl
                         key={`${target.id}_porperty_${keyName}`}

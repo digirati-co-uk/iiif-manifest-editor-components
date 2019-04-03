@@ -7,7 +7,7 @@
 6 silly isInitialized true
 7 silly existsSync /Users/adam.meszaros/manifest_editors/iiif-manifest-editor-components/VERSION
 8 silly initialize attempt
-9 info current version 1.0.20
+9 info current version 1.0.23
 10 silly isDetachedHead
 11 silly getCurrentBranch
 12 verbose getCurrentBranch master
@@ -19,23 +19,12 @@
 18 silly hasTags
 19 verbose hasTags true
 20 silly getLastTag
-21 verbose getLastTag v1.0.20
-22 info Comparing with v1.0.20.
-23 silly diffSinceIn v1.0.20 packages/core
-24 silly diff packages/core/src/annotation/forms/TextPropertiesForm.js
-24 silly diff packages/core/src/annotation/forms/VideoPropertiesForm.js
-24 silly diff packages/core/src/annotation/index.js
-24 silly diff packages/core/src/components/CanvasList/__snapshots__/CanvasList.test.js.snap
-24 silly diff packages/core/src/components/EditableCanvasPanel/EditableCanvasPanel.js
-24 silly diff packages/core/src/components/EditorContext/EditorContext.js
-24 silly diff packages/core/src/components/IIIFCollectionExplorer/IIIFCollectionExplorer.js
-24 silly diff packages/core/src/components/IIIFCollectionExplorer/__snapshots__/IIIFCollectionExplorer.test.js.snap
-24 silly diff packages/core/src/components/IIIFKeyValueField/IIIFKeyValueField.js
-24 silly diff packages/core/src/components/IIIFTextField/IIIFTextField.js
-24 silly diff packages/core/src/components/MetadataEditor/MetadataEditor.js
-24 silly diff packages/core/src/components/MetadataEditor/__snapshots__/MetadataEditor.test.js.snap
-24 silly diff packages/core/src/containers/SimpleEditorUI.js
-24 silly diff packages/core/src/utils/IIIFResource.js
+21 verbose getLastTag v1.0.23
+22 info Comparing with v1.0.23.
+23 silly diffSinceIn v1.0.23 packages/core
+24 silly diff packages/core/src/annotation/TextualBodyDescribing.js
+24 silly diff packages/core/src/components/DLCSExplorer/DropzoneUpload.js
+24 silly diff packages/core/src/index.js
 25 verbose updated @iiif-mec/core
 26 info Checking for prereleased packages...
 27 silly collectDependents
@@ -52,7 +41,7 @@
 38 silly addFile /Users/adam.meszaros/manifest_editors/iiif-manifest-editor-components/packages/core/package.json
 39 silly commit chore(release): publish
 40 verbose commit [ 'commit', '--no-verify', '-m', 'chore(release): publish' ]
-41 silly addTag v1.0.21
+41 silly addTag v1.0.24
 42 silly runScriptSync postversion @iiif-mec/core
 43 silly runScriptSync postversion iiif-mec
 44 info publish Publishing packages to npm...
@@ -90,7 +79,7 @@
 70 error publish npm ERR! it, or it timed out. Please try again.
 70 error publish
 70 error publish npm ERR! A complete log of this run can be found in:
-70 error publish npm ERR!     /Users/adam.meszaros/.npm/_logs/2019-04-03T07_58_20_297Z-debug.log
+70 error publish npm ERR!     /Users/adam.meszaros/.npm/_logs/2019-04-03T12_31_24_425Z-debug.log
 70 error publish
 70 error publish     at Promise.all.then.arr (/usr/local/lib/node_modules/lerna/node_modules/execa/index.js:236:11)
 70 error publish     at <anonymous>
@@ -105,7 +94,7 @@
 72 error npm ERR! it, or it timed out. Please try again.
 72 error
 72 error npm ERR! A complete log of this run can be found in:
-72 error npm ERR!     /Users/adam.meszaros/.npm/_logs/2019-04-03T07_58_20_297Z-debug.log
+72 error npm ERR!     /Users/adam.meszaros/.npm/_logs/2019-04-03T12_31_24_425Z-debug.log
 72 error
 72 error     at Promise.all.then.arr (/usr/local/lib/node_modules/lerna/node_modules/execa/index.js:236:11)
 72 error     at <anonymous>

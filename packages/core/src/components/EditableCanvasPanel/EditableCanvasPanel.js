@@ -18,6 +18,7 @@ import {
   CanvasRepresentation,
 } from '@canvas-panel/core';
 import EditableAnnotation from './EditableAnnotation';
+import { isCanvasChangedEditor } from '../../utils/changeDetection';
 
 const styles = theme => ({
   '@global': {
@@ -160,58 +161,9 @@ class EditableCanvasPanel extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(
-      'shouldComponentUpdate',
-      (nextProps.canvas !== null && this.props.canvas === null) ||
-        nextProps.canvas.id !== this.props.canvas.id ||
-        nextProps.canvas.width !== this.props.canvas.width ||
-        nextProps.canvas.height !== this.props.canvas.height ||
-        nextProps.canvas.items !== this.props.canvas.height ||
-        nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-        nextProps.canvas.items.length !== this.props.canvas.items.length ||
-        nextProps.canvas.items
-          .map((nextItem, index) => {
-            const currentItem = this.props.canvas.items[index];
-            return (
-              nextItem.id !== currentItem.id ||
-              nextItem.target !== currentItem.target
-            );
-          })
-          .indexOf(false) !== -1,
-      nextProps.canvas !== null && this.props.canvas === null,
-      nextProps.canvas.id !== this.props.canvas.id,
-      nextProps.canvas.width !== this.props.canvas.width,
-      nextProps.canvas.height !== this.props.canvas.height,
-      nextProps.canvas.items !== this.props.canvas.height,
-      nextProps.selectedAnnotation !== this.props.selectedAnnotation,
-      nextProps.canvas.items.length !== this.props.canvas.items.length,
-      nextProps.canvas.items
-        .map((nextItem, index) => {
-          const currentItem = this.props.canvas.items[index];
-          return (
-            nextItem.id !== currentItem.id ||
-            nextItem.target !== currentItem.target
-          );
-        })
-        .indexOf(false) !== -1
-    );
     return (
-      (nextProps.canvas !== null && this.props.canvas === null) ||
-      nextProps.canvas.id !== this.props.canvas.id ||
-      nextProps.canvas.width !== this.props.canvas.width ||
-      nextProps.canvas.height !== this.props.canvas.height ||
-      nextProps.canvas.items !== this.props.canvas.height ||
       nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-      nextProps.canvas.items.length !== this.props.canvas.items.length ||
-      nextProps.canvas.items
-        .map((nextItem, index) => {
-          const currentItem = this.props.canvas.items[index];
-          return (
-            nextItem.id !== currentItem.id ||
-            nextItem.target !== currentItem.target
-          );
-        })
-        .indexOf(false) !== -1
+      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
     );
   }
 

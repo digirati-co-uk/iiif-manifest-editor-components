@@ -7,6 +7,7 @@ import { ZoomIn, ZoomOut } from '@material-ui/icons';
 
 import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRenderer';
 import { getBounds, makeURLHash } from '../../utils/IIIFResource';
+import { isCanvasChangedEditor } from '../../utils/changeDetection';
 
 const style = {
   display: 'flex',
@@ -60,6 +61,13 @@ class EditableCanvas extends React.Component {
       zoom: 1,
       canvas: props.canvas,
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
+      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
+    );
   }
 
   zoomIn = () => {
