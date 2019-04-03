@@ -24,7 +24,7 @@ const getKey = name =>
   encodeURIComponent(name);
 
 const UPDATE_THROTTLING = 250;
-const PART_SIZE = 10 * 1024 * 1024;
+const PART_SIZE = 1024 * 1024 * 1024;
 const PARALLEL_UPLOADS = 1;
 
 class DLCSDropzoneUpload extends React.Component {
@@ -32,6 +32,8 @@ class DLCSDropzoneUpload extends React.Component {
     files: [],
     uploaded: {},
     uploading: {},
+    ingesting: {},
+    ingested: {},
     errors: {},
     lastUpdate: {},
   };
@@ -99,15 +101,15 @@ class DLCSDropzoneUpload extends React.Component {
 
   uploadItemComplete = (fileName, data) => {
     this.setState({
-      uploaded: {
-        ...this.state.uploaded,
-        [fileName]: data,
+      ingesting: {
+        ...this.state.ingesting,
+        [fileName]: true,
       },
     });
-    this.putImage(data);
+    this.putImage(fileName, data);
   };
 
-  putImage = data => {
+  putImage = (fileName, data) => {
     const { url, session } = this.props;
     const headers = new Headers();
     headers.append('Authorization', 'Basic ' + session.auth);
@@ -138,15 +140,26 @@ class DLCSDropzoneUpload extends React.Component {
       })
       .then(response => response.json())
       .then(response => {
-        console.log('putImage - doneish', response);
-        //TODO: do something
+        //console.log('putImage - doneish', response);
+        this.setState({
+          uploaded: {
+            ...this.state.uploaded,
+            [fileName]: data,
+          },
+          ingesting: {
+            ...this.state.ingesting,
+            [fileName]: false,
+          },
+          ingested: {
+            ...this.state.ingested,
+            [fileName]: response,
+          },
+        });
       })
       .catch(err => alert(err));
   };
 
-  uploadComplete = () => {
-    //this.ingest();
-  };
+  uploadComplete = () => {};
 
   onCancel = () => {
     this.setState({
@@ -162,6 +175,8 @@ class DLCSDropzoneUpload extends React.Component {
       files: [],
       uploaded: {},
       uploading: {},
+      ingesting: {},
+      ingested: {},
       errors: {},
       lastUpdate: {},
     });
@@ -175,6 +190,8 @@ class DLCSDropzoneUpload extends React.Component {
       const params = {
         Key: key,
         Body: file,
+        ContentType: file.type,
+        ContentLength: file.size,
         ACL: 'public-read',
       };
       const options = {
@@ -257,6 +274,8 @@ class DLCSDropzoneUpload extends React.Component {
                     <ListItemIcon>
                       {this.state.uploaded.hasOwnProperty(f.name) ? (
                         <CheckCircle />
+                      ) : this.state.ingesting.hasOwnProperty(f.name) ? (
+                        <CircularProgress variant="indeterminate" />
                       ) : this.state.errors.hasOwnProperty(f.name) ? (
                         <Error />
                       ) : this.state.uploading.hasOwnProperty(f.name) ? (
@@ -276,17 +295,20 @@ class DLCSDropzoneUpload extends React.Component {
                 ))}
               </List>
             </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={this.resetUploadState}
-                disabled={
-                  this.state.files.length === this.state.uploaded.length
-                }
-                color="primary"
-              >
-                Ok
-              </Button>
-            </DialogActions>
+            {this.state.files.length ===
+              Object.keys(this.state.ingested).length && (
+              <DialogActions>
+                <Button
+                  onClick={this.resetUploadState}
+                  // disabled={
+                  //   this.state.files.length === this.state.uploaded.length
+                  // }
+                  color="primary"
+                >
+                  Ok
+                </Button>
+              </DialogActions>
+            )}
           </Dialog>
         ) : (
           ''
