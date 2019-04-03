@@ -20,10 +20,14 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
+      "autoSelectIfManifestFromUrl": false,
+      "canvasListDroppableId": "iiifimagelist",
       "classes": Object {
         "loadingIndicatorContainer": "CollectionExplorer-loadingIndicatorContainer-2",
         "root": "CollectionExplorer-root-1",
       },
+      "collectionIcon": null,
+      "manifestIcon": null,
       "onItemSelect": [Function],
       "onResourceLoaded": [Function],
       "url": null,
@@ -38,10 +42,14 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
+        "autoSelectIfManifestFromUrl": false,
+        "canvasListDroppableId": "iiifimagelist",
         "classes": Object {
           "loadingIndicatorContainer": "CollectionExplorer-loadingIndicatorContainer-2",
           "root": "CollectionExplorer-root-1",
         },
+        "collectionIcon": null,
+        "manifestIcon": null,
         "onItemSelect": [Function],
         "onResourceLoaded": [Function],
         "url": null,
@@ -63,7 +71,9 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,

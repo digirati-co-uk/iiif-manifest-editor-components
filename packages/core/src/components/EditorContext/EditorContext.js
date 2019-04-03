@@ -6,6 +6,7 @@ import * as deepmerge from 'deepmerge';
 import IIIFReducer from '../../reducers/iiif';
 
 import TextPainting from '../../annotation/TextPainting';
+import TextualBodyDescribing from '../../annotation/TextualBodyDescribing';
 import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
 import AudioPainting from '../../annotation/AudioPainting';
@@ -86,6 +87,7 @@ const defaultEditorContext = {
     'Image::painting': ImagePainting,
     'Video::painting': VideoPainting,
     'Audio::painting': AudioPainting,
+    'TextualBody::describing': TextualBodyDescribing,
   },
   dragDrop: {
     'canvaslist->canvaslist': ({ dispatch }, drop) => {

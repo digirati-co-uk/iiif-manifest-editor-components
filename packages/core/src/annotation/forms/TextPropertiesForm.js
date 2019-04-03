@@ -20,6 +20,7 @@ class TextPropertiesForm extends React.Component {
     return (
       <div className={classes.root}>
         <IIIFTextFiled
+          key={`${target.id}_body_value_input`}
           label="Body Value"
           className={classes.textFieldFullWidth}
           value={body}

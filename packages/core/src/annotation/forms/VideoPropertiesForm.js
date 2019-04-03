@@ -73,6 +73,7 @@ class VideoPropertiesForm extends React.Component {
       <div className={classes.root}>
         <div className={classes.formRow}>
           <TextField
+            key={`${target.id}_video_input`}
             label="Video url"
             className={upload ? classes.textField : classes.textFieldFullWidth}
             value={videoUrl}
@@ -92,6 +93,7 @@ class VideoPropertiesForm extends React.Component {
         </div>
         <div className={classes.formRow}>
           <TextField
+            key={`${target.id}_video_thumbnail_service_input`}
             label="Thumbnail service url"
             className={upload ? classes.textField : classes.textFieldFullWidth}
             value={thumbnailServiceUrl}
@@ -121,6 +123,7 @@ class VideoPropertiesForm extends React.Component {
         </div>
         <div className={classes.formRow}>
           <TextField
+            key={`${target.id}_video_thumbnail_image_input`}
             label="Thumbnail url"
             className={upload ? classes.textField : classes.textFieldFullWidth}
             value={thumbnailUrl}
@@ -148,6 +151,7 @@ class VideoPropertiesForm extends React.Component {
             <FormLabel component="legend">RangeSelector</FormLabel>
             <div className={classes.sliderHolder}>
               <InputRange
+                key={`${target.id}_video_partial_input`}
                 maxValue={body.duration || 0}
                 minValue={0}
                 disabled={!body.hasOwnProperty('duration')}

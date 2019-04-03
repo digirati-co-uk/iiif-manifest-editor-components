@@ -159,10 +159,72 @@ class EditableCanvasPanel extends React.Component {
     }
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(
+      'shouldComponentUpdate',
+      (nextProps.canvas !== null && this.props.canvas === null) ||
+        nextProps.canvas.id !== this.props.canvas.id ||
+        nextProps.canvas.width !== this.props.canvas.width ||
+        nextProps.canvas.height !== this.props.canvas.height ||
+        nextProps.canvas.items !== this.props.canvas.height ||
+        nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
+        nextProps.canvas.items.length !== this.props.canvas.items.length ||
+        nextProps.canvas.items
+          .map((nextItem, index) => {
+            const currentItem = this.props.canvas.items[index];
+            return (
+              nextItem.id !== currentItem.id ||
+              nextItem.target !== currentItem.target
+            );
+          })
+          .indexOf(false) !== -1,
+      nextProps.canvas !== null && this.props.canvas === null,
+      nextProps.canvas.id !== this.props.canvas.id,
+      nextProps.canvas.width !== this.props.canvas.width,
+      nextProps.canvas.height !== this.props.canvas.height,
+      nextProps.canvas.items !== this.props.canvas.height,
+      nextProps.selectedAnnotation !== this.props.selectedAnnotation,
+      nextProps.canvas.items.length !== this.props.canvas.items.length,
+      nextProps.canvas.items
+        .map((nextItem, index) => {
+          const currentItem = this.props.canvas.items[index];
+          return (
+            nextItem.id !== currentItem.id ||
+            nextItem.target !== currentItem.target
+          );
+        })
+        .indexOf(false) !== -1
+    );
+    return (
+      (nextProps.canvas !== null && this.props.canvas === null) ||
+      nextProps.canvas.id !== this.props.canvas.id ||
+      nextProps.canvas.width !== this.props.canvas.width ||
+      nextProps.canvas.height !== this.props.canvas.height ||
+      nextProps.canvas.items !== this.props.canvas.height ||
+      nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
+      nextProps.canvas.items.length !== this.props.canvas.items.length ||
+      nextProps.canvas.items
+        .map((nextItem, index) => {
+          const currentItem = this.props.canvas.items[index];
+          return (
+            nextItem.id !== currentItem.id ||
+            nextItem.target !== currentItem.target
+          );
+        })
+        .indexOf(false) !== -1
+    );
+  }
+
   setViewport = v => (this.viewport = v);
 
   render() {
-    let { classes, canvas, style, annotationColor } = this.props;
+    let {
+      classes,
+      canvas,
+      style,
+      annotationColor,
+      selectedAnnotation,
+    } = this.props;
     const annotationClasses =
       annotationColor === 'primary'
         ? ['boxClass', 'boxClassSelected']
@@ -179,7 +241,7 @@ class EditableCanvasPanel extends React.Component {
       canvas && canvas.items && canvas.items[0] && canvas.items[0].items
         ? canvas.items[0].items
         : [];
-    const { selectedAnnotation } = this.props;
+
     const ratio = 1;
     if (
       !this.canvas ||

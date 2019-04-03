@@ -143,6 +143,18 @@ class IIIFKeyValueField extends React.Component {
     }
   };
 
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (
+      this.state.promptLabel !== nextState.promptLabel ||
+      this.state.promptValue !== nextState.promptValue ||
+      this.state.promptVisible !== nextState.promptVisible ||
+      this.props.valueProps.value !== nextProps.valueProps.value ||
+      this.props.keyProps.value !== nextProps.keyProps.value ||
+      this.props.valueProps.label !== nextProps.valueProps.label ||
+      this.props.keyProps.label !== nextProps.keyProps.label
+    );
+  };
+
   cancelPrompt = () =>
     this.setState({
       promptLabel: '',

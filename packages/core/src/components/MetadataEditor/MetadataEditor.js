@@ -22,52 +22,54 @@ const styles = theme => ({
 class MetadataEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      target: JSON.parse(JSON.stringify(props.target)),
-      lastUpdate: new Date().getTime(),
-    };
-    this.throttledSyncProps = throttle(1000, false, this.syncLocalState);
+    // this.state = {
+    //   target: JSON.parse(JSON.stringify(props.target)),
+    //   lastUpdate: new Date().getTime(),
+    // };
+    //this.throttledSyncProps = throttle(1000, false, this.syncLocalState);
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const currentTime = new Date().getTime();
-    if (
-      props.target &&
-      state.target.id &&
-      props.target.id !== state.target.id
-    ) {
-      const internalRepr = JSON.parse(JSON.stringify(props.target));
-      if (internalRepr.items) {
-        delete internalRepr.items;
-      }
-      return {
-        // Since this method fires on both props and state changes, local updates
-        // to the controlled value will be ignored, because the props version
-        // always overrides it. Oops!
-        target: internalRepr,
-        lastUpdate: currentTime,
-      };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   const currentTime = new Date().getTime();
+  //   if (
+  //     props.target &&
+  //     state.target.id &&
+  //     props.target.id !== state.target.id
+  //   ) {
+  //     const internalRepr = JSON.parse(JSON.stringify(props.target));
+  //     if (internalRepr.items) {
+  //       delete internalRepr.items;
+  //     }
+  //     return {
+  //       // Since this method fires on both props and state changes, local updates
+  //       // to the controlled value will be ignored, because the props version
+  //       // always overrides it. Oops!
+  //       target: internalRepr,
+  //       lastUpdate: currentTime,
+  //     };
+  //   }
+  //   return null;
+  // }
 
   localUpdate = (target, prop, lang, val) => {
-    const updated = rawUpdate(target, prop, lang, val);
-    this.setState(
-      {
-        target: updated,
-      },
-      this.throttledSyncProps
-    );
+    this.props.update(target, prop, lang, val);
+    //this.props.update(this.props.target, null, null, this.state.target);
+    // const updated = rawUpdate(target, prop, lang, val);
+    // this.setState(
+    //   {
+    //     target: updated,
+    //   },
+    //   this.throttledSyncProps
+    // );
   };
 
-  syncLocalState = () => {
-    const currentTime = new Date().getTime();
-    this.props.update(this.props.target, null, null, this.state.target);
-    this.setState({
-      lastUpdate: currentTime,
-    });
-  };
+  // syncLocalState = () => {
+  //   const currentTime = new Date().getTime();
+  //   this.props.update(this.props.target, null, null, this.state.target);
+  //   this.setState({
+  //     lastUpdate: currentTime,
+  //   });
+  // };
 
   render() {
     const {
@@ -79,6 +81,7 @@ class MetadataEditor extends React.Component {
       fieldConfig,
     } = this.props;
     const { type } = target || { type: '' };
+    const targetEntity = target;
     return (
       <LabelConsumer>
         {labels => (
@@ -90,11 +93,11 @@ class MetadataEditor extends React.Component {
                     return (
                       <TextField
                         label={labels[type + '.Label'] || 'Label'}
-                        key={`${target.id}_porperty_${keyName}`}
-                        value={locale(this.state.target.label, lang)}
+                        key={`${target.id}_porperty_${keyName}_input`}
+                        value={locale(targetEntity.label, lang)}
                         onChange={ev =>
                           this.localUpdate(
-                            this.state.target,
+                            targetEntity,
                             'label',
                             lang,
                             ev.target.value
@@ -108,12 +111,12 @@ class MetadataEditor extends React.Component {
                   case 'summary':
                     return (
                       <IIIFTextField
-                        key={`${target.id}_porperty_${keyName}`}
+                        key={`${target.id}_porperty_${keyName}_input`}
                         label={labels[type + '.Summary'] || 'Summary'}
-                        value={locale(this.state.target.summary, lang)}
+                        value={locale(targetEntity.summary, lang)}
                         onChange={ev =>
                           this.localUpdate(
-                            this.state.target,
+                            targetEntity,
                             'summary',
                             lang,
                             ev.target.value
@@ -133,18 +136,19 @@ class MetadataEditor extends React.Component {
                             'Required Statement'}
                         </FormLabel>
                         <IIIFKeyValueField
+                          key={`${target.id}_porperty_${keyName}_input`}
                           keyProps={{
                             label:
                               labels[type + '.RequiredStatement.Label'] ||
                               'Label',
                             value: locale(
-                              this.state.target.requiredStatement &&
-                                this.state.target.requiredStatement.label,
+                              targetEntity.requiredStatement &&
+                                targetEntity.requiredStatement.label,
                               lang
                             ),
                             onChange: ev =>
                               this.localUpdate(
-                                this.state.target,
+                                targetEntity,
                                 'requiredStatement.label',
                                 lang,
                                 ev.target.value
@@ -156,13 +160,13 @@ class MetadataEditor extends React.Component {
                                 type + 'Metadata.RequiredStatement.Value'
                               ] || 'Value',
                             value: locale(
-                              this.state.target.requiredStatement &&
-                                this.state.target.requiredStatement.value,
+                              targetEntity.requiredStatement &&
+                                targetEntity.requiredStatement.value,
                               lang
                             ),
                             onChange: ev =>
                               this.localUpdate(
-                                this.state.target,
+                                targetEntity,
                                 'requiredStatement.value',
                                 lang,
                                 ev.target.value
@@ -180,7 +184,7 @@ class MetadataEditor extends React.Component {
                         <FormLabel component="legend">
                           {labels[type + '.Metadata'] || 'Metadata'}
                         </FormLabel>
-                        {(this.state.target.metadata || [])
+                        {(targetEntity.metadata || [])
                           .concat({
                             label: {
                               [lang]: '',
@@ -191,14 +195,14 @@ class MetadataEditor extends React.Component {
                           })
                           .map((metadata, index) => (
                             <IIIFKeyValueField
-                              key={`metadata_row__${index}`}
+                              key={`${target.id}_metadata_row__${index}_input`}
                               keyProps={{
                                 label:
                                   labels[type + '.Metadata.Label'] || 'Label',
                                 value: locale(metadata.label, lang),
                                 onChange: ev =>
                                   this.localUpdate(
-                                    this.state.target,
+                                    targetEntity,
                                     `metadata.${index}.label`,
                                     lang,
                                     ev.target.value
@@ -210,7 +214,7 @@ class MetadataEditor extends React.Component {
                                 value: locale(metadata.value, lang),
                                 onChange: ev =>
                                   this.localUpdate(
-                                    this.state.target,
+                                    targetEntity,
                                     `metadata.${index}.value`,
                                     lang,
                                     ev.target.value
@@ -227,10 +231,10 @@ class MetadataEditor extends React.Component {
                         label={labels[`${type}.NavDate`] || 'Nav Date'}
                         type="datetime-local"
                         className={classes.textField}
-                        value={this.state.target.navDate || ''}
+                        value={targetEntity.navDate || ''}
                         onChange={ev =>
                           this.localUpdate(
-                            this.state.target,
+                            targetEntity,
                             'navDate',
                             null,
                             ev.target.value
@@ -249,10 +253,10 @@ class MetadataEditor extends React.Component {
                         key={`${target.id}_porperty_${keyName}`}
                         label={labels[`${type}.Rights`] || 'Rights'}
                         className={classes.textField}
-                        value={this.state.target.rights || ''}
+                        value={targetEntity.rights || ''}
                         onChange={ev =>
                           this.localUpdate(
-                            this.state.target,
+                            targetEntity,
                             'rights',
                             null,
                             ev.target.value
@@ -294,10 +298,10 @@ class MetadataEditor extends React.Component {
                         }
                         key={`${target.id}_porperty_${_keyName}`}
                         className={classes.textField}
-                        value={this.state.target[_keyName] || ''}
+                        value={targetEntity[_keyName] || ''}
                         onChange={ev =>
                           this.localUpdate(
-                            this.state.target,
+                            targetEntity,
                             _keyName,
                             keyName.startsWith('_') ? lang : null,
                             ev.target.value

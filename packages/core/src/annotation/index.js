@@ -3,6 +3,7 @@ import TextPainting from './TextPainting';
 import VideoPainting from './VideoPainting';
 import AudioPainting from './AudioPainting';
 import TextLayoutViewFocus from './TextLayoutViewFocus';
+import TextualBodyDescribing from './TextualBodyDescribing';
 import BaseAnnotation from './BaseAnnotation';
 import AudioPropertiesForm from './forms/AudioPropertiesForm';
 import ImagePropertiesForm from './forms/ImagePropertiesForm';
@@ -20,6 +21,7 @@ export {
   AudioPropertiesForm,
   ImagePropertiesForm,
   TextPropertiesForm,
+  TextualBodyDescribing,
   VideoPropertiesForm,
   FormStyles,
 };

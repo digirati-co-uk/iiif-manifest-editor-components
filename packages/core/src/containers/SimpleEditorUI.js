@@ -56,21 +56,51 @@ const demoCanvas = renderResource('Canvas', {
 demoManifest.items.push(demoCanvas);
 
 class SimpleEditorUI extends React.Component {
-  state = {
-    rootResource: demoManifest,
-    selectedIdsByType: {
-      Canvas: demoCanvas.id,
-      Annotation: null, //demoAnnotation1.id,
-    },
-    lang: 'en',
-  };
+  constructor(props) {
+    super(props);
+    const initialNewManifest = this.newManifest();
+    const stateToRestore = JSON.parse(localStorage.getItem('autoSave'));
+    this.state = stateToRestore || {
+      rootResource: demoManifest,
+      selectedIdsByType: {
+        Canvas: demoCanvas.id,
+        Annotation: null, //demoAnnotation1.id,
+      },
+      lang: 'en',
+    };
+  }
 
   changeLanguage = lang => {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
   };
 
-  dispatch = (reducer, action, cb) => {
-    this.setState(reducer(this.state, action), cb || emptyFn);
+  dispatch = (reducer, action, afterStateChange) => {
+    this.setState(reducer(this.state, action), () => {
+      const currentTime = new Date().getTime();
+      const tenSecondsBefore = currentTime - 10000;
+      const lastSaveWasMoreThanTenSecondsBefore =
+        (window.lastStateSave || 0) < tenSecondsBefore;
+      if (
+        lastSaveWasMoreThanTenSecondsBefore ||
+        action.type === 'LOAD_MANIFEST'
+      ) {
+        localStorage.setItem(
+          'autoSave',
+          JSON.stringify(
+            Object.assign({}, this.state, {
+              loadManifestDialogOpen: false,
+              loadManifestDialogOpen2: false,
+              saveManifestDialogOpen: false,
+              previewModalOpen: false,
+            })
+          )
+        );
+        window.lastStateSave = currentTime;
+      }
+      if (afterStateChange) {
+        afterStateChange();
+      }
+    });
   };
 
   selectResource = resource => {
@@ -145,13 +175,17 @@ class SimpleEditorUI extends React.Component {
   };
 
   newProject = () => {
-    const newManifest = renderResource('Manifest');
-    const newCanvas = renderResource('Canvas', { parent: demoManifest });
-    newManifest.items.push(newCanvas);
     this.dispatch(IIIFReducer, {
       type: 'LOAD_MANIFEST',
-      manifest: newManifest,
+      manifest: this.newManifest(),
     });
+  };
+
+  newManifest = () => {
+    const newManifest = renderResource('Manifest');
+    const newCanvas = renderResource('Canvas', { parent: newManifest });
+    newManifest.items.push(newCanvas);
+    return newManifest;
   };
 
   togglePreviewDialog = () => {
@@ -272,8 +306,6 @@ class SimpleEditorUI extends React.Component {
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
-                  <DLCSPanel title="DLCS" />
-                  <IIIFCollectionExplorer title="IIIF Explorer" />
                   <Properties
                     manifest={this.state.rootResource}
                     canvas={selectedCanvas}
@@ -282,6 +314,8 @@ class SimpleEditorUI extends React.Component {
                     changeLanguage={this.changeLanguage}
                     update={this.updateProperty}
                   />
+                  <DLCSPanel title="DLCS" />
+                  <IIIFCollectionExplorer title="IIIF Explorer" />
                 </TabPanel>
               </Layout.Right>
             </Layout.Middle>

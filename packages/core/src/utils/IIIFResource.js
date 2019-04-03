@@ -321,9 +321,9 @@ export const update = (target, property, lang, value) => {
       if (targetClone.items) {
         value.items = targetClone.items;
       }
-      if (targetClone.body) {
-        value.body = targetClone.body;
-      }
+      // if (targetClone.body) {
+      //   value.body = targetClone.body;
+      // }
       return value;
       //return Object.apply(targetClone, value);
     } else if (lang === null) {

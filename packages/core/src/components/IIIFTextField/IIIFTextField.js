@@ -118,6 +118,16 @@ class IIIFTextField extends React.Component {
     }
   };
 
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (
+      this.state.promptLabel !== nextState.promptLabel ||
+      this.state.promptValue !== nextState.promptValue ||
+      this.state.promptVisible !== nextState.promptVisible ||
+      this.props.value !== nextProps.value ||
+      this.props.label !== nextProps.label
+    );
+  };
+
   cancelPrompt = () =>
     this.setState({
       promptLabel: '',
