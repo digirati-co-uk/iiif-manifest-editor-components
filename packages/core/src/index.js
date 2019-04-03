@@ -53,6 +53,7 @@ import {
   ImagePropertiesForm,
   TextPropertiesForm,
   VideoPropertiesForm,
+  TextualBodyDescribing,
   FormStyles,
 } from './annotation';
 import {
@@ -129,6 +130,7 @@ export {
   ImagePropertiesForm,
   TextPropertiesForm,
   VideoPropertiesForm,
+  TextualBodyDescribing,
   FormStyles,
   // reducers
   IIIFReducer,

@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { InsertComment } from '@material-ui/icons';
-import {
-  DefaultTooltip as Tooltip,
-  ButtonWithTooltip,
-  BaseAnnotation,
-  TextPropertiesForm,
-  addResource,
-  renderResource,
-  queryResourceById,
-  SIZING_STRATEGY,
-} from '@iiif-mec/core';
+
+import { addResource } from '../utils/addResource';
+import renderResource from '../utils/IIIFResource';
+import { queryResourceById } from '../utils/IIIFResource';
+import { SIZING_STRATEGY } from '../constants/sizing';
+import BaseAnnotation from './BaseAnnotation';
+import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
+import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
+import TextPropertiesForm from './forms/TextPropertiesForm';
 
 export default class TextualBodyDescribing extends BaseAnnotation {
   static formName = 'TextualBodyDescribing';
