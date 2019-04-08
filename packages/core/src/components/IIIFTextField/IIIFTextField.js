@@ -126,7 +126,11 @@ class IIIFTextField extends React.Component {
       this.state.promptValue !== nextState.promptValue ||
       this.state.promptVisible !== nextState.promptVisible ||
       this.props.value !== nextProps.value ||
-      this.props.label !== nextProps.label
+      this.props.label !== nextProps.label ||
+      (!!nextProps.valueProps &&
+        !!this.props.valueProps &&
+        IS_HTML_REGEX.test(this.props.valueProps.value) !==
+          IS_HTML_REGEX.test(nextProps.valueProps.value))
     );
   };
 

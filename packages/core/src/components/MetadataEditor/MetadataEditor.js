@@ -20,56 +20,9 @@ const styles = theme => ({
 });
 
 class MetadataEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   target: JSON.parse(JSON.stringify(props.target)),
-    //   lastUpdate: new Date().getTime(),
-    // };
-    //this.throttledSyncProps = throttle(1000, false, this.syncLocalState);
-  }
-
-  // static getDerivedStateFromProps(props, state) {
-  //   const currentTime = new Date().getTime();
-  //   if (
-  //     props.target &&
-  //     state.target.id &&
-  //     props.target.id !== state.target.id
-  //   ) {
-  //     const internalRepr = JSON.parse(JSON.stringify(props.target));
-  //     if (internalRepr.items) {
-  //       delete internalRepr.items;
-  //     }
-  //     return {
-  //       // Since this method fires on both props and state changes, local updates
-  //       // to the controlled value will be ignored, because the props version
-  //       // always overrides it. Oops!
-  //       target: internalRepr,
-  //       lastUpdate: currentTime,
-  //     };
-  //   }
-  //   return null;
-  // }
-
   localUpdate = (target, prop, lang, val) => {
     this.props.update(target, prop, lang, val);
-    //this.props.update(this.props.target, null, null, this.state.target);
-    // const updated = rawUpdate(target, prop, lang, val);
-    // this.setState(
-    //   {
-    //     target: updated,
-    //   },
-    //   this.throttledSyncProps
-    // );
   };
-
-  // syncLocalState = () => {
-  //   const currentTime = new Date().getTime();
-  //   this.props.update(this.props.target, null, null, this.state.target);
-  //   this.setState({
-  //     lastUpdate: currentTime,
-  //   });
-  // };
 
   render() {
     const {

@@ -300,7 +300,9 @@ export const update = (target, property, lang, value) => {
   const targetClone = JSON.parse(JSON.stringify(target));
   let currentLevel = targetClone;
   const keys = property ? property.split('.') : [];
+  //console.log('update', JSON.stringify(targetClone, null, 2));
   if (keys.length > 1) {
+    //console.log('update', 'keys.length > 1');
     keys.forEach((key, index) => {
       if (lang === null && index === keys.length - 1) {
         currentLevel[key] = value;
@@ -312,30 +314,37 @@ export const update = (target, property, lang, value) => {
       }
     });
     if (lang !== null) {
+      //console.log('update', 'keys.length > 1', 'lang !== null', '...');
       currentLevel[lang] = value.split('\n');
     }
   } else {
+    //console.log('update', 'keys.length not > 1');
     if (keys.length === 0) {
+      //console.log('update', 'pass the value');
       // if no property set we just pass the value...
       // this is a hack for now. Fix it later.
-      if (targetClone.items) {
-        value.items = targetClone.items;
-      }
+      // if (targetClone.items) {
+      //   value.items = targetClone.items;
+      // }
       // if (targetClone.body) {
       //   value.body = targetClone.body;
       // }
       return value;
       //return Object.apply(targetClone, value);
     } else if (lang === null) {
+      //console.log('update', 'no language');
       targetClone[property] =
         SINGLE_VALUE_KEYS.indexOf(property) !== -1 ? value : value.split('\n');
     } else {
       if (!targetClone.hasOwnProperty(property)) {
+        //console.log('update', 'property does not exist');
         targetClone[property] = {};
       }
+      //console.log('update', 'property...');
       currentLevel[property][lang] = value.split('\n');
     }
   }
+  //console.log('update', JSON.stringify(targetClone, null, 2));
   return targetClone;
 };
 

@@ -7,6 +7,9 @@ import renderResource, {
 
 import generateURI from '../utils/URIGenerator';
 
+const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail', 'behavior'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id'];
+
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -115,6 +118,45 @@ const IIIFReducer = (state, action) => {
         // Updates the passed resource @id, NOTE it is a property merge
         const toUpdate = queryResourceById(options.id, nextState.rootResource);
         Object.assign(toUpdate, options.props || {});
+        break;
+      case 'UPDATE_RESOURCE_PROPERTY':
+        const toUpdateProperty = queryResourceById(
+          action.options.target.id,
+          nextState.rootResource
+        );
+        const { property, value, lang } = action.options;
+        let currentLevel = toUpdateProperty;
+        const keys = property ? property.split('.') : [];
+        if (keys.length > 1) {
+          keys.forEach((key, index) => {
+            if (lang === null && index === keys.length - 1) {
+              currentLevel[key] = value;
+            } else {
+              if (!currentLevel[key]) {
+                currentLevel[key] =
+                  ARRAY_TYPE_KEYS.indexOf(key) !== -1 ? [] : {};
+              }
+              currentLevel = currentLevel[key];
+            }
+          });
+          if (lang !== null) {
+            currentLevel[lang] = value.split('\n');
+          }
+        } else {
+          if (keys.length === 0) {
+            Object.apply(toUpdateProperty, value);
+          } else if (lang === null) {
+            toUpdateProperty[property] =
+              SINGLE_VALUE_KEYS.indexOf(property) !== -1
+                ? value
+                : value.split('\n');
+          } else {
+            if (!toUpdateProperty.hasOwnProperty(property)) {
+              toUpdateProperty[property] = {};
+            }
+            currentLevel[property][lang] = value.split('\n');
+          }
+        }
         break;
       case 'UPDATE_RESOURCE_ORDER':
         const { startIndex, targetIndex, id } = action.options;
