@@ -1,4 +1,7 @@
 export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
+  if (nextCanvas === null && currentCanvas === null) {
+    return false;
+  }
   return (
     (nextCanvas !== null && currentCanvas === null) ||
     (nextCanvas === null && currentCanvas !== null) ||
@@ -37,6 +40,9 @@ export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
 };
 
 export const isCanvasChangedAnnotationList = (nextCanvas, currentCanvas) => {
+  if (nextCanvas === null && currentCanvas === null) {
+    return false;
+  }
   return (
     (nextCanvas !== null && currentCanvas === null) ||
     (nextCanvas === null && currentCanvas !== null) ||
