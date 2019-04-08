@@ -16,7 +16,6 @@ const style = theme => ({
   list: {
     width: '100%',
     padding: theme.spacing.unit,
-    minHeight: '100%',
     position: 'relative',
   },
   annotationDraggable: {
