@@ -152,6 +152,7 @@ class IIIFKeyValueField extends React.Component {
       this.props.keyProps.value !== nextProps.keyProps.value ||
       this.props.valueProps.label !== nextProps.valueProps.label ||
       this.props.keyProps.label !== nextProps.keyProps.label ||
+      this.state.htmlEditor !== nextState.htmlEditor ||
       (!!nextProps.valueProps &&
         !!this.props.valueProps &&
         IS_HTML_REGEX.test(this.props.valueProps.value) !==
