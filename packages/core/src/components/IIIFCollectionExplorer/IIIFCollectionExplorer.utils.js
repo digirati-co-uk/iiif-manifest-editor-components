@@ -1,5 +1,5 @@
 /* Aka. Chain of fragility... */
-export const getCanvasThumbnail = canvas => {
+export const getCanvasThumbnail = (canvas, getResource) => {
   // note this doesn't even deal with the embeded image/thumbnail sizes yet...
   // Best would be to pre-fetch the firtst canvas figure out which links are working
   // and than set those for the rest of the items, because each and every collection
@@ -7,12 +7,22 @@ export const getCanvasThumbnail = canvas => {
   let thumbnail = null;
   let useLazy = false;
   let worstCaseThumbnail = null;
-  const annotation =
-    canvas.items &&
-    canvas.items.length &&
-    canvas.items[0].items &&
-    canvas.items[0].items.length &&
-    canvas.items[0].items[0]; // hopefully for now
+  let annotation = null;
+  if (getResource) {
+    if (canvas.items && canvas.items.length) {
+      const annotationList = getResource(canvas.items[0]);
+      if (annotationList.items && annotationList.items.length) {
+        annotation = getResource(annotationList.items[0]);
+      }
+    }
+  } else {
+    annotation =
+      canvas.items &&
+      canvas.items.length &&
+      canvas.items[0].items &&
+      canvas.items[0].items.length &&
+      canvas.items[0].items[0]; // hopefully for now
+  }
 
   if (annotation && annotation.body && annotation.body.id) {
     const iiifImageParts = annotation.body.id.split('/');
@@ -20,7 +30,7 @@ export const getCanvasThumbnail = canvas => {
     worstCaseThumbnail = iiifImageParts.join('/');
   }
 
-  if (annotation.thumbnail) {
+  if (annotation && annotation.thumbnail) {
     if (typeof annotation.thumbnail === 'string') {
       thumbnail = annotation.thumbnail;
     } else if (

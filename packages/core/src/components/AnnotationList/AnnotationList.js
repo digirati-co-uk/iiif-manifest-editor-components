@@ -59,6 +59,7 @@ const AnnotationList = ({
   invokeAction,
   selectedColor,
   isEditingAllowed,
+  getResource,
 }) => (
   <Panel>
     {toolbar ? (
@@ -75,41 +76,44 @@ const AnnotationList = ({
         {(providedDroppable, snapshotDroppable) => (
           <div ref={providedDroppable.innerRef} className={classes.list}>
             {annotations ? (
-              annotations.map((annotation, index) => (
-                <Draggable
-                  key={annotation.id}
-                  draggableId={annotation.id}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={classnames(classes.annotationDraggable, {
-                        [classes.annotationDragging]: snapshot.isDragging,
-                      })}
-                    >
-                      {typeof children === 'function' ? (
-                        children(annotation, remove, select)
-                      ) : (
-                        <AnnotationListItem
-                          annotation={annotation}
-                          lang={lang}
-                          onSelect={select}
-                          isSelected={selected === annotation.id}
-                          selectedColor={selectedColor}
-                        />
-                      )}
-                      <Tooltip title="Delete Annotation" placement="right">
-                        <IconButton onClick={() => remove(annotation)}>
-                          <Cancel />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  )}
-                </Draggable>
-              ))
+              annotations.map((annotationId, index) => {
+                const annotation = getResource(annotationId);
+                return (
+                  <Draggable
+                    key={annotation.id}
+                    draggableId={annotation.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={classnames(classes.annotationDraggable, {
+                          [classes.annotationDragging]: snapshot.isDragging,
+                        })}
+                      >
+                        {typeof children === 'function' ? (
+                          children(annotation, remove, select)
+                        ) : (
+                          <AnnotationListItem
+                            annotation={annotation}
+                            lang={lang}
+                            onSelect={select}
+                            isSelected={selected === annotation.id}
+                            selectedColor={selectedColor}
+                          />
+                        )}
+                        <Tooltip title="Delete Annotation" placement="right">
+                          <IconButton onClick={() => remove(annotation)}>
+                            <Cancel />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })
             ) : (
               <Typography
                 variant="caption"
@@ -147,6 +151,7 @@ AnnotationList.propTypes = {
   invokeAction: PropTypes.func.isRequired,
   /* Sets the toolbar buttons disabled and TODO: disable delete and drag and drop */
   isEditingAllowed: PropTypes.bool,
+  /* get individual resource */
 };
 
 AnnotationList.defaultProps = {
@@ -156,6 +161,7 @@ AnnotationList.defaultProps = {
   invokeAction: emptyFn,
   selectedColor: 'primary',
   isEditingAllowed: true,
+  getResource: emptyFn,
 };
 
 export default withStyles(style)(AnnotationList);

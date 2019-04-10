@@ -41,10 +41,9 @@ export default class TextualBodyDescribing extends BaseAnnotation {
     add: ({ state, dispatch }, options) => {
       if (state.selectedIdsByType.Canvas) {
         const current = TextualBodyDescribing;
-        const { width, height } = queryResourceById(
-          state.selectedIdsByType.Canvas,
-          state.rootResource
-        );
+        const { width, height } = state.resources[
+          state.selectedIdsByType.Canvas
+        ];
         addResource(
           state,
           dispatch,

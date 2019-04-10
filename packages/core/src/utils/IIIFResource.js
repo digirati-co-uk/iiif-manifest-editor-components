@@ -91,6 +91,9 @@ const renderResource = (type, options = { props: {} }) => {
     };
   }
   generateURI(resource, options.parent);
+  if (resource.type === 'Canvas') {
+    generateURI(resource.items[0], resource);
+  }
   return resource;
 };
 

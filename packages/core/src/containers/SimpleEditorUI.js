@@ -22,7 +22,7 @@ import download from '../utils/download';
 import Layout from '../components/ApplicationLayout/ApplicationLayout';
 import AppBar from '../components/ManifestEditorAppBar/ManifestEditorAppBar';
 import AppBarButton from '../components/AppBarButton/AppBarButton';
-
+import { loadResource, saveResource } from '../utils/IIIFPersistance';
 import './SimpleEditorUI.scss';
 
 const theme = createMuiTheme({
@@ -58,12 +58,13 @@ demoManifest.items.push(demoCanvas);
 class SimpleEditorUI extends React.Component {
   constructor(props) {
     super(props);
-    const initialNewManifest = this.newManifest();
+    // const initialNewManifest = this.newManifest();
     const stateToRestore = JSON.parse(localStorage.getItem('autoSave'));
     this.state = stateToRestore || {
-      rootResource: demoManifest,
+      resources: {},
+      rootResource: null,
       selectedIdsByType: {
-        Canvas: demoCanvas.id,
+        Canvas: null,
         Annotation: null, //demoAnnotation1.id,
       },
       lang: 'en',
@@ -173,9 +174,10 @@ class SimpleEditorUI extends React.Component {
   };
 
   saveProject = () => {
+    const { resources, rootResource } = this.state;
     download(
-      this.state.rootResource,
-      locale(this.state.rootResource.label, this.state.lang) + '.json'
+      saveResource(rootResource, resources),
+      locale(resources[rootResource].label, this.state.lang) + '.json'
     );
   };
 
@@ -194,35 +196,34 @@ class SimpleEditorUI extends React.Component {
   };
 
   togglePreviewDialog = () => {
+    const { resources, rootResource } = this.state;
     this.setState({
       previewDialogOpen: !this.state.previewDialogOpen,
+      jsonSnapshot: saveResource(rootResource, resources),
     });
+  };
+
+  getResource = id => {
+    return this.state.resources[id];
   };
 
   render() {
     const canvases = this.state.rootResource
-      ? this.state.rootResource.items
+      ? this.state.resources[this.state.rootResource].items
       : [];
-    const selectedCanvas = queryResourceById(
-      this.state.selectedIdsByType.Canvas,
-      this.state.rootResource
-    );
+
+    const selectedCanvas = this.state.selectedIdsByType.Canvas
+      ? this.state.resources[this.state.selectedIdsByType.Canvas] || null
+      : null;
+
     const paintingAnnotations =
       selectedCanvas && selectedCanvas.items && selectedCanvas.items.length > 0
-        ? selectedCanvas.items[0].items || null
+        ? this.state.resources[selectedCanvas.items[0]].items || null
         : null;
 
-    const taggingAnnotations =
-      selectedCanvas &&
-      selectedCanvas.annotations &&
-      selectedCanvas.annotations.length > 0
-        ? selectedCanvas.annotations[0].items || null
-        : null;
-
-    const selectedAnnotation = queryResourceById(
-      this.state.selectedIdsByType.Annotation,
-      selectedCanvas
-    );
+    const selectedAnnotation = this.state.selectedIdsByType.Annotation
+      ? this.state.resources[this.state.selectedIdsByType.Annotation] || null
+      : null;
     const { lang } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
@@ -299,6 +300,7 @@ class SimpleEditorUI extends React.Component {
                   remove={this.deleteResource}
                   invokeAction={this.invokeAction2}
                   isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
+                  getResource={this.getResource}
                 />
               </Layout.Left>
               <Layout.Center>
@@ -307,12 +309,13 @@ class SimpleEditorUI extends React.Component {
                   selectedAnnotation={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}
                   update={this.updateResource}
+                  getResource={this.getResource}
                 />
               </Layout.Center>
               <Layout.Right>
                 <TabPanel>
                   <Properties
-                    manifest={this.state.rootResource}
+                    manifest={this.state.resources[this.state.rootResource]}
                     canvas={selectedCanvas}
                     annotation={selectedAnnotation}
                     lang={lang}
@@ -332,12 +335,13 @@ class SimpleEditorUI extends React.Component {
                 select={this.selectResource}
                 remove={this.deleteResource}
                 invokeAction={this.invokeAction}
+                getResource={this.getResource}
               />
             </Layout.Bottom>
           </Layout>
         </ManifestEditor>
         <SourcePreviewDialog
-          json={this.state.rootResource}
+          json={this.state.jsonSnapshot}
           open={this.state.previewDialogOpen}
           handleClose={this.togglePreviewDialog}
         />

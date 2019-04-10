@@ -115,13 +115,20 @@ const CanvasList = ({
   direction,
   listClass,
   itemClass,
+  getResource,
 }) => (
   <Panel
     horizontal={direction === 'horizontal'}
     style={direction === 'horizontal' ? {} : { height: '100%' }}
   >
     <Panel.Content>
-      <Droppable droppableId="canvaslist" direction={direction} style={direction === 'horizontal' ?{ width: '100%'}:{height: '100%'}}>
+      <Droppable
+        droppableId="canvaslist"
+        direction={direction}
+        style={
+          direction === 'horizontal' ? { width: '100%' } : { height: '100%' }
+        }
+      >
         {(providedDroppable, snapshotProppable) => (
           <div
             ref={providedDroppable.innerRef}
@@ -136,72 +143,84 @@ const CanvasList = ({
           >
             {canvases && canvases.length > 0 ? (
               <React.Fragment>
-                {canvases.map((canvas, index) => (
-                  <Draggable
-                    key={canvas.id}
-                    draggableId={canvas.id}
-                    index={index}
-                  >
-                    {(provided, snapshot) => {
-                      const [thumbnail, useLazy] = getCanvasThumbnail(canvas);
-                      return (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={classnames(
-                            itemClass
-                              ? itemClass
-                              : direction === 'vertical'
-                              ? classes.listItemVertical
-                              : classes.listItem,
-                            {
-                              [classes.listItemSelected]:
-                                selected === canvas.id,
-                              [classes.listItemDragging]: snapshot.isDragging,
-                            }
-                          )}
-                        >
-                          {typeof children === 'function' ? (
-                            children(canvas, remove, select)
-                          ) : (
-                            <div
-                              key={`canvas_list_${canvas.id}`}
-                              className={classes.canvas}
-                              title={
-                                canvas.label && canvas.label[lang]
-                                  ? canvas.label[lang]
-                                  : canvas.id
+                {canvases.map((canvasId, index) => {
+                  const canvas = getResource(canvasId);
+                  if (!canvas) {
+                    return '';
+                  }
+                  return (
+                    <Draggable
+                      key={canvasId}
+                      draggableId={canvasId}
+                      index={index}
+                    >
+                      {(provided, snapshot) => {
+                        const [thumbnail, useLazy] = getCanvasThumbnail(
+                          canvas,
+                          getResource
+                        );
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={classnames(
+                              itemClass
+                                ? itemClass
+                                : direction === 'vertical'
+                                ? classes.listItemVertical
+                                : classes.listItem,
+                              {
+                                [classes.listItemSelected]:
+                                  selected === canvas.id,
+                                [classes.listItemDragging]: snapshot.isDragging,
                               }
-                              onClick={() => select(canvas)}
-                            >
-                              {thumbnail && (
-                                <img
-                                  src={thumbnail}
-                                  alt={canvas.id}
-                                  className={classes.canvasThumbnail}
-                                />
-                              )}
-                              <span className={classes.canvasLabel}>
-                                <LocaleString fallback={canvas.id} lang={lang}>
-                                  {canvas.label}
-                                </LocaleString>
-                              </span>
-                            </div>
-                          )}
-                          <Tooltip title="Delete Canvas">
-                            <IconButton
-                              onClick={() => remove(canvas)}
-                              className={classes.deleteButton}
-                            >
-                              <Cancel color={'primary'} />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      );
-                    }}
-                  </Draggable>
-                ))}
+                            )}
+                          >
+                            {typeof children === 'function' ? (
+                              children(canvas, remove, select)
+                            ) : (
+                              <div
+                                key={`canvas_list_${canvas.id}`}
+                                className={classes.canvas}
+                                title={
+                                  canvas.label && canvas.label[lang]
+                                    ? canvas.label[lang]
+                                    : canvas.id
+                                }
+                                onClick={() => select(canvas)}
+                              >
+                                {thumbnail && (
+                                  <img
+                                    src={thumbnail}
+                                    alt={canvas.id}
+                                    className={classes.canvasThumbnail}
+                                  />
+                                )}
+                                <span className={classes.canvasLabel}>
+                                  <LocaleString
+                                    fallback={canvas.id}
+                                    lang={lang}
+                                  >
+                                    {canvas.label}
+                                  </LocaleString>
+                                </span>
+                              </div>
+                            )}
+                            <Tooltip title="Delete Canvas">
+                              <IconButton
+                                onClick={() => remove(canvas)}
+                                className={classes.deleteButton}
+                              >
+                                <Cancel color={'primary'} />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  );
+                })}
                 {direction === 'horizontal' && (
                   <div className={classes.defaultAddButtonSpacer}>
                     <Tooltip title="Add Canvas">
@@ -276,6 +295,8 @@ CanvasList.propTypes = {
   listClass: PropTypes.string,
   /* Custom item class  */
   itemClass: PropTypes.string,
+  /* getResource */
+  getResource: PropTypes.func,
 };
 
 CanvasList.defaultProps = {
@@ -286,6 +307,7 @@ CanvasList.defaultProps = {
   direction: 'horizontal',
   listClass: null,
   itemClass: null,
+  getResource: emptyFn,
 };
 
 export default withStyles(style)(CanvasList);

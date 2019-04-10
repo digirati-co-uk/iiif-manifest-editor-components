@@ -175,6 +175,7 @@ class EditableCanvasPanel extends React.Component {
       style,
       annotationColor,
       selectedAnnotation,
+      getResource,
     } = this.props;
     const annotationClasses =
       annotationColor === 'primary'
@@ -188,9 +189,11 @@ class EditableCanvasPanel extends React.Component {
         </div>
       );
     }
+    const annotationList =
+      canvas && canvas.items ? getResource(canvas.items[0]) : null;
     const annotations =
-      canvas && canvas.items && canvas.items[0] && canvas.items[0].items
-        ? canvas.items[0].items
+      annotationList && annotationList.items
+        ? annotationList.items.map(annotationId => getResource(annotationId))
         : [];
 
     const ratio = 1;
@@ -336,6 +339,7 @@ EditableCanvasPanel.propTypes = {
   select: PropTypes.func,
   update: PropTypes.func,
   annotationColor: PropTypes.string,
+  getResource: PropTypes.func,
 };
 
 EditableCanvasPanel.defaultProps = {
@@ -344,6 +348,7 @@ EditableCanvasPanel.defaultProps = {
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
   annotationColor: 'primary',
+  getResource: emptyFn,
 };
 
 export default withStyles(styles)(EditableCanvasPanel);

@@ -23,6 +23,12 @@ const processLevel = (iiifResource, results = {}, parentId = null) => {
     }
   }
 
+  if (
+    iiifResource.hasOwnProperty('type') &&
+    iiifResource.type === 'Annotation'
+  ) {
+    return results;
+  }
   Object.entries(iiifResource).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       iiifResource[key] = value.map(child => {
@@ -33,7 +39,6 @@ const processLevel = (iiifResource, results = {}, parentId = null) => {
     processLevel(value, results, iiifResource['@id'] || parentId);
     iiifResource[key] = value['@id'] || value;
   });
-
   return results;
 };
 
@@ -71,11 +76,11 @@ const saveLevel = (flatFile, currentLevel) => {
 /**
  * flatten the IIIF manifest
  */
-const loadResource = iiifResource =>
-  processLevel(JSON.parse(JSON.stringify(iiifResource)));
+export const loadResource = (iiifResource, parentId = null) =>
+  processLevel(JSON.parse(JSON.stringify(iiifResource)), {}, parentId);
 
 /**
  * converts the internal data representation into IIIF format
  */
-const saveResource = (startId, flatFile) =>
+export const saveResource = (startId, flatFile) =>
   saveLevel(flatFile, flatFile[startId], {});

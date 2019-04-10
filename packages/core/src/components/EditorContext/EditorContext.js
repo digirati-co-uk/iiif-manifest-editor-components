@@ -204,10 +204,7 @@ const defaultEditorContext = {
               ],
             };
             generateURI(annotation, state.selectedIdsByType.Canvas);
-            const canvas = queryResourceById(
-              state.selectedIdsByType.Canvas,
-              state.rootResource
-            );
+            const canvas = state.resources[state.selectedIdsByType.Canvas];
             annotation.target = state.selectedIdsByType.Canvas;
             const imgWidth =
               imageService && imageService.width
@@ -315,7 +312,7 @@ const defaultEditorContext = {
                 },
               ],
             };
-            generateURI(canvas, state.rootResource.id);
+            generateURI(canvas, state.rootResource);
             generateURI(canvas.items[0], canvas.id);
             generateURI(canvas.items[0].items[0], canvas.id);
             canvas.items[0].items[0].target = canvas.id;
@@ -323,7 +320,7 @@ const defaultEditorContext = {
               type: 'ADD_SPECIFIC_RESOURCE',
               options: {
                 props: canvas,
-                parent: state.rootResource.id,
+                parent: state.rootResource,
                 index: drop.destination.index,
               },
             });
@@ -339,7 +336,7 @@ const defaultEditorContext = {
         if (canvas.height) {
           canvas.height = parseInt(canvas.height, 10) || 0;
         }
-        generateURI(canvas, state.rootResource.id);
+        generateURI(canvas, state.rootResource);
         if (canvas.items && canvas.items.length) {
           canvas.items.forEach(annotationPage => {
             generateURI(annotationPage, canvas.id);
@@ -384,7 +381,7 @@ const defaultEditorContext = {
           type: 'ADD_SPECIFIC_RESOURCE',
           options: {
             props: canvas,
-            parent: state.rootResource.id,
+            parent: state.rootResource,
             index: drop.destination.index,
           },
         });
