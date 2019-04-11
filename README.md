@@ -77,18 +77,18 @@ The form field label overrides defined as key-value pairs under the `metaOntolog
 
 | key | the overriden element |
 |-----|-----------------------|
-| Properties.[Annotation|Canvas|Manifest] | group title |
-| [Manifest|Canvas|Annotation].Summary | summary field label |
-| [Manifest|Canvas|Annotation].Label | label field label | 
-| [Manifest|Canvas|Annotation].RequiredStatement | required statement field label |
-| [Manifest|Canvas|Annotation].RequiredStatement.Label | required statement label field label |
-| [Manifest|Canvas|Annotation].RequiredStatement.Value | required statement value field label |
-| [Manifest|Canvas|Annotation].Metadata | metadata field label |
-| [Manifest|Canvas|Annotation].Metadata.Label | metadata label field label |
-| [Manifest|Canvas|Annotation].Metadata.Value | metadata value field label |
-| [Manifest|Canvas|Annotation].Behaviors | behaviours field label |
-| [Manifest].NavDate | manifest navdate field label |
-| [Manifest].Rights | manifest rights field label |
+| Properties.[Annotation,Canvas,Manifest] | group title |
+| [Manifest,Canvas,Annotation].Summary | summary field label |
+| [Manifest,Canvas,Annotation].Label | label field label | 
+| [Manifest,Canvas,Annotation].RequiredStatement | required statement field label |
+| [Manifest,Canvas,Annotation].RequiredStatement.Label | required statement label field label |
+| [Manifest,Canvas,Annotation].RequiredStatement.Value | required statement value field label |
+| [Manifest,Canvas,Annotation].Metadata | metadata field label |
+| [Manifest,Canvas,Annotation].Metadata.Label | metadata label field label |
+| [Manifest,Canvas,Annotation].Metadata.Value | metadata value field label |
+| [Manifest,Canvas,Annotation].Behaviors | behaviours field label |
+| Manifest.NavDate | manifest navdate field label |
+| Manifest.Rights | manifest rights field label |
 
 The square brackets lists all possible values, so for example in the configuration you can have: 
 ```
@@ -126,7 +126,7 @@ In the defaults defaults file `propertyFields` defines the editable IIIF propert
  }
 ```
 
-Where `...` is the IIIF property name. If a non-standard IIIF property name entered, a simple text field will appear. The list of iiif property names can be found at [https://iiif.io/api/presentation/3.0/#appendices](https://iiif.io/api/presentation/3.0/#appendices)
+Where `...` is the list of IIIF property names. If a non-standard IIIF property name entered, a simple text field will appear. The full list of iiif property names can be found at [https://iiif.io/api/presentation/3.0/#appendices](https://iiif.io/api/presentation/3.0/#appendices)
 
 ## References
 
