@@ -350,6 +350,7 @@ class SimpleEditorUI extends React.Component {
             </Layout.Middle>
             <Layout.Bottom>
               <CanvasList
+                canvas={selectedCanvas}
                 canvases={canvases}
                 lang={lang}
                 selected={this.state.selectedIdsByType.Canvas}

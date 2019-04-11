@@ -186,17 +186,33 @@ const CanvasListItem = ({
 };
 
 class CanvasList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.lastCanvasListChange = new Date().getTime();
+  }
   shouldComponentUpdate(nextProps) {
-    console.log(nextProps, this.props);
-    return (
-      nextProps.selected !== this.props.selected ||
-      isCanvasListChanged(
-        nextProps.canvases,
-        this.props.canvases,
-        this.props.getResource,
-        this.props.lang
-      )
+    const canvasListChanged = isCanvasListChanged(
+      nextProps.canvases,
+      this.props.canvases,
+      this.props.getResource,
+      this.props.lang
     );
+    if (
+      this.props.canvas &&
+      nextProps.canvas &&
+      this.props.canvas.label &&
+      nextProps.canvas.label &&
+      this.props.canvas.label[this.props.lang] !==
+        nextProps.canvas.label[this.props.lang]
+    ) {
+      this.lastCanvasListChange = new Date().getTime();
+      return true;
+    }
+
+    if (canvasListChanged) {
+      this.lastCanvasListChange = new Date().getTime();
+    }
+    return nextProps.selected !== this.props.selected || canvasListChanged;
   }
 
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
@@ -306,6 +322,7 @@ class CanvasList extends React.Component {
                   >
                     <Grid
                       selected={selected}
+                      lastCanvasListChange={this.lastCanvasListChange}
                       cellRenderer={this.cellRenderer}
                       //className={styles.BodyGrid}
                       columnWidth={direction === 'vertical' ? width : height}
@@ -370,6 +387,8 @@ CanvasList.propTypes = {
   classes: PropTypes.any,
   /* if a function passed, the rendered of the children can be overridden */
   children: PropTypes.any,
+  /* selected canvas for the change detection */
+  canvas: PropTypes.any,
   /* list of canvases to display */
   canvases: PropTypes.array,
   /* custom toolbar */
@@ -395,6 +414,7 @@ CanvasList.propTypes = {
 };
 
 CanvasList.defaultProps = {
+  canvas: null,
   selected: null,
   select: emptyFn,
   remove: emptyFn,

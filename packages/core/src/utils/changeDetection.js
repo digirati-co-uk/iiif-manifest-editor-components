@@ -94,19 +94,16 @@ export const isCanvasChangedAnnotationList = (
   );
 };
 
-export const isCanvasListChanged = (
-  nextCanvasList,
-  currentCanvasList,
-  getResource,
-  lang
-) => {
+export const isCanvasListChanged = (nextCanvasList, currentCanvasList) => {
   if (nextCanvasList === null && currentCanvasList === null) {
     return false;
   }
   return (
     (nextCanvasList === null && currentCanvasList !== null) ||
     (nextCanvasList !== null && currentCanvasList === null) ||
-    nextCanvasList.length !== currentCanvasList.length //
-    // TODO: label change
+    nextCanvasList.length !== currentCanvasList.length ||
+    nextCanvasList
+      .map((canvasId, index) => canvasId !== currentCanvasList[index])
+      .indexOf(true) !== -1
   );
 };
