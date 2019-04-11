@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as PropTypes from 'prop-types';
 import * as classnames from 'classnames';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
@@ -31,11 +32,11 @@ const styles = theme => ({
   },
   listItem: {
     userSelect: 'none',
-    margin: `${theme.spacing.unit / 2} ${theme.spacing.unit}px`,
+    margin: `${theme.spacing.unit}px ${theme.spacing.unit / 2}px`,
     display: 'flex',
     alignItems: 'stretch',
-    maxWidth: 180,
-    minWidth: 100,
+    maxWidth: 110,
+    minWidth: 110,
     position: 'relative',
     height: 100,
     boxSizing: 'border-box',
@@ -106,6 +107,84 @@ const styles = theme => ({
 
 const emptyFn = () => {};
 
+const CanvasListItem = ({
+  provided,
+  snapshot,
+  itemClass,
+  direction,
+  classes,
+  canvas,
+  children,
+  thumbnail,
+  select,
+  remove,
+  selected,
+  lang,
+}) => {
+  const usePortal = snapshot.isDragging;
+  const child = (
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      className={classnames(
+        itemClass
+          ? itemClass
+          : direction === 'vertical'
+          ? classes.listItemVertical
+          : classes.listItem,
+        {
+          [classes.listItemSelected]: selected === canvas.id,
+          [classes.listItemDragging]: snapshot.isDragging,
+        }
+      )}
+      // style={{
+      //   marginLeft: provided.innerRef.
+      // }}
+    >
+      {typeof children === 'function' ? (
+        children(canvas, remove, select)
+      ) : (
+        <div
+          key={`canvas_list_${canvas.id}`}
+          className={classes.canvas}
+          title={
+            canvas.label && canvas.label[lang] ? canvas.label[lang] : canvas.id
+          }
+          onClick={() => select(canvas)}
+        >
+          {thumbnail && (
+            <img
+              src={thumbnail}
+              alt={canvas.id}
+              className={classes.canvasThumbnail}
+            />
+          )}
+          <span className={classes.canvasLabel}>
+            <LocaleString fallback={canvas.id} lang={lang}>
+              {canvas.label}
+            </LocaleString>
+          </span>
+        </div>
+      )}
+      <Tooltip title="Delete Canvas">
+        <IconButton
+          onClick={() => remove(canvas)}
+          className={classes.deleteButton}
+        >
+          <Cancel color={'primary'} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  );
+  if (!usePortal) {
+    return child;
+  }
+  const portal = document.querySelector('.drag-drop-portal');
+  // if dragging - put the item in a portal
+  return ReactDOM.createPortal(child, portal);
+};
+
 class CanvasList extends React.Component {
   shouldComponentUpdate(nextProps) {
     console.log(nextProps, this.props);
@@ -139,66 +218,31 @@ class CanvasList extends React.Component {
       return '';
     }
     return (
-      <div key={key} className={classes.listItem} style={style}>
+      <div key={key} style={style}>
         <Draggable key={canvasId} draggableId={canvasId} index={index}>
           {(provided, snapshot) => {
             const [thumbnail, useLazy] = getCanvasThumbnail(
               canvas,
               getResource
             );
+            //console.log(provided, snapshot);
             return (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                className={classnames(
-                  itemClass
-                    ? itemClass
-                    : direction === 'vertical'
-                    ? classes.listItemVertical
-                    : classes.listItem,
-                  {
-                    [classes.listItemSelected]: selected === canvas.id,
-                    [classes.listItemDragging]: snapshot.isDragging,
-                  }
-                )}
-              >
-                {typeof children === 'function' ? (
-                  children(canvas, remove, select)
-                ) : (
-                  <div
-                    key={`canvas_list_${canvas.id}`}
-                    className={classes.canvas}
-                    title={
-                      canvas.label && canvas.label[lang]
-                        ? canvas.label[lang]
-                        : canvas.id
-                    }
-                    onClick={() => select(canvas)}
-                  >
-                    {thumbnail && (
-                      <img
-                        src={thumbnail}
-                        alt={canvas.id}
-                        className={classes.canvasThumbnail}
-                      />
-                    )}
-                    <span className={classes.canvasLabel}>
-                      <LocaleString fallback={canvas.id} lang={lang}>
-                        {canvas.label}
-                      </LocaleString>
-                    </span>
-                  </div>
-                )}
-                <Tooltip title="Delete Canvas">
-                  <IconButton
-                    onClick={() => remove(canvas)}
-                    className={classes.deleteButton}
-                  >
-                    <Cancel color={'primary'} />
-                  </IconButton>
-                </Tooltip>
-              </div>
+              <CanvasListItem
+                {...{
+                  provided,
+                  snapshot,
+                  itemClass,
+                  direction,
+                  classes,
+                  canvas,
+                  children,
+                  thumbnail,
+                  select,
+                  remove,
+                  selected,
+                  lang,
+                }}
+              />
             );
           }}
         </Draggable>
@@ -284,6 +328,7 @@ class CanvasList extends React.Component {
                             </Tooltip>
                           </div>
                         )}
+                        {providedDroppable.placeholder}
                       </React.Fragment>
                     ) : (
                       direction === 'horizontal' && (
@@ -300,7 +345,6 @@ class CanvasList extends React.Component {
                         </div>
                       )
                     )}
-                    {providedDroppable.placeholder}
                   </div>
                 )}
               </Droppable>

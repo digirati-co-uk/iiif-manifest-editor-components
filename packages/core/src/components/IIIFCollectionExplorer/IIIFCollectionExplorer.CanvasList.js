@@ -67,15 +67,6 @@ const styles = theme => {
   };
 };
 
-// TOOD: not happy with this, looks a bit out of space
-const portal = document.createElement('div');
-portal.classList.add('drag-drop-portal');
-
-if (!document.body) {
-  throw new Error('body not ready for portal creation!');
-}
-document.body.appendChild(portal);
-
 const PortalAwareThumbnail = ({
   provided,
   snapshot,
@@ -121,7 +112,7 @@ const PortalAwareThumbnail = ({
   if (!usePortal) {
     return child;
   }
-
+  const portal = document.querySelector('.drag-drop-portal');
   // if dragging - put the item in a portal
   return ReactDOM.createPortal(child, portal);
 };
