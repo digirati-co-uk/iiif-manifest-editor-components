@@ -250,7 +250,20 @@ class CanvasList extends React.Component {
     );
   };
   noContentRenderer = () => {
-    return 'meh';
+    const { direction, classes, invokeAction } = this.props;
+    return (
+      direction === 'horizontal' && (
+        <div className={classes.noCanvasesContainer}>
+          No canvases in the manifest,
+          <Tooltip title="Add">
+            <IconButton onClick={() => invokeAction('add-canvas')}>
+              <AddCircle />
+            </IconButton>
+          </Tooltip>
+          a canvas.
+        </div>
+      )
+    );
   };
 
   render() {
@@ -291,60 +304,38 @@ class CanvasList extends React.Component {
                     }
                     {...providedDroppable.droppableProps}
                   >
-                    {canvases && canvases.length > 0 ? (
-                      <React.Fragment>
-                        <Grid
-                          selected={selected}
-                          cellRenderer={this.cellRenderer}
-                          //className={styles.BodyGrid}
-                          columnWidth={
-                            direction === 'vertical' ? width : height
-                          }
-                          columnCount={
-                            direction === 'vertical' ? 1 : canvases.length
-                          }
-                          height={height}
-                          noContentRenderer={this.noContentRenderer}
-                          overscanColumnCount={
-                            direction === 'vertical' ? 1 : 20
-                          }
-                          overscanRowCount={direction === 'vertical' ? 20 : 1}
-                          rowHeight={direction === 'vertical' ? -1 : height}
-                          rowCount={
-                            direction === 'vertical' ? canvases.length : 1
-                          }
-                          // scrollToColumn={scrollToColumn}
-                          // scrollToRow={scrollToRow}
-                          width={width}
-                        />
-                        {direction === 'horizontal' && (
-                          <div className={classes.defaultAddButtonSpacer}>
-                            <Tooltip title="Add Canvas">
-                              <IconButton
-                                onClick={() => invokeAction('add-canvas')}
-                              >
-                                <AddCircle />
-                              </IconButton>
-                            </Tooltip>
-                          </div>
-                        )}
-                        {providedDroppable.placeholder}
-                      </React.Fragment>
-                    ) : (
-                      direction === 'horizontal' && (
-                        <div className={classes.noCanvasesContainer}>
-                          No canvases in the manifest,
-                          <Tooltip title="Add">
+                    <Grid
+                      selected={selected}
+                      cellRenderer={this.cellRenderer}
+                      //className={styles.BodyGrid}
+                      columnWidth={direction === 'vertical' ? width : height}
+                      columnCount={
+                        direction === 'vertical' ? 1 : canvases.length
+                      }
+                      height={height}
+                      noContentRenderer={this.noContentRenderer}
+                      overscanColumnCount={direction === 'vertical' ? 1 : 20}
+                      overscanRowCount={direction === 'vertical' ? 20 : 1}
+                      rowHeight={direction === 'vertical' ? -1 : height}
+                      rowCount={direction === 'vertical' ? canvases.length : 1}
+                      // scrollToColumn={scrollToColumn}
+                      // scrollToRow={scrollToRow}
+                      width={width}
+                    />
+                    {providedDroppable.placeholder}
+                    {direction === 'horizontal' &&
+                      canvases &&
+                      canvases.length > 0 && (
+                        <div className={classes.defaultAddButtonSpacer}>
+                          <Tooltip title="Add Canvas">
                             <IconButton
                               onClick={() => invokeAction('add-canvas')}
                             >
                               <AddCircle />
                             </IconButton>
                           </Tooltip>
-                          a canvas.
                         </div>
-                      )
-                    )}
+                      )}
                   </div>
                 )}
               </Droppable>
