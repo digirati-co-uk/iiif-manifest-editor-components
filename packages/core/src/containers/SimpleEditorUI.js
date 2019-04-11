@@ -152,7 +152,6 @@ class SimpleEditorUI extends React.Component {
   };
 
   updateProperty = (target, property, lang, value) => {
-    //console.log('updateProperty', update(target, property, lang, value));
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE_PROPERTY',
       options: {

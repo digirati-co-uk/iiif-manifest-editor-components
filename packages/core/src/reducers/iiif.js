@@ -64,7 +64,6 @@ const IIIFReducer = (state, action) => {
         if (!newResource.hasOwnProperty('id')) {
           generateURI(newResource, parentId);
         }
-        console.log('loadResource', loadResource(newResource, parentId));
         Object.assign(nextState.resources, loadResource(newResource, parentId));
         //nextState.resources[newResource.id]['@parent'] = parentId;
         // this part is a bit of chaos, TODO: clean up

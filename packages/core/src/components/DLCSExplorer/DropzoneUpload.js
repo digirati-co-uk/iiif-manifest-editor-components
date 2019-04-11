@@ -140,7 +140,6 @@ class DLCSDropzoneUpload extends React.Component {
       })
       .then(response => response.json())
       .then(response => {
-        //console.log('putImage - doneish', response);
         this.setState({
           uploaded: {
             ...this.state.uploaded,

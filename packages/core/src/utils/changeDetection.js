@@ -3,54 +3,9 @@ export const isCanvasChangedEditor = (
   currentCanvas,
   getResource
 ) => {
-  //console.log('isCanvasChangedEditor', nextCanvas, currentCanvas);
   if (nextCanvas === null && currentCanvas === null) {
     return false;
   }
-  // console.log(
-  //   'isCanvasChangedEditor'
-  //   // nextCanvas !== null && currentCanvas === null,
-  //   // nextCanvas === null && currentCanvas !== null,
-  //   // nextCanvas.id !== currentCanvas.id,
-  //   // nextCanvas.width !== currentCanvas.width,
-  //   // nextCanvas.height !== currentCanvas.height,
-  //   // nextCanvas.items.length !== currentCanvas.items.length,
-  // );
-  // nextCanvas.items.map((nextAnnotationListId, index) => {
-  //   const currentAnnotationList = getResource(currentCanvas.items[index]);
-  //   const nextAnnotationList = getResource(nextAnnotationListId);
-  //   console.log(
-  //     'nextAnnotationList',
-  //     nextAnnotationList.id !== currentAnnotationList.id,
-  //     !currentAnnotationList.items && !!nextAnnotationList.items,
-  //     !nextAnnotationList.items && !!currentAnnotationList.items,
-  //     nextAnnotationList.items.length !== currentAnnotationList.items.length
-  //   );
-  //   return (
-  //     nextAnnotationList.id !== currentAnnotationList.id ||
-  //     (!currentAnnotationList.items && !!nextAnnotationList.items) ||
-  //     (!nextAnnotationList.items && !!currentAnnotationList.items) ||
-  //     nextAnnotationList.items.length !== currentAnnotationList.items.length ||
-  //     nextAnnotationList.items
-  //       .map((nextAnnotation, annotationIndex) => {
-  //         const currentAnnotation = getResource(
-  //           currentAnnotationList.items[annotationIndex]
-  //         );
-  //         return (
-  //           nextAnnotation.id !== currentAnnotation.id ||
-  //           nextAnnotation.target !== currentAnnotation.target ||
-  //           (!nextAnnotation.service && !!currentAnnotation.service) ||
-  //           (!!nextAnnotation.service && !currentAnnotation.service) ||
-  //           (nextAnnotation.service &&
-  //             currentAnnotation.service &&
-  //             nextAnnotation.service.id !== currentAnnotation.service.id)
-  //         );
-  //       })
-  //       .indexOf(true) !== -1
-  //   );
-  // })
-  // //.indexOf(true) !== -1
-
   return (
     (nextCanvas !== null && currentCanvas === null) ||
     (nextCanvas === null && currentCanvas !== null) ||
