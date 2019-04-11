@@ -162,7 +162,11 @@ class EditableCanvasPanel extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
+      isCanvasChangedEditor(
+        nextProps.canvas,
+        this.props.canvas,
+        this.props.getResource
+      )
     );
   }
 

@@ -66,7 +66,11 @@ class EditableCanvas extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
+      isCanvasChangedEditor(
+        nextProps.canvas,
+        this.props.canvas,
+        this.props.getResource
+      )
     );
   }
 
@@ -252,6 +256,7 @@ EditableCanvas.propTypes = {
   lockAspectRatio: PropTypes.array.isRequired,
   select: PropTypes.func,
   update: PropTypes.func,
+  getResource: PropTypes.func,
 };
 
 EditableCanvas.defaultProps = {
@@ -259,6 +264,7 @@ EditableCanvas.defaultProps = {
   select: emptyFn,
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
+  getResource: emptyFn,
 };
 
 export default withStyles(styles)(EditableCanvas);

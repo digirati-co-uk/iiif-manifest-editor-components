@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
-import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
+import { LibraryAdd, SaveAlt, Visibility, Input } from '@material-ui/icons';
 
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
@@ -23,6 +23,9 @@ import Layout from '../components/ApplicationLayout/ApplicationLayout';
 import AppBar from '../components/ManifestEditorAppBar/ManifestEditorAppBar';
 import AppBarButton from '../components/AppBarButton/AppBarButton';
 import { loadResource, saveResource } from '../utils/IIIFPersistance';
+import DefaultLoadManifestDialog from '../components/DefaultLoadManifestDialog/DefaultLoadManifestDialog';
+import convertToV3ifNecessary from '../utils/IIIFUpgrader';
+
 import './SimpleEditorUI.scss';
 
 const theme = createMuiTheme({
@@ -203,6 +206,20 @@ class SimpleEditorUI extends React.Component {
     });
   };
 
+  toggleManifestDialog = () => {
+    this.setState({
+      loadManifestDialogOpen: !this.state.loadManifestDialogOpen,
+    });
+  };
+
+  loadManifest = json => {
+    this.dispatch(IIIFReducer, {
+      type: 'LOAD_MANIFEST',
+      manifest: convertToV3ifNecessary(json),
+    });
+    this.toggleManifestDialog();
+  };
+
   getResource = id => {
     return this.state.resources[id];
   };
@@ -288,6 +305,11 @@ class SimpleEditorUI extends React.Component {
                 onClick={this.togglePreviewDialog}
                 icon={<Visibility />}
               />
+              <AppBarButton
+                text="Load Manifest"
+                onClick={this.toggleManifestDialog}
+                icon={<Input />}
+              />
             </AppBar>
             <Layout.Middle>
               <Layout.Left>
@@ -344,6 +366,11 @@ class SimpleEditorUI extends React.Component {
           json={this.state.jsonSnapshot}
           open={this.state.previewDialogOpen}
           handleClose={this.togglePreviewDialog}
+        />
+        <DefaultLoadManifestDialog
+          open={this.state.loadManifestDialogOpen}
+          loadManifest={this.loadManifest}
+          handleClose={this.toggleManifestDialog}
         />
       </MuiThemeProvider>
     );
