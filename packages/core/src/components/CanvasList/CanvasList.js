@@ -18,7 +18,8 @@ const styles = theme => ({
   droppable: {
     position: 'relative',
     display: 'flex',
-    padding: theme.spacing.unit,
+    //padding: theme.spacing.unit,
+    padding: 0,
     overflow: 'auto',
     minHeight: '100%',
   },
@@ -30,7 +31,7 @@ const styles = theme => ({
   },
   listItem: {
     userSelect: 'none',
-    margin: `0 ${theme.spacing.unit}px 0 0`,
+    margin: `${theme.spacing.unit / 2} ${theme.spacing.unit}px`,
     display: 'flex',
     alignItems: 'stretch',
     maxWidth: 180,
@@ -107,6 +108,7 @@ const emptyFn = () => {};
 
 class CanvasList extends React.Component {
   shouldComponentUpdate(nextProps) {
+    console.log(nextProps, this.props);
     return (
       nextProps.selected !== this.props.selected ||
       isCanvasListChanged(
@@ -121,6 +123,7 @@ class CanvasList extends React.Component {
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getResource,
+      children,
       classes,
       itemClass,
       lang,
@@ -213,9 +216,6 @@ class CanvasList extends React.Component {
       canvases,
       toolbar,
       selected,
-      lang,
-      select,
-      remove,
       invokeAction,
       direction,
       listClass,
@@ -248,44 +248,43 @@ class CanvasList extends React.Component {
                     {...providedDroppable.droppableProps}
                   >
                     {canvases && canvases.length > 0 ? (
-                      // <List
-                      //   width={width}
-                      //   height={height}
-                      //   rowCount={canvases.length}
-                      //   rowHeight={theme.spacing.unit * 2 + tileSize + 1}
-                      //   rowRenderer={this.rowRenderer}
-                      //   className={classes.list}
-                      // />
-                      <Grid
-                        cellRenderer={this.cellRenderer}
-                        //className={styles.BodyGrid}
-                        columnWidth={direction === 'vertical' ? width : height}
-                        columnCount={
-                          direction === 'vertical' ? 1 : canvases.length
-                        }
-                        height={height}
-                        noContentRenderer={this.noContentRenderer}
-                        overscanColumnCount={direction === 'vertical' ? 1 : 20}
-                        overscanRowCount={direction === 'vertical' ? 20 : 1}
-                        rowHeight={direction === 'vertical' ? -1 : height}
-                        rowCount={
-                          direction === 'vertical' ? canvases.length : 1
-                        }
-                        // scrollToColumn={scrollToColumn}
-                        // scrollToRow={scrollToRow}
-                        width={width}
-                        // {direction === 'horizontal' && (
-                        //   <div className={classes.defaultAddButtonSpacer}>
-                        //     <Tooltip title="Add Canvas">
-                        //       <IconButton
-                        //         onClick={() => invokeAction('add-canvas')}
-                        //       >
-                        //         <AddCircle />
-                        //       </IconButton>
-                        //     </Tooltip>
-                        //   </div>
-                        // )}
-                      />
+                      <React.Fragment>
+                        <Grid
+                          selected={selected}
+                          cellRenderer={this.cellRenderer}
+                          //className={styles.BodyGrid}
+                          columnWidth={
+                            direction === 'vertical' ? width : height
+                          }
+                          columnCount={
+                            direction === 'vertical' ? 1 : canvases.length
+                          }
+                          height={height}
+                          noContentRenderer={this.noContentRenderer}
+                          overscanColumnCount={
+                            direction === 'vertical' ? 1 : 20
+                          }
+                          overscanRowCount={direction === 'vertical' ? 20 : 1}
+                          rowHeight={direction === 'vertical' ? -1 : height}
+                          rowCount={
+                            direction === 'vertical' ? canvases.length : 1
+                          }
+                          // scrollToColumn={scrollToColumn}
+                          // scrollToRow={scrollToRow}
+                          width={width}
+                        />
+                        {direction === 'horizontal' && (
+                          <div className={classes.defaultAddButtonSpacer}>
+                            <Tooltip title="Add Canvas">
+                              <IconButton
+                                onClick={() => invokeAction('add-canvas')}
+                              >
+                                <AddCircle />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        )}
+                      </React.Fragment>
                     ) : (
                       direction === 'horizontal' && (
                         <div className={classes.noCanvasesContainer}>
