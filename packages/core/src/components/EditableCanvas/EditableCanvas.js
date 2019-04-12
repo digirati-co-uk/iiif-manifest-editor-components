@@ -69,7 +69,8 @@ class EditableCanvas extends React.Component {
       isCanvasChangedEditor(
         nextProps.canvas,
         this.props.canvas,
-        this.props.getResource
+        this.props.getResource,
+        id => nextState.resources[id]
       )
     );
   }
@@ -90,27 +91,8 @@ class EditableCanvas extends React.Component {
   isAspectRationLocked = type => this.props.lockAspectRatio.includes(type);
 
   onDrag = annotation => (ev, direction, src) => emptyFn;
-  // TODO: I leave it like this just for performance reasons for now.
-  // So if the store/state getting updated on each and every mousemove
-  // the experience becomes sluggish so we only update the store on the
-  // mouse up.
-  // (ev, data) => {
-  //   // TODO: this should operate on a temporary annotation
-  //   let cords = data.node.style.transform.match(PARSE_TRANSFORM);
-  //   if (cords) {
-  //     this.updateBounds(
-  //       annotation,
-  //       {
-  //         x: parseInt(parseInt(cords[1], 10) / this.state.zoom, 10),
-  //         y: parseInt(parseInt(cords[2], 10) / this.state.zoom, 10),
-  //       },
-  //       this.props.canvas
-  //     );
-  //   }
-  // };
 
   onDragStop = annotation => (ev, data) => {
-    // TODO: this should update the annotation
     let cords = data.node.style.transform.match(PARSE_TRANSFORM);
     if (cords) {
       this.updateBounds(
@@ -125,21 +107,8 @@ class EditableCanvas extends React.Component {
   };
 
   onResize = annotation => (ev, direction, src) => emptyFn;
-  // TODO: same as for drag.
-  // (ev, direction, src) => {
-  //   // TODO: this should update the annotation
-  //   this.updateBounds(
-  //     annotation,
-  //     {
-  //       w: parseInt(src.offsetWidth / this.state.zoom, 10),
-  //       h: parseInt(src.offsetHeight / this.state.zoom, 10),
-  //     },
-  //     this.props.canvas
-  //   );
-  // };
 
   onResizeStop = annotation => (ev, direction, src) => {
-    // TODO: this should update the annotation
     this.updateBounds(
       annotation,
       {
@@ -159,14 +128,10 @@ class EditableCanvas extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    if (typeof annotation.target.id === 'string') {
-      this.props.update(annotation.target, {
-        id: `${canvas.id}${hash}`,
-      });
+    if (annotation.target && typeof annotation.target.id === 'string') {
+      this.props.update(annotation, 'target.id', null, `${canvas.id}${hash}`);
     } else {
-      this.props.update(annotation, {
-        target: `${canvas.id}${hash}`,
-      });
+      this.props.update(annotation, 'target', null, `${canvas.id}${hash}`);
     }
   };
 

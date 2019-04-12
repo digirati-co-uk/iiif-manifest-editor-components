@@ -159,18 +159,6 @@ class SimpleEditorUI extends React.Component {
         property,
         lang,
         value,
-        // id: target.id,
-        // props: update(target, property, lang, value),
-      },
-    });
-  };
-
-  updateResource = (target, props) => {
-    this.dispatch(IIIFReducer, {
-      type: 'UPDATE_RESOURCE',
-      options: {
-        id: target.id,
-        props,
       },
     });
   };
@@ -327,9 +315,10 @@ class SimpleEditorUI extends React.Component {
               <Layout.Center>
                 <EditableCanvasPanel
                   canvas={selectedCanvas}
+                  resources={this.state.resources}
                   selectedAnnotation={this.state.selectedIdsByType.Annotation}
                   select={this.selectResource}
-                  update={this.updateResource}
+                  update={this.updateProperty}
                   getResource={this.getResource}
                 />
               </Layout.Center>

@@ -9,7 +9,7 @@ import { loadResource, saveResource } from '../utils/IIIFPersistance';
 import generateURI from '../utils/URIGenerator';
 
 const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail', 'behavior'];
-const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id', 'target'];
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {

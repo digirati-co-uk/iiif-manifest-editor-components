@@ -148,14 +148,10 @@ class EditableCanvasPanel extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    if (typeof annotation.target.id === 'string') {
-      this.props.update(annotation.target, {
-        id: `${canvas.id}${hash}`,
-      });
+    if (annotation.target && typeof annotation.target.id === 'string') {
+      this.props.update(annotation, 'target.id', null, `${canvas.id}${hash}`);
     } else {
-      this.props.update(annotation, {
-        target: `${canvas.id}${hash}`,
-      });
+      this.props.update(annotation, 'target', null, `${canvas.id}${hash}`);
     }
   };
 
@@ -165,7 +161,8 @@ class EditableCanvasPanel extends React.Component {
       isCanvasChangedEditor(
         nextProps.canvas,
         this.props.canvas,
-        this.props.getResource
+        id => this.props.resources[id],
+        id => nextProps.resources[id]
       )
     );
   }
@@ -179,7 +176,7 @@ class EditableCanvasPanel extends React.Component {
       style,
       annotationColor,
       selectedAnnotation,
-      getResource,
+      resources,
     } = this.props;
     const annotationClasses =
       annotationColor === 'primary'
@@ -194,10 +191,10 @@ class EditableCanvasPanel extends React.Component {
       );
     }
     const annotationList =
-      canvas && canvas.items ? getResource(canvas.items[0]) : null;
+      canvas && canvas.items ? resources[canvas.items[0]] : null;
     const annotations =
       annotationList && annotationList.items
-        ? annotationList.items.map(annotationId => getResource(annotationId))
+        ? annotationList.items.map(annotationId => resources[annotationId])
         : [];
 
     const ratio = 1;
@@ -343,7 +340,7 @@ EditableCanvasPanel.propTypes = {
   select: PropTypes.func,
   update: PropTypes.func,
   annotationColor: PropTypes.string,
-  getResource: PropTypes.func,
+  resources: PropTypes.any,
 };
 
 EditableCanvasPanel.defaultProps = {
@@ -352,7 +349,7 @@ EditableCanvasPanel.defaultProps = {
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
   annotationColor: 'primary',
-  getResource: emptyFn,
+  resources: {},
 };
 
 export default withStyles(styles)(EditableCanvasPanel);

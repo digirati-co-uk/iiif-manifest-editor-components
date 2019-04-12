@@ -1,7 +1,8 @@
 export const isCanvasChangedEditor = (
   nextCanvas,
   currentCanvas,
-  getResource
+  getResource,
+  getNextResource
 ) => {
   if (nextCanvas === null && currentCanvas === null) {
     return false;
@@ -16,7 +17,7 @@ export const isCanvasChangedEditor = (
     nextCanvas.items
       .map((nextAnnotationListId, index) => {
         const currentAnnotationList = getResource(currentCanvas.items[index]);
-        const nextAnnotationList = getResource(nextAnnotationListId);
+        const nextAnnotationList = getNextResource(nextAnnotationListId);
         return (
           nextAnnotationList.id !== currentAnnotationList.id ||
           (!currentAnnotationList.items && !!nextAnnotationList.items) ||
@@ -28,7 +29,7 @@ export const isCanvasChangedEditor = (
               const currentAnnotation = getResource(
                 currentAnnotationList.items[annotationIndex]
               );
-              const nextAnnotation = getResource(nextAnnotationId);
+              const nextAnnotation = getNextResource(nextAnnotationId);
               return (
                 nextAnnotation.id !== currentAnnotation.id ||
                 nextAnnotation.target !== currentAnnotation.target ||

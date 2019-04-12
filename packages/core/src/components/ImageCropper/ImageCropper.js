@@ -62,6 +62,16 @@ class ImageCropper extends React.Component {
     return null;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      this.props.iiifUrl !== nextProps.iiifUrl ||
+      this.state.annotation.x !== nextState.annotation.x ||
+      this.state.annotation.y !== nextState.annotation.y ||
+      this.state.annotation.width !== nextState.annotation.width ||
+      this.state.annotation.height !== nextState.annotation.height
+    );
+  }
+
   render() {
     const {
       classes,
@@ -165,7 +175,9 @@ class ImageCropper extends React.Component {
                           },
                           () => {
                             const ann = this.state.annotation;
-                            imageURLParts[imageURLParts.length - 4] = `${ann.x},${ann.y},${ann.width},${ann.height}`;
+                            imageURLParts[imageURLParts.length - 4] = `${
+                              ann.x
+                            },${ann.y},${ann.width},${ann.height}`;
                             this.props.onChange(imageURLParts.join('/'));
                           }
                         );
