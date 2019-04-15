@@ -1,4 +1,5 @@
 import * as React from 'react';
+//import { useState, useEffect } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   withStyles,
@@ -6,12 +7,14 @@ import {
   FormControl,
   FormLabel,
 } from '@material-ui/core';
+
+//import debounce from 'lodash/debounce'
 import { locale, update as rawUpdate } from '../../utils/IIIFResource';
-import { throttle } from 'throttle-debounce';
 import { Label, LabelConsumer } from '../LabelContext/LabelContext';
 import IIIFTextField from '../IIIFTextField/IIIFTextField';
 import IIIFKeyValueField from '../IIIFKeyValueField/IIIFKeyValueField';
 import IIIFBehaviours from '../IIIFBehaviours/IIIFBehaviours';
+import IIIFInputField from '../IIIFInputField/IIIFInputField';
 
 const styles = theme => ({
   label: {
@@ -44,9 +47,9 @@ class MetadataEditor extends React.Component {
                 switch (keyName) {
                   case 'label':
                     return (
-                      <TextField
+                      <IIIFInputField
                         label={labels[type + '.Label'] || 'Label'}
-                        key={`${target.id}_porperty_${keyName}_input`}
+                        key={`${target.id}_porperty_${keyName}:${lang}_input`}
                         value={locale(targetEntity.label, lang)}
                         onChange={ev =>
                           this.localUpdate(
@@ -57,14 +60,12 @@ class MetadataEditor extends React.Component {
                           )
                         }
                         className={classes.textField}
-                        margin="dense"
-                        variant="outlined"
                       />
                     );
                   case 'summary':
                     return (
                       <IIIFTextField
-                        key={`${target.id}_porperty_${keyName}_input`}
+                        key={`${target.id}_porperty_${keyName}:${lang}_input`}
                         label={labels[type + '.Summary'] || 'Summary'}
                         value={locale(targetEntity.summary, lang)}
                         onChange={ev =>
@@ -81,7 +82,7 @@ class MetadataEditor extends React.Component {
                   case 'requiredStatement':
                     return (
                       <FormControl
-                        key={`${target.id}_porperty_${keyName}`}
+                        key={`${target.id}_porperty_${keyName}:${lang}`}
                         component="fieldset"
                       >
                         <FormLabel component="legend">
@@ -89,7 +90,7 @@ class MetadataEditor extends React.Component {
                             'Required Statement'}
                         </FormLabel>
                         <IIIFKeyValueField
-                          key={`${target.id}_porperty_${keyName}_input`}
+                          key={`${target.id}_porperty_${keyName}:${lang}_input`}
                           keyProps={{
                             label:
                               labels[type + '.RequiredStatement.Label'] ||
@@ -131,7 +132,7 @@ class MetadataEditor extends React.Component {
                   case 'metadata':
                     return (
                       <FormControl
-                        key={`${target.id}_porperty_${keyName}`}
+                        key={`${target.id}_porperty_${keyName}:${lang}`}
                         component="fieldset"
                       >
                         <FormLabel component="legend">
@@ -148,7 +149,7 @@ class MetadataEditor extends React.Component {
                           })
                           .map((metadata, index) => (
                             <IIIFKeyValueField
-                              key={`${target.id}_metadata_row__${index}_input`}
+                              key={`${target.id}_metadata_row__${index}:${lang}_input`}
                               keyProps={{
                                 label:
                                   labels[type + '.Metadata.Label'] || 'Label',
@@ -179,7 +180,8 @@ class MetadataEditor extends React.Component {
                     );
                   case 'navDate':
                     return (
-                      <TextField
+                      //<TextField
+                      <IIIFInputField
                         key={`${target.id}_porperty_${keyName}`}
                         label={labels[`${type}.NavDate`] || 'Nav Date'}
                         type="datetime-local"
@@ -193,8 +195,8 @@ class MetadataEditor extends React.Component {
                             ev.target.value
                           )
                         }
-                        margin="dense"
-                        variant="outlined"
+                        // margin="dense"
+                        // variant="outlined"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -202,7 +204,8 @@ class MetadataEditor extends React.Component {
                     );
                   case 'rights':
                     return (
-                      <TextField
+                      //<TextField
+                      <IIIFInputField
                         key={`${target.id}_porperty_${keyName}`}
                         label={labels[`${type}.Rights`] || 'Rights'}
                         className={classes.textField}
@@ -215,8 +218,8 @@ class MetadataEditor extends React.Component {
                             ev.target.value
                           )
                         }
-                        margin="dense"
-                        variant="outlined"
+                        // margin="dense"
+                        // variant="outlined"
                       />
                     );
                   case 'behavior':
@@ -242,13 +245,14 @@ class MetadataEditor extends React.Component {
                       ? keyName.substr(1)
                       : keyName;
                     return (
-                      <TextField
+                      //<TextField
+                      <IIIFInputField
                         label={
                           labels[`${type}.${_keyName}`] ||
                           labels[_keyName] ||
                           _keyName
                         }
-                        key={`${target.id}_porperty_${_keyName}`}
+                        key={`${target.id}_porperty_${_keyName}${keyName.startsWith('_') ? ':' + lang : ''}`}
                         className={classes.textField}
                         value={targetEntity[_keyName] || ''}
                         onChange={ev =>
@@ -259,8 +263,8 @@ class MetadataEditor extends React.Component {
                             ev.target.value
                           )
                         }
-                        margin="dense"
-                        variant="outlined"
+                        //margin="dense"
+                        //variant="outlined"
                       />
                     );
                 }

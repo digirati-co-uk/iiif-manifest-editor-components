@@ -47,20 +47,22 @@ const RUNTIME_DEFAULTS = {
   Annotation: {},
 };
 
+const cloneResource = resource => JSON.parse(JSON.stringify(resource));
+
 const defaultResourceRenderers = {
   Manifest: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Manifest)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Manifest)),
+    ...cloneResource(DEFAULT_RESOURCES.Manifest),
+    ...cloneResource(RUNTIME_DEFAULTS.Manifest),
     ...props,
   }),
   Canvas: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Canvas)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Canvas)),
+    ...cloneResource(DEFAULT_RESOURCES.Canvas),
+    ...cloneResource(RUNTIME_DEFAULTS.Canvas),
     ...props,
   }),
   Annotation: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Annotation)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Annotation)),
+    ...cloneResource(DEFAULT_RESOURCES.Annotation),
+    ...cloneResource(RUNTIME_DEFAULTS.Annotation),
     ...props,
   }),
 };
@@ -91,6 +93,7 @@ const renderResource = (type, options = { props: {} }) => {
     };
   }
   generateURI(resource, options.parent);
+  // NOTE: hack to generate an id for the 
   if (resource.type === 'Canvas') {
     generateURI(resource.items[0], resource);
   }
@@ -169,6 +172,8 @@ export const getParentByChildId = (id, resource, parent = null) => {
   return null;
 };
 
+// TODO: update to walk on the parents instead
+// TODO: also not used in the base package, lets see why we created it.
 export const getPath = (id, resource, path = []) => {
   if (
     id === null ||
@@ -289,6 +294,7 @@ export const getW3cAnnotationStyle = styleStr =>
     return acc;
   }, {});
 
+// TODO: this is obsolete
 // Internal 'magic constants' for the updater, will be updated when
 // new issues rising unfortunately I had to cut some time on the
 // implementation of this and will return to implement the update

@@ -1,13 +1,11 @@
 import * as React from 'react';
 import {
-  Button,
-  FormControl,
   InputLabel,
   TextField,
   withStyles,
 } from '@material-ui/core';
-import * as ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useState, useEffect } from 'react';
+import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
 
 const IS_HTML_REGEX = /<[^>]>/;
 
@@ -78,272 +76,126 @@ const style = theme => ({
   },
 });
 
-class IIIFKeyValueField extends React.Component {
-  constructor(props) {
-    super(props);
-    this.quillRef = React.createRef();
-    this.state = {
-      fieldFocus: false,
-      htmlFieldFocus: false,
-      htmlEditor: false,
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-    };
-  }
+const IIIFKeyValueField = ({ classes, keyProps, valueProps, ...props }) => {
+  const isHTML = IS_HTML_REGEX.test(valueProps.value);
+  const [fieldFocus, setFieldFocus] = useState(false);
+  const [htmlFieldFocus, setHtmlFieldFocus] = useState(false);
+  const [htmlEditor, setHTMLEditor] = useState(isHTML);
 
-  addImage = (image, callback) => {
-    this.setState({
-      promptLabel: 'Image url',
-      promptVisible: true,
-      promptValue: '',
-      promptCallback: this.addAudioCallback,
-      promptRange: this.quillRef.getEditor().getSelection(),
-    });
-  };
+  const [internalKey, setInternalKey] = useState(keyProps.value);
+  const [internalValue, setInternalValue] = useState(valueProps.value);
+  const [keyTimer, setKeyTimer] = useState();
+  const [valueTimer, setValueTimer] = useState();
 
-  addAudioCallback = () => {
-    const value = this.state.promptValue;
-    const range = this.state.promptRange;
-    if (value) {
-      this.quillRef
-        .getEditor()
-        .insertEmbed(range.index, 'image', value, 'user');
+  useEffect(() => {
+    if (keyTimer) {
+      clearTimeout(keyTimer);
     }
-  };
+    setKeyTimer(setTimeout(() => {
+      internalKey !== '' && internalValue !== '' &&
+      keyProps.onChange && 
+      keyProps.onChange({
+        target: {
+          value: internalKey
+        }
+      });
+    }, 1000));
+  }, [internalKey]);
 
-  addVideo = (video, callback) => {
-    this.setState({
-      promptLabel: 'Video url',
-      promptVisible: true,
-      promptValue: '',
-      promptCallback: this.addVideoCallback,
-      promptRange: this.quillRef.getEditor().getSelection(),
-    });
-  };
-
-  addVideoCallback = () => {
-    const value = this.state.promptValue;
-    const range = this.state.promptRange;
-    if (value) {
-      value.match(
-        /(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com)|dailymotion.com)\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/
-      );
-      let url = value;
-
-      if (RegExp.$3.indexOf('youtu') > -1) {
-        url = '//www.youtube.com/embed/' + RegExp.$6;
-      } else if (RegExp.$3.indexOf('vimeo') > -1) {
-        url = '//player.vimeo.com/video/' + RegExp.$6;
-      } else if (RegExp.$3.indexOf('dailymotion.com') > -1) {
-        url = '//www.dailymotion.com/embed/video/' + RegExp.$6;
-      }
-      this.quillRef.getEditor().insertEmbed(range.index, 'video', url, 'user');
+  useEffect(() => {
+    if (valueTimer) {
+      clearTimeout(valueTimer);
     }
-  };
+    setValueTimer(setTimeout(() => {
+      internalKey !== '' && internalValue !== '' &&
+      valueProps.onChange && 
+      valueProps.onChange({
+        target: {
+          value: internalValue
+        }
+      });
+    }, 1000));
+  }, [internalValue]);
+  
+  const handleOnChangeKey = e => setInternalKey(e.target.value);
+  const handleOnChangeValue = e => setInternalValue(e.target.value);
 
-  shouldComponentUpdate = (nextProps, nextState) => {
-    return (
-      this.state.promptLabel !== nextState.promptLabel ||
-      this.state.promptValue !== nextState.promptValue ||
-      this.state.promptVisible !== nextState.promptVisible ||
-      this.props.valueProps.value !== nextProps.valueProps.value ||
-      this.props.keyProps.value !== nextProps.keyProps.value ||
-      this.props.valueProps.label !== nextProps.valueProps.label ||
-      this.props.keyProps.label !== nextProps.keyProps.label ||
-      this.state.htmlEditor !== nextState.htmlEditor ||
-      (!!nextProps.valueProps &&
-        !!this.props.valueProps &&
-        IS_HTML_REGEX.test(this.props.valueProps.value) !==
-          IS_HTML_REGEX.test(nextProps.valueProps.value))
-    );
-  };
-
-  cancelPrompt = () =>
-    this.setState({
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-    });
-
-  setPromptValue = ev => {
-    this.setState({
-      promptValue: ev.target.value,
-    });
-  };
-
-  applyPrompt = () => {
-    if (this.state.promptCallback) {
-      this.state.promptCallback();
-    }
-    this.setState({
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-      promptRange: null,
-    });
-  };
-
-  render() {
-    const { classes, keyProps, valueProps, ...props } = this.props;
-    const { fieldFocus, htmlFieldFocus, htmlEditor } = this.state;
-    const isHTML = IS_HTML_REGEX.test(valueProps.value);
-    return (
-      <div className={classes.htmlSwitchWrapper}>
-        <div
-          className={
-            fieldFocus ? classes.keyValuePairFocus : classes.keyValuePair
-          }
-        >
-          <div className={classes.keyValuePairContent}>
+  return (
+    <div className={classes.htmlSwitchWrapper}>
+      <div
+        className={
+          fieldFocus ? classes.keyValuePairFocus : classes.keyValuePair
+        }
+      >
+        <div className={classes.keyValuePairContent}>
+          <TextField
+            {...keyProps}
+            value={internalKey || keyProps.value || ''}
+            onChange={handleOnChangeKey}
+            onFocus={ev => setFieldFocus(true)}
+            onBlur={ev => setFieldFocus(false)}
+            className={classes.keyValuePairField}
+            margin="dense"
+            variant="outlined"
+          />
+          {!htmlEditor ? (
             <TextField
-              {...keyProps}
-              onFocus={ev =>
-                this.setState({
-                  fieldFocus: true,
-                })
-              }
-              onBlur={ev =>
-                this.setState({
-                  fieldFocus: false,
-                })
-              }
+              {...valueProps}
+              value={internalValue || valueProps.value || ''}
+              onChange={handleOnChangeValue}
+              onFocus={ev => setFieldFocus(true)}
+              onBlur={ev => setFieldFocus(false)}
               className={classes.keyValuePairField}
               margin="dense"
               variant="outlined"
+              multiline
             />
-            {!htmlEditor ? (
-              <TextField
-                {...valueProps}
-                onFocus={ev =>
-                  this.setState({
-                    fieldFocus: true,
-                  })
-                }
-                onBlur={ev =>
-                  this.setState({
-                    fieldFocus: false,
-                  })
-                }
-                className={classes.keyValuePairField}
+          ) : (
+            <div className={classes.htmlFieldWrapper}>
+              <InputLabel
+                component="legend"
+                filled={true}
+                shrink={true}
                 margin="dense"
                 variant="outlined"
-                multiline
+                focused={htmlFieldFocus}
+                className={classes.htmlEditorInputLabel}
+              >
+                {valueProps.label}
+              </InputLabel>
+              <CustomReactQuill 
+                value={internalValue || valueProps.value || ''}
+                onChange={handleOnChangeValue}
+                onFocus={() => {
+                  setFieldFocus(true);
+                  setHtmlFieldFocus(true);
+                }}
+                onBlur={() => {
+                  setFieldFocus(true);
+                  setHtmlFieldFocus(true);
+                }}
               />
-            ) : (
-              <div className={classes.htmlFieldWrapper}>
-                <InputLabel
-                  component="legend"
-                  filled={true}
-                  shrink={true}
-                  margin="dense"
-                  variant="outlined"
-                  focused={htmlFieldFocus}
-                  className={classes.htmlEditorInputLabel}
-                >
-                  {valueProps.label}
-                </InputLabel>
-                <div style={{ position: 'relative' }}>
-                  <ReactQuill
-                    value={valueProps.value || ''}
-                    ref={el => (this.quillRef = el)}
-                    modules={{
-                      toolbar: {
-                        container: [
-                          //[{ header: [1, 2, false] }],
-                          ['bold', 'italic'],
-                          ['link', 'blockquote', 'image', 'video'], //,
-                          //[{ list: 'ordered' }, { list: 'bullet' }]
-                        ],
-                        handlers: {
-                          image: this.addImage,
-                          video: this.addVideo,
-                        },
-                      },
-                    }}
-                    onChange={changedValue =>
-                      valueProps.onChange &&
-                      valueProps.onChange({
-                        target: {
-                          value: changedValue,
-                        },
-                      })
-                    }
-                    onFocus={() => {
-                      this.setState({
-                        fieldFocus: true,
-                        htmlFieldFocus: true,
-                      });
-                    }}
-                    onBlur={() => {
-                      this.setState({
-                        fieldFocus: false,
-                        htmlFieldFocus: false,
-                      });
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'rgba(0,0,0,0.5)',
-                      display: this.state.promptVisible ? 'flex' : 'none',
-                      alignItems: 'flex-end',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        padding: '16px',
-                        display: 'flex',
-                        background: 'white',
-                        alignItems: 'flex-end',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <TextField
-                        style={{
-                          flex: 1,
-                        }}
-                        label={this.state.promptLabel}
-                        value={this.state.promptValue}
-                        onChange={this.setPromptValue}
-                      />
-                      <Button onClick={this.cancelPrompt}>Cancel</Button>
-                      <Button onClick={this.applyPrompt}>OK</Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-        <button
-          className={classes.htmlSwitch}
-          onClick={() => {
-            const htmlEditorVisible = !htmlEditor;
-            this.setState({
-              htmlEditor: htmlEditorVisible,
-              htmlFieldFocus: !htmlEditorVisible
-                ? false
-                : this.state.htmlFieldFocus,
-            });
-          }}
-        >
-          {htmlEditor ? (isHTML ? 'SRC' : 'TXT') : 'HTML'}
-        </button>
       </div>
-    );
-  }
-}
+      <button
+        className={classes.htmlSwitch}
+        onClick={() => {
+          const htmlEditorVisible = !htmlEditor;
+          setHTMLEditor(htmlEditorVisible);
+          setHtmlFieldFocus(
+            !htmlEditorVisible
+              ? false
+              : this.state.htmlFieldFocus
+          );
+        }}
+      >
+        {htmlEditor ? (isHTML ? 'SRC' : 'TXT') : 'HTML'}
+      </button>
+    </div>
+  );
+};
+
 
 export default withStyles(style)(IIIFKeyValueField);
