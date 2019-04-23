@@ -2,14 +2,8 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import {
   withStyles,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  TextField,
 } from '@material-ui/core';
-
-import IIIFTextFiled from '../../components/IIIFTextField/IIIFTextField';
-
+import IIIFTextField from '../../components/fields/IIIFTextField/IIIFTextField';
 import styles from './FormStyles';
 
 class TextPropertiesForm extends React.Component {
@@ -19,7 +13,7 @@ class TextPropertiesForm extends React.Component {
     const format = target.body ? target.body.format || '' : '';
     return (
       <div className={classes.root}>
-        <IIIFTextFiled
+        <IIIFTextField
           key={`${target.id}_body_value_input`}
           label="Body Value"
           className={classes.textFieldFullWidth}

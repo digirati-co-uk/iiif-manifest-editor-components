@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import {
   InputLabel,
   TextField,
@@ -6,77 +7,11 @@ import {
 } from '@material-ui/core';
 import { useState, useEffect } from 'react';
 import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
+import style from './IIIFKeyValueField.style';
 
 const IS_HTML_REGEX = /<[^>]>/;
 
-const style = theme => ({
-  keyValuePair: {
-    border: `1px solid ${theme.palette.action.disabled}`,
-    marginBottom: theme.spacing.unit,
-    marginTop: theme.spacing.unit,
-    borderRadius: theme.shape.borderRadius,
-  },
-  keyValuePairFocus: {
-    border: `2px solid ${theme.palette.primary.main}`,
-    marginBottom: theme.spacing.unit,
-    marginTop: theme.spacing.unit,
-    borderRadius: theme.shape.borderRadius,
-    transition: `border-color ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }, border-width ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }, padding-left ${theme.transitions.duration.shorter} ${
-      theme.transitions.easing.easeOut
-    }`,
-  },
-  keyValuePairContent: {
-    marginTop: -theme.spacing.unit,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  keyValuePairField: {
-    '&>div>fieldset': {
-      border: '0 none !important',
-      '&>legend': {
-        background: '#fff',
-      },
-    },
-  },
-  htmlSwitchWrapper: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    marginBottom: theme.spacing.unit,
-  },
-  htmlSwitch: Object.assign({}, theme.typography.overline, {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    fontWeight: 'bold',
-    background: '#fff',
-    color: theme.palette.primary.main,
-    padding: '2px 8px 3px',
-    border: `2px solid ${theme.palette.primary.main}`,
-    borderRadius: theme.shape.borderRadius,
-    cursor: 'pointer',
-    lineHeight: 1,
-    outline: 0,
-  }),
-  htmlFieldWrapper: {
-    borderTop: '1px solid #ccc',
-    marginTop: theme.spacing.unit,
-    position: 'relative',
-  },
-  htmlEditorInputLabel: {
-    background: '#fff',
-    paddingLeft: theme.spacing.unit,
-    paddingRight: theme.spacing.unit / 2,
-    marginLeft: -theme.spacing.unit,
-  },
-});
-
-const IIIFKeyValueField = ({ classes, keyProps, valueProps, ...props }) => {
+const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
   const isHTML = IS_HTML_REGEX.test(valueProps.value);
   const [fieldFocus, setFieldFocus] = useState(false);
   const [htmlFieldFocus, setHtmlFieldFocus] = useState(false);
@@ -197,5 +132,25 @@ const IIIFKeyValueField = ({ classes, keyProps, valueProps, ...props }) => {
   );
 };
 
+IIIFKeyValueField.propTypes = {
+  /** style classes */
+  classes: PropTypes.object.isRequired,
+  /** key field properties */
+  keyProps: PropTypes.shape({
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    onChange: PropTypes.func,
+  }),
+  /** value field properties */
+  valueProps: PropTypes.shape({
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    onChange: PropTypes.func,
+  })
+};
 
 export default withStyles(style)(IIIFKeyValueField);

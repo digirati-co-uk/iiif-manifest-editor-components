@@ -1,0 +1,41 @@
+export default theme => ({
+  htmlSwitchWrapper: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    marginBottom: theme.spacing.unit,
+  },
+  htmlSwitch: Object.assign({}, theme.typography.overline, {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    fontWeight: 'bold',
+    background: '#fff',
+    color: theme.palette.primary.main,
+    padding: '2px 8px 3px',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderRadius: theme.shape.borderRadius,
+    cursor: 'pointer',
+    lineHeight: 1,
+    outline: 0,
+  }),
+  htmlFieldWrapper: {
+    marginTop: theme.spacing.unit,
+    position: 'relative',
+    border: `1px solid ${theme.palette.grey[400]}`,
+    borderRadius: theme.shape.borderRadius,
+  },
+  htmlFieldWrapperFocus: {
+    marginTop: theme.spacing.unit,
+    position: 'relative',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderRadius: theme.shape.borderRadius,
+  },
+  htmlEditorInputLabel: {
+    background: '#fff',
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit / 2,
+    marginLeft: -theme.spacing.unit,
+  },
+});

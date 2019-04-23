@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { TextField } from '@material-ui/core';
 
@@ -30,6 +31,20 @@ const IIIFInputField = ({ value, onChange, ...props}) => {
       {...props}
     />
   );
+};
+
+IIIFInputField.propTypes = {
+  /** the fields controlled value, behaves like the normal input field */
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  /** field on change method, behaves as the normal on change, except for the event-target only has value */
+  onChange: PropTypes.func,
+}
+
+IIIFInputField.defaultProps = {
+  onChange: () => {},
 };
 
 export default IIIFInputField;
