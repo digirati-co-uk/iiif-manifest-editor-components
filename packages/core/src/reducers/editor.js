@@ -5,6 +5,7 @@ export const EditorReducer = (state, action) => {
     switch (action.type) {
       case 'UPDATE_CONFIGURATION':
       case 'LOAD_CONFIGURATION':
+        break;
       case 'CHANGE_LANGUAGE':
         nextState.lang = action.lang;
         break;
@@ -23,8 +24,7 @@ export const EditorReducer = (state, action) => {
               ? null
               : resourceId;
           if (
-            resourceType === 'Canvas' &&
-            nextState.selectedIdsByType.Canvas === null
+            resourceType === 'Canvas' 
           ) {
             nextState.selectedIdsByType.Annotation = null;
           }
