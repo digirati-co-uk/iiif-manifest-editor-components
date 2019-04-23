@@ -237,11 +237,10 @@ class CanvasList extends React.Component {
       <div key={key} style={style}>
         <Draggable key={canvasId} draggableId={canvasId} index={index}>
           {(provided, snapshot) => {
-            const [thumbnail, useLazy] = getCanvasThumbnail(
+            const thumbnail = getCanvasThumbnail(
               canvas,
               getResource
             );
-            //console.log(provided, snapshot);
             return (
               <CanvasListItem
                 {...{

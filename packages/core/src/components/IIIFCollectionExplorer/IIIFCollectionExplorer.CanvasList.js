@@ -67,41 +67,59 @@ const styles = theme => {
   };
 };
 
+const Thumbnail = ({
+  provided,
+  thumbnail,
+  useLazy,
+  canvas,
+  classes,
+}) => (
+  <div
+    ref={provided.innerRef}
+    {...provided.draggableProps}
+    {...provided.dragHandleProps}
+  >
+    {useLazy ? (
+      <LazyImage
+        src={thumbnail}
+        alt={canvas.id}
+        placeholder={({ imageProps, ref }) => (
+          <div ref={ref} className={classes.placeholder}>
+            <CircularProgress />
+          </div>
+        )}
+        actual={({ imageProps }) => <img {...imageProps} />}
+      />
+    ) : (
+      <IMG
+        src={thumbnail}
+        alt={canvas.id}
+        className={classes.thumbnail}
+        size={tileSize}
+      />
+    )}
+  </div>
+);
+
 const PortalAwareThumbnail = ({
   provided,
   snapshot,
   thumbnail,
-  useLazy,
+  //useLazy,
   canvas,
   classes,
 }) => {
   const usePortal = snapshot.isDragging;
   const child = (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-    >
-      {useLazy ? (
-        <LazyImage
-          src={thumbnail}
-          alt={canvas.id}
-          placeholder={({ imageProps, ref }) => (
-            <div ref={ref} className={classes.placeholder}>
-              <CircularProgress />
-            </div>
-          )}
-          actual={({ imageProps }) => <img {...imageProps} />}
-        />
-      ) : (
-        <IMG
-          src={thumbnail}
-          alt={canvas.id}
-          className={classes.thumbnail}
-          size={tileSize}
-        />
-      )}
-    </div>
+    <Thumbnail
+      {...{
+        provided,
+        thumbnail,
+        useLazy: false,
+        canvas,
+        classes,
+      }}
+    />
   );
 
   if (snapshot.isDragging) {
@@ -109,12 +127,11 @@ const PortalAwareThumbnail = ({
     window.draggedData = JSON.parse(JSON.stringify(canvas));
   }
 
-  if (!usePortal) {
-    return child;
-  }
   const portal = document.querySelector('.drag-drop-portal');
   // if dragging - put the item in a portal
-  return ReactDOM.createPortal(child, portal);
+  return usePortal 
+    ? ReactDOM.createPortal(child, portal) 
+    : child;
 };
 
 class CanvasList extends React.Component {
@@ -135,7 +152,7 @@ class CanvasList extends React.Component {
     // TODO: intelligent pre-fetcher to figure out is there sizes in info JSON,
     // if there's no sizes try request a size fit in
     // if that doesn't work fallback for the full image
-    const [thumbnail, useLazy] = getCanvasThumbnail(canvas);
+    const thumbnail = getCanvasThumbnail(canvas);
 
     return (
       <div key={key} className={classes.listItem} style={style}>
@@ -151,7 +168,7 @@ class CanvasList extends React.Component {
                 provided={provided}
                 snapshot={snapshot}
                 thumbnail={thumbnail}
-                useLazy={useLazy}
+                //useLazy={useLazy}
                 canvas={canvas}
                 classes={classes}
               />
