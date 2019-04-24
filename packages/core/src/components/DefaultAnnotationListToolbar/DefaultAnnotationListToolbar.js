@@ -5,15 +5,7 @@ import { Toolbar } from '@material-ui/core';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import NewAnnotationDialog from '../NewAnnotationDialog/NewAnnotationDialog';
 import { addResource } from '../../utils/addResource';
-// import IIIFReducer from '../../reducers/iiif';
-// import generateURI from '../../utils/URIGenerator';
-// import { SIZING_STRATEGY } from '../../constants/sizing';
-// import {
-//   queryResourceById,
-//   getAnnotationDimensions,
-// } from '../../utils/IIIFResource';
 
-// NOTE: waiting for docz to be compatible with the new React 16.8.x...
 const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
   const [dialog, setDialog] = useState(null);
   return (

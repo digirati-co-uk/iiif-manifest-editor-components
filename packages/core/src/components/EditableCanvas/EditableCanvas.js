@@ -135,6 +135,62 @@ class EditableCanvas extends React.Component {
     }
   };
 
+  renderAnnotation = canvas => annotation => {
+    let lockAspectRatio = this.isAspectRationLocked(
+      annotation.body.type
+    );
+    const { selectedAnnotation } = this.props;
+    let bounds = getBounds(annotation, canvas);
+    return (
+      <Rnd
+        key={'annotation__' + canvas.id + '_' + annotation.id}
+        style={{
+          ...style,
+          outline:
+            annotation.id === selectedAnnotation
+              ? '2px solid rgb(89, 191, 236)'
+              : '0',
+        }}
+        position={{
+          x: parseInt(bounds.x * this.state.zoom, 10),
+          y: parseInt(bounds.y * this.state.zoom, 10),
+        }}
+        size={{
+          width: parseInt(bounds.w * this.state.zoom, 10),
+          height: parseInt(bounds.h * this.state.zoom, 10),
+        }}
+        onDrag={this.onDrag(annotation)}
+        onDragStop={this.onDragStop(annotation)}
+        onResize={this.onResize(annotation)}
+        onResizeStop={this.onResizeStop(annotation)}
+        bounds="parent"
+        lockAspectRatio={lockAspectRatio}
+        onClick={this.selectItem(annotation)}
+      >
+        <AnnotationBodyRenderer annotation={annotation} />
+      </Rnd>
+    );
+  }
+
+  renderZoomControls = () => {
+    const { classes } = this.props;
+    return (
+      <div className={classes.zoomButtons}>
+        <IconButton onClick={this.zoomIn}>
+          <ZoomIn />
+        </IconButton>
+        <IconButton onClick={this.zoomOut}>
+          <ZoomOut />
+        </IconButton>
+      </div>
+    )
+  };
+
+  getAnnotations = canvas =>
+    canvas && canvas.items && canvas.items[0] && canvas.items[0].items
+      ? canvas.items[0].items
+      : [];
+
   render() {
     let { classes, canvas } = this.props;
     if (!canvas) {
@@ -144,11 +200,8 @@ class EditableCanvas extends React.Component {
         </div>
       );
     }
-    const annotations =
-      canvas && canvas.items && canvas.items[0] && canvas.items[0].items
-        ? canvas.items[0].items
-        : [];
-    const { selectedAnnotation } = this.props;
+    const annotations = this.getAnnotations(canvas);
+
     return (
       <div className={classes.root}>
         <div className={classes.canvasBackground}>
@@ -162,53 +215,12 @@ class EditableCanvas extends React.Component {
                   height: canvas.height * this.state.zoom,
                 })}
               >
-                {annotations.map((annotation, idx) => {
-                  let lockAspectRatio = this.isAspectRationLocked(
-                    annotation.body.type
-                  );
-                  let bounds = getBounds(annotation, canvas);
-                  return (
-                    <Rnd
-                      key={'annotation__' + canvas.id + '_' + annotation.id}
-                      style={{
-                        ...style,
-                        outline:
-                          annotation.id === selectedAnnotation
-                            ? '2px solid rgb(89, 191, 236)'
-                            : '0',
-                      }}
-                      position={{
-                        x: parseInt(bounds.x * this.state.zoom, 10),
-                        y: parseInt(bounds.y * this.state.zoom, 10),
-                      }}
-                      size={{
-                        width: parseInt(bounds.w * this.state.zoom, 10),
-                        height: parseInt(bounds.h * this.state.zoom, 10),
-                      }}
-                      onDrag={this.onDrag(annotation)}
-                      onDragStop={this.onDragStop(annotation)}
-                      onResize={this.onResize(annotation)}
-                      onResizeStop={this.onResizeStop(annotation)}
-                      bounds="parent"
-                      lockAspectRatio={lockAspectRatio}
-                      onClick={this.selectItem(annotation)}
-                    >
-                      <AnnotationBodyRenderer annotation={annotation} />
-                    </Rnd>
-                  );
-                })}
+                {annotations.map(this.renderAnnotation(canvas))}
               </div>
             )}
           </Droppable>
         </div>
-        <div className={classes.zoomButtons}>
-          <IconButton onClick={this.zoomIn}>
-            <ZoomIn />
-          </IconButton>
-          <IconButton onClick={this.zoomOut}>
-            <ZoomOut />
-          </IconButton>
-        </div>
+        {this.renderZoomControls()}
       </div>
     );
   }

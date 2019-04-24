@@ -540,29 +540,6 @@ export class EditorProvider extends React.Component {
       }
     );
 
-    // if (annotation) {
-    //   aggregatedConfig.annotation = annotation;
-    // }
-    // if (translation) {
-    //   aggregatedConfig.translation = translation;
-    // }
-    // if (dragDrop) {
-    //   aggregatedConfig.dragDrop = dragDrop;
-    // }
-    // if (behavior) {
-    //   aggregatedConfig.behavior = behavior;
-    // }
-    // if (annotationFormButtons) {
-    //   aggregatedConfig.annotationFormButtons = annotationFormButtons;
-    // }
-    // if (propertyFields) {
-    //   aggregatedConfig.propertyFields = propertyFields;
-    // }
-
-    // if (propertyPanel) {
-    //   aggregatedConfig.propertyPanel = propertyPanel;
-    // }
-
     if (iiifResourceDefaults) {
       aggregatedConfig.iiifResourceDefaults = iiifResourceDefaults;
       Object.entries(iiifResourceDefaults).forEach(([resourceType, props]) =>

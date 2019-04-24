@@ -7,105 +7,83 @@ import { ArrowForwardIos } from '@material-ui/icons';
 import IMG from './IIIFCollectionExplorer.IMG';
 import LocaleString from '../LocaleString/LocaleString';
 import { getCollectionThumbnail } from './IIIFCollectionExplorer.utils';
+import style from './IIIFCollectionExplorer.CollectionLister.styles';
 
-const style = theme => ({
-  list: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    position: 'relative',
-  },
-  listItem: {
-    display: 'block',
-    width: '100%',
-    cursor: 'pointer',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-  info: {
-    width: 'calc(100% - 140px)',
-    padding: theme.spacing.unit,
-  },
-  infoLong: {
-    width: 'calc(100% - 40px)',
-    padding: theme.spacing.unit,
-  },
-  moreVert: {
-    width: 40,
-    minHeight: 80,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  thumbnail: {
-    width: 100,
-  },
-  placeholder: {
-    display: 'flex',
-    width: 100,
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  divider: {
-    width: '100%',
-  },
-});
+class CollectionLister extends React.Component {
 
-const CollectionLister = ({
-  classes,
-  items,
-  openItem,
-  manifestIcon,
-  collectionIcon,
-}) => (
-  <div className={classes.list}>
-    {items.map(item => {
-      const thumbnail = getCollectionThumbnail(item);
-      let icon = null;
-      switch (item.type) {
-        case 'Manifest':
-          icon = manifestIcon;
-          break;
-        case 'Collection':
-          icon = collectionIcon;
-          break;
-        default:
-          icon = ArrowForwardIos;
-          break;
-      }
-      return (
-        <div
-          key={item.id}
-          onClick={() => openItem(item)}
-          className={classes.listItem}
-        >
-          <div className={classes.moreVert}>{React.createElement(icon)}</div>
-          <div className={thumbnail ? classes.info : classes.infoLong}>
-            <Typography component="h5" variant="h5">
-              <LocaleString>{item.label}</LocaleString>
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              {item.type}
-            </Typography>
-          </div>
-          {thumbnail && (
-            <IMG src={thumbnail} alt={item.id} className={classes.thumbnail} />
-          )}
-          <Divider className={classes.divider} />
+  getIconForType = itemType => {
+    const { manifestIcon, collectionIcon } = this.props;
+    if (itemType === 'Manifest') {
+      return manifestIcon;
+    } else if (itemType === 'Collection') {
+      return collectionIcon;
+    }
+    return ArrowForwardIos;
+  };
+
+  getInfoBlockClass = thumbnail => {
+    const { classes } = this.props;
+    return thumbnail ? classes.info : classes.infoLong;
+  }
+
+  renderImageForThumbnail = (thumbnail, altText) => {
+    return thumbnail && (
+      <IMG src={thumbnail} alt={altText} className={this.props.classes.thumbnail} />
+    );
+  } 
+    
+
+  renderCollectionItem = item => {
+    const { openItem, classes } = this.props;
+    const thumbnail = getCollectionThumbnail(item);
+    const icon = this.getIconForType(item.type);
+    return (
+      <div
+        key={item.id}
+        onClick={() => openItem(item)}
+        className={classes.listItem}
+      >
+        <div className={classes.moreVert}>{React.createElement(icon)}</div>
+        <div className={this.getInfoBlockClass(thumbnail)}>
+          <Typography component="h5" variant="h5">
+            <LocaleString>{item.label}</LocaleString>
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            {item.type}
+          </Typography>
         </div>
-      );
-    })}
-  </div>
-);
+        {this.renderImageForThumbnail(thumbnail, item.id)}
+        <Divider className={classes.divider} />
+      </div>
+    );
+  };
+  
+  render() {
+    const {
+      classes,
+      items,
+    } = this.props;
+    return (
+      <div className={classes.list}>
+        {items.map(this.renderCollectionItem)}
+      </div>
+    );
+  }
+};
+
+CollectionLister.propTypes = {
+  /** manifest icon, icon class can be passed */
+  manifestIcon: PropTypes.elementType,
+  /** collection icon, icon class can be passed */
+  collectionIcon: PropTypes.elementType,
+  /** items in the collection */
+  items: PropTypes.array,
+};
 
 CollectionLister.defaultProps = {
   manifestIcon: ArrowForwardIos,
   collectionIcon: ArrowForwardIos,
+  items: [],
 };
 
 export default withStyles(style)(CollectionLister);
