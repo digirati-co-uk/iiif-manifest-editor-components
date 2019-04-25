@@ -2,12 +2,10 @@ import * as React from 'react';
 import { Notes } from '@material-ui/icons';
 
 import { getW3cAnnotationStyle } from '../utils/IIIFResource';
-// import IIIFReducer from '../reducers/iiif';
 import { addResource } from '../utils/addResource';
 import renderResource from '../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
-import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 import TextPropertiesForm from './forms/TextPropertiesForm';
@@ -34,19 +32,10 @@ export default class TextPainting extends BaseAnnotation {
     </ButtonWithTooltip>
   );
 
-  static icon = ({
-    color,
-    title = 'Text Annotation /w motivation painting',
-  }) => (
-    <Tooltip title={title}>
-      <Notes color={color} />
-    </Tooltip>
-  );
-
+  static icon = Notes;
+  static iconToolTip = 'Text Annotation /w motivation painting';
   static propertyEditor = TextPropertiesForm;
-
   static defaultSizing = SIZING_STRATEGY.NONE;
-
   static defaultBody = {
     type: 'TextualBody',
     value: 'new annotation',

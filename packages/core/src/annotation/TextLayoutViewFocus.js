@@ -7,7 +7,6 @@ import { addResource } from '../utils/addResource';
 import renderResource from '../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
-import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 export default class TextLayoutViewFocus extends BaseAnnotation {
@@ -29,16 +28,10 @@ export default class TextLayoutViewFocus extends BaseAnnotation {
     </ButtonWithTooltip>
   );
 
-  static icon = ({ color, title = 'Viewport focus' }) => (
-    <Tooltip title={title}>
-      <FormatShapes color={color} />
-    </Tooltip>
-  );
-
+  static icon = FormatShapes;
+  static iconToolTip = 'Viewport focus';
   static propertyEditor = null;
-
   static defaultSizing = SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS;
-
   static defaultBody = {
     type: 'TextualBody',
     value: '',

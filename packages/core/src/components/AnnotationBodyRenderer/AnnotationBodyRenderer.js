@@ -2,19 +2,17 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import NotSupportedAnnotation from '../NotSupportedAnnotation/NotSupportedAnnotation';
 import { EditorConsumer } from '../EditorContext/EditorContext';
-
-const AnnotationBodyRenderer = ({ annotation }) => {
-  const type = `${annotation.body.type}::${annotation.motivation}`;
-  return (
-    <EditorConsumer>
-      {configuration =>
-        configuration.annotation.hasOwnProperty(type)
-          ? configuration.annotation[type].contentRenderer(annotation)
-          : NotSupportedAnnotation(annotation, type)
-      }
-    </EditorConsumer>
-  );
-};
+import { getInternalAnnotationType } from '../../utils/IIIFResource';
+const AnnotationBodyRenderer = ({ annotation }) => (
+  <EditorConsumer>
+    {configuration => {
+      const type = getInternalAnnotationType(annotation);
+      return configuration.annotation.hasOwnProperty(type)
+        ? configuration.annotation[type].contentRenderer(annotation)
+        : NotSupportedAnnotation(annotation, type)
+    }}
+  </EditorConsumer>
+);
 
 AnnotationBodyRenderer.propTypes = {
   annotation: PropTypes.any.isRequired,

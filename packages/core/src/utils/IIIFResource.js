@@ -840,3 +840,6 @@ export const fixManifest = manifest => {
   fixLevel(manifest, null);
   return manifest;
 };
+
+export const getInternalAnnotationType = annotation => 
+  annotation && `${annotation.body.type}::${annotation.motivation}`;

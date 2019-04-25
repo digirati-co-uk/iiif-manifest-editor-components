@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Videocam } from '@material-ui/icons';
 
-// import IIIFReducer from '../reducers/iiif';
 import { addResource } from '../utils/addResource';
 import renderResource from '../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
-import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
 import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 import VideoPropertiesForm from './forms/VideoPropertiesForm';
@@ -52,14 +50,9 @@ export default class VideoPainting extends BaseAnnotation {
     </ButtonWithTooltip>
   );
 
-  static icon = ({ color, title = 'Video Annotation' }) => (
-    <Tooltip title={title}>
-      <Videocam color={color} />
-    </Tooltip>
-  );
-
+  static icon = Videocam;
+  static iconToolTip = 'Video Annotation';
   static propertyEditor = VideoPropertiesForm;
-
   static defaultBody = {
     type: 'Video',
     id: 'https://www.w3schools.com/html/mov_bbb.mp4',

@@ -5,40 +5,45 @@ import DefaultTooltip from '../DefaultTooltip/DefaultTooltip';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 
 const style = theme => ({
-  typo: {
+  text: {
     marginLeft: theme.spacing.unit,
   },
 });
 
-const AppBarButton = ({ classes, icon, text, onClick, variant }) => (
+const SlimAppBarButton = ({ text, onClick, icon }) => (
+  <DefaultTooltip title={text} placement="bottom">
+    <IconButton color="secondary" onClick={onClick}>
+      {icon}
+    </IconButton>
+  </DefaultTooltip>
+);
+
+const TextAppBarButton = withStyles(style)(({ text, onClick, icon }) => (
+  <Button color="secondary" onClick={onClick}>
+    {icon}
+    <Typography color="secondary" className={classes.text}>
+      {text}
+    </Typography>
+  </Button>
+));
+
+const AppBarButton = ({ icon, text, onClick, variant }) => (
   <EditorConsumer>
     {configuration => {
       const buttonType =
         variant || configuration.appBarButtonStyle || 'icon-and-tooltip';
       if (buttonType === 'icon-and-tooltip') {
-        return (
-          <DefaultTooltip title={text} placement="bottom">
-            <IconButton color="secondary" onClick={onClick}>
-              {icon}
-            </IconButton>
-          </DefaultTooltip>
-        );
-      } else if (buttonType === 'icon-and-label') {
-        return (
-          <Button color="secondary" onClick={onClick}>
-            {icon}
-            <Typography color="secondary" className={classes.typo}>
-              {text}
-            </Typography>
-          </Button>
-        );
-      }
+        return <SlimAppBarButton {...{text, icon, onClick}} />;
+      } 
+      //else or (buttonType === 'icon-and-label') {
+      return (
+        <TextAppBarButton {...{text, icon, onClick}} />
+      );
     }}
   </EditorConsumer>
 );
 
 AppBarButton.propTypes = {
-  classes: PropTypes.any.isRequired,
   icon: PropTypes.any,
   onClick: PropTypes.func,
   text: PropTypes.string,
@@ -51,4 +56,4 @@ AppBarButton.defaultProps = {
   onClick: () => {},
 };
 
-export default withStyles(style)(AppBarButton);
+export default AppBarButton;

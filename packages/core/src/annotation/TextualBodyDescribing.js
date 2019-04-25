@@ -20,16 +20,11 @@ export default class TextualBodyDescribing extends BaseAnnotation {
     </ButtonWithTooltip>
   );
 
-  static icon = ({ color, title = 'Text Annotation /w describing' }) => (
-    <Tooltip title={title}>
-      <InsertComment color={color} />
-    </Tooltip>
-  );
 
+  static icon = InsertComment;
+  static iconToolTip =  'Text Annotation /w describing';
   static propertyEditor = TextPropertiesForm;
-
   static defaultSizing = SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS;
-
   static defaultBody = {
     type: 'TextualBody',
     value: '',
