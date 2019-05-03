@@ -34,8 +34,7 @@ const AppBarButton = ({ icon, text, onClick, variant }) => (
         variant || configuration.appBarButtonStyle || 'icon-and-tooltip';
       if (buttonType === 'icon-and-tooltip') {
         return <SlimAppBarButton {...{text, icon, onClick}} />;
-      } 
-      //else or (buttonType === 'icon-and-label') {
+      }
       return (
         <TextAppBarButton {...{text, icon, onClick}} />
       );

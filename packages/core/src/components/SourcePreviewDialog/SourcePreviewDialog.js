@@ -1,33 +1,17 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from '@material-ui/core';
+import ManifestEditorDialog from '../ManifestEditorDialog/ManifestEditorDialog'
 
 const SourcePreviewDialog = ({ json, open, handleClose }) => (
-  <Dialog
+  <ManifestEditorDialog
     open={open}
-    onClose={handleClose}
-    scroll="paper"
-    maxWidth="md"
-    aria-labelledby="preview-dialog-title"
+    handleClose={handleClose}
+    title="JSON Preview"
   >
-    <DialogTitle id="preview-dialog-title">JSON Preview</DialogTitle>
-    <DialogContent>
-      <pre>
-        <code>{JSON.stringify(json, null, 2)}</code>
-      </pre>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose} color="primary">
-        Close
-      </Button>
-    </DialogActions>
-  </Dialog>
+    <pre>
+      <code>{JSON.stringify(json, null, 2)}</code>
+    </pre>
+  </ManifestEditorDialog>
 );
 
 SourcePreviewDialog.propTypes = {

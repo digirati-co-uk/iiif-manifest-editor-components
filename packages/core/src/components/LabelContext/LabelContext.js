@@ -5,20 +5,25 @@ import * as PropTypes from 'prop-types';
 const LabelContext = React.createContext({});
 export const LabelProvider = LabelContext.Provider;
 export const LabelConsumer = LabelContext.Consumer;
+
+const getLabelFromNames = (labels, names) => 
+  names
+    .map(_name => labels[_name])
+    .filter(label=>typeof label === 'string')[0]
+
 export const Label = ({ children, name, names }) => (
   <LabelConsumer>
     {labels => {
-      if (names && Array.isArray(names)) {
-        for (let _name of names) {
-          if (labels[_name]) {
-            return labels[_name];
-          }
+      let result = children;
+      if (Array.isArray(names)) {
+        const firstHit = getLabelFromNames(labels, names);
+        if (firstHit) {
+          result = firstHit
         }
-        return children;
+      } else if (typeof name === 'string' && labels[name]) {
+        result = labels[name]
       }
-      return name && typeof name === 'string'
-        ? labels[name] || children
-        : children;
+      return result;
     }}
   </LabelConsumer>
 );

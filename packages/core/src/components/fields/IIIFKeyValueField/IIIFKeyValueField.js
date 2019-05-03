@@ -122,7 +122,7 @@ const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
           setHtmlFieldFocus(
             !htmlEditorVisible
               ? false
-              : this.state.htmlFieldFocus
+              : htmlFieldFocus // : this.state.htmlFieldFocus
           );
         }}
       >

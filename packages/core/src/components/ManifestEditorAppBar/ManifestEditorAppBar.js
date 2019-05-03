@@ -1,12 +1,23 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
+
+
+const styles = theme => ({
+  actions: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'canter',
+    justifyContent: 'flex-end',
+  }
+})
 
 const ManifestEditorAppBar = ({
   title,
   titleComponent,
   titleColor,
   children,
+  classes,
 }) => (
   <AppBar position="static">
     <Toolbar>
@@ -17,14 +28,7 @@ const ManifestEditorAppBar = ({
           {title}
         </Typography>
       )}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'canter',
-          justifyContent: 'flex-end',
-        }}
-      >
+      <div className={classes.actions} >
         {children}
       </div>
     </Toolbar>
@@ -44,4 +48,4 @@ ManifestEditorAppBar.defaultProps = {
   titleComponent: null,
 };
 
-export default ManifestEditorAppBar;
+export default withStyles(styles)(ManifestEditorAppBar);

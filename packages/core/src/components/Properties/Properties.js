@@ -1,14 +1,10 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import {
-  Typography,
   InputLabel,
   withStyles,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
 } from '@material-ui/core';
-import { Translate, ExpandMore } from '@material-ui/icons';
+import { Translate } from '@material-ui/icons';
 
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import MetadataEditor from '../MetadataEditor/MetadataEditor';
@@ -17,51 +13,9 @@ import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 import TranslationDialog from './Properties.TranslationDialog';
 import { updateWithMeta } from '../../utils/IIIFResource';
 
-import { Label } from '../LabelContext/LabelContext';
-
-const style = theme => ({
-  root: {
-    padding: '1rem',
-    width: '100%',
-  },
-  translationBar: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  currentLanguageLabel: {
-    flex: 1,
-    textAlign: 'right',
-    padding: '0 1rem 0 0',
-  },
-  resourceBlock: {
-    paddingBottom: theme.spacing.unit,
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-  },
-});
-
-const StyledExpansionPanel = withStyles(theme => ({
-  root: {
-    //border: '1px solid rgba(0,0,0,.125)',
-    borderLeft: 0,
-    borderRight: 0,
-    borderTop: '1px solid rgba(0,0,0,.125)',
-    borderBottom: '1px solid rgba(0,0,0,.125)',
-    boxShadow: 'none',
-    margin: `0 -${2 * theme.spacing.unit}px`,
-    '&:not(:last-child)': {
-      borderBottom: 0,
-    },
-    '&:before': {
-      display: 'none',
-    },
-  },
-  expanded: {
-    margin: `auto -${2 * theme.spacing.unit}px`,
-  },
-}))(ExpansionPanel);
+import SimplePanel from './Properties.SimplePanel';
+import AccordionPanel from './Properties.AccordionPanel';
+import style from './Properties.styles';
 
 class Properties extends React.Component {
   state = {
@@ -112,217 +66,112 @@ class Properties extends React.Component {
     );
   };
 
-  renderPropertyEditorAsList = (propertyTables, configuration) => {
-    const { classes, manifest, canvas, annotation, lang, update } = this.props;
+  renderAnnotationEditor = (configuration) => {
     const annotationType = this.getAnnotationType();
     const form = configuration.annotation[annotationType];
+    const { annotation, lang, update } = this.props;
     return (
       <React.Fragment>
-        {propertyTables.map(resourceType => {
-          switch (resourceType) {
-            case 'Annotation':
-              return (
-                annotation && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Annotation">
-                        Annotation
-                      </Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={annotation}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={
-                        configuration.behavior.Annotation
-                      }
-                      fieldConfig={
-                        configuration.propertyFields.Annotation
-                      }
-                    />
-                    {annotationType}
-                    {form &&
-                      typeof form.propertyEditor === 'function' &&
-                      React.createElement(form.propertyEditor, {
-                        update: this.update,
-                        target: annotation,
-                      })}
-                  </div>
-                )
-              );
-            case 'Canvas':
-              return (
-                canvas && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Canvas">Canvas</Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={canvas}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={configuration.behavior.Canvas}
-                      fieldConfig={
-                        configuration.propertyFields.Canvas
-                      }
-                    />
-                  </div>
-                )
-              );
-            case 'Manifest':
-              return (
-                manifest && (
-                  <div className={classes.resourceBlock}>
-                    <Typography variant="h6">
-                      <Label name="Properties.Manifest">
-                        Manifest
-                      </Label>
-                    </Typography>
-                    <MetadataEditor
-                      target={manifest}
-                      lang={lang}
-                      update={update}
-                      behaviorConfig={configuration.behavior.Manifest}
-                      fieldConfig={
-                        configuration.propertyFields.Manifest
-                      }
-                    />
-                  </div>
-                )
-              );
-            default:
-              return '';
+        <MetadataEditor
+          target={annotation}
+          lang={lang}
+          update={update}
+          behaviorConfig={
+            configuration.behavior.Annotation
           }
-        })}
+          fieldConfig={
+            configuration.propertyFields.Annotation
+          }
+        />
+        {annotationType}
+        {form &&
+          typeof form.propertyEditor === 'function' &&
+          React.createElement(form.propertyEditor, {
+            update: this.update,
+            target: annotation,
+          })}
       </React.Fragment>
+    )
+  };
+
+  renderCanvasEditor = (configuration) => {
+    const { canvas, lang, update } = this.props;
+    return (
+      <MetadataEditor
+        target={canvas}
+        lang={lang}
+        update={update}
+        behaviorConfig={configuration.behavior.Canvas}
+        fieldConfig={
+          configuration.propertyFields.Canvas
+        }
+      />
     );
+  };
+
+  renderManifestEditor = (configuration) => {
+    const { manifest, lang, update } = this.props;
+    return (
+      <MetadataEditor
+        target={manifest}
+        lang={lang}
+        update={update}
+        behaviorConfig={configuration.behavior.Manifest}
+        fieldConfig={
+          configuration.propertyFields.Manifest
+        }
+      />
+    );
+  };
+
+  editors = {
+    'Annotation': this.renderAnnotationEditor,
+    'Canvas': this.renderCanvasEditor,
+    'Manifest': this.renderManifestEditor,
+  };
+
+  renderPropertyEditorAsList = (propertyTables, configuration) => {
+    const { classes } = this.props;
+    return propertyTables.map(resourceType => {
+      if (!(resourceType in this.editors)) {
+        return ''
+      }
+      return (
+        <SimplePanel
+          key={`${resourceType}_property_editor`}
+          labelKey={`Properties.${resourceType}`}
+          label={resourceType}
+          classes={classes}
+        >
+          {this.editors[resourceType](configuration)}
+        </SimplePanel>
+      );
+
+    });
   }
 
   renderPropertyEditorAsAccordion = (propertyTables, configuration) => {
-    const { classes, manifest, canvas, annotation, lang, update } = this.props;
-    const annotationType = this.getAnnotationType();
-    const form = configuration.annotation[annotationType];
-    return (
-      <React.Fragment>
-        {propertyTables.map((resourceType, index) => {
-          switch (resourceType) {
-            case 'Annotation':
-              return (
-                annotation && (
-                  <StyledExpansionPanel
-                    key="annotation_property_editor"
-                    defaultExpanded={index === 0}
-                  >
-                    <ExpansionPanelSummary
-                      expandIcon={<ExpandMore />}
-                    >
-                      <Typography variant="h6">
-                        <Label name="Properties.Annotation">
-                          Annotation
-                        </Label>
-                      </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <div className={classes.resourceBlock}>
-                        <MetadataEditor
-                          target={annotation}
-                          lang={lang}
-                          update={update}
-                          behaviorConfig={
-                            configuration.behavior.Annotation
-                          }
-                          fieldConfig={
-                            configuration.propertyFields.Annotation
-                          }
-                        />
-                        {annotationType}
-                        {form &&
-                          typeof form.propertyEditor === 'function' &&
-                          React.createElement(form.propertyEditor, {
-                            update: this.update,
-                            target: annotation,
-                          })}
-                      </div>
-                    </ExpansionPanelDetails>
-                  </StyledExpansionPanel>
-                )
-              );
-            case 'Canvas':
-              return (
-                canvas && (
-                  <StyledExpansionPanel
-                    key="canvas_property_editor"
-                    defaultExpanded={index === 0}
-                  >
-                    <ExpansionPanelSummary
-                      expandIcon={<ExpandMore />}
-                    >
-                      <Typography variant="h6">
-                        <Label name="Properties.Canvas">Canvas</Label>
-                      </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <div className={classes.resourceBlock}>
-                        <MetadataEditor
-                          target={canvas}
-                          lang={lang}
-                          update={update}
-                          behaviorConfig={
-                            configuration.behavior.Canvas
-                          }
-                          fieldConfig={
-                            configuration.propertyFields.Canvas
-                          }
-                        />
-                      </div>
-                    </ExpansionPanelDetails>
-                  </StyledExpansionPanel>
-                )
-              );
-            case 'Manifest':
-              return (
-                manifest && (
-                  <StyledExpansionPanel
-                    key="manifest_property_editor"
-                    defaultExpanded={index === 0}
-                  >
-                    <ExpansionPanelSummary
-                      expandIcon={<ExpandMore />}
-                    >
-                      <Typography variant="h6">
-                        <Label name="Properties.Manifest">
-                          Manifest
-                        </Label>
-                      </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <div className={classes.resourceBlock}>
-                        <MetadataEditor
-                          target={manifest}
-                          lang={lang}
-                          update={update}
-                          behaviorConfig={
-                            configuration.behavior.Manifest
-                          }
-                          fieldConfig={
-                            configuration.propertyFields.Manifest
-                          }
-                        />
-                      </div>
-                    </ExpansionPanelDetails>
-                  </StyledExpansionPanel>
-                )
-              );
-            default:
-              return '';
-          }
-        })}
-      </React.Fragment>
-    );
+    const { classes } = this.props;
+    return propertyTables.map((resourceType, index) => {
+      if (!(resourceType in this.editors)) {
+        return ''
+      }
+      return (
+        <AccordionPanel
+          key={`${resourceType}_property_editor`}
+          defaultExpanded={index === 0}
+          labelKey={`Properties.${resourceType}`}
+          label={resourceType}
+          classes={classes}
+        >
+          {this.editors[resourceType](configuration)}
+        </AccordionPanel>
+      );
+    });
   }
 
   getAnnotationType = () => {
-    const { annotation } = this.props.annotation;
+    const { annotation } = this.props;
     return annotation
       ? [
           annotation.body ? annotation.body.type : '',
@@ -344,6 +193,21 @@ class Properties extends React.Component {
     return propertyPanelConfig.selectionVisibility[smallestSelectedType];
   };
 
+  renderConfiguration = () => (
+    <EditorConsumer>
+      {configuration => {
+        const propertyPanelConfig = configuration.propertyPanel;
+        const propertyTables = this.getPropertyTables(propertyPanelConfig);
+        if (propertyPanelConfig.selectionType === 'list') {
+          return this.renderPropertyEditorAsList(propertyTables, configuration);
+        } else if (propertyPanelConfig.selectionType === 'accordion') {
+          return this.renderPropertyEditorAsAccordion(propertyTables, configuration);
+        }
+        return 'invalid selection configuration';
+      }}
+    </EditorConsumer>
+  )
+
   render() {
     const {
       classes,
@@ -355,19 +219,7 @@ class Properties extends React.Component {
     return (
       <div className={classes.root}>
         {this.renderTranslationHeader()}
-        <EditorConsumer>
-          {configuration => {
-            //const form = configuration.annotation[annotationType];
-            const propertyPanelConfig = configuration.propertyPanel;
-            const propertyTables = this.getPropertyTables(propertyPanelConfig);
-            if (propertyPanelConfig.selectionType === 'list') {
-              return this.renderPropertyEditorAsList(propertyTables, configuration);
-            } else if (propertyPanelConfig.selectionType === 'accordion') {
-              return this.renderPropertyEditorAsAccordion(propertyTables, configuration);
-            }
-            return 'invalid selection configuration';
-          }}
-        </EditorConsumer>
+        {this.renderConfiguration()}
         <TranslationDialog
           manifest={manifest}
           open={mirrorTranslationOpen}

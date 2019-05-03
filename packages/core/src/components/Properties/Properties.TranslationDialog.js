@@ -122,7 +122,7 @@ class TranslationDialog extends React.Component {
 
 TranslationDialog.propTypes = {
   /** The manifest to translate */
-  manifest: PropTypes.object.isRequired,
+  manifest: PropTypes.object,
   /** is the dialog open */
   open: PropTypes.bool.isRequired,
   /** handling the dialog close */
@@ -132,7 +132,7 @@ TranslationDialog.propTypes = {
 };
 
 TranslationDialog.defaultProps = {
-  manifest: [],
+  manifest: null,
   open: false,
 };
 

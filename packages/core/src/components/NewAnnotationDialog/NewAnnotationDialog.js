@@ -1,10 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
 } from '@material-ui/core';
 
@@ -12,6 +8,7 @@ import { EditorConsumer } from '../EditorContext/EditorContext';
 import { update, updateWithMeta } from '../../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../../constants/sizing';
 import { Label } from '../LabelContext/LabelContext';
+import ManifestEditorDialog from '../ManifestEditorDialog/ManifestEditorDialog'
 
 class NewAnnotationDialog extends React.Component {
   state = {
@@ -66,107 +63,85 @@ class NewAnnotationDialog extends React.Component {
     }
   };
 
+  renderButton = (formName, {name, label, onClick}) => (
+    <Button onClick={onClick} color="primary">
+      <Label
+        names={[
+          `${formName}.NewAnnotationForm.${name}`,
+          `NewAnnotationForm.${name}`,
+        ]}
+      >
+        {label}
+      </Label>
+    </Button>
+  )
+
+  buttons = {
+    dismiss: {
+      name: 'dismiss',
+      label: 'dismiss',
+      onClick: this.props.handleClose,
+    },
+    fitContentToCanvas: {
+      name: 'fitCanvasToContent',
+      label: 'FIT CONTENT TO CANVAS',
+      onClick: this.createAnnotation(
+        SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS
+      )
+    },
+    fitCanvasToContent: {
+      name: 'fitCanvasToContent',
+      label: 'FIT CANVAS TO CONTENT',
+      onClick: this.createAnnotation(
+        SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
+      )
+    },
+    add: {
+      name: 'add',
+      label: 'Add',
+      onClick: this.createAnnotation(SIZING_STRATEGY.NONE)
+    }
+  }
+
+  renderActions = () => {
+    const { handleClose, form } = this.props;
+    const formName = form ? form.formName : 'noform';
+    return (
+      <EditorConsumer>
+        {configuration =>
+          (
+            configuration.annotationFormButtons[
+              formName + '.NewAnnotationForm'
+            ] || configuration.annotationFormButtons.NewAnnotationForm
+          )
+            .filter(button => button !== 'dismiss')
+            .map(button => this.renderButton(formName, this.buttons[button]))
+        }
+      </EditorConsumer>
+    )
+  }
+
   render() {
     const { handleClose, form } = this.props;
     const { resource } = this.state;
     const resourceType = resource.type;
-    const formName = form ? form.formName : 'noform';
     return (
-      <Dialog
+      <ManifestEditorDialog
         open={!!form}
-        onClose={handleClose}
-        scroll="paper"
-        maxWidth="sm"
+        handleClose={handleClose}
+        title={`Create new ${resourceType}`}
+        actions={this.renderActions()}
         fullWidth={true}
-        aria-labelledby="new-annotation-dialog"
+        maxWidth="sm"
+        closeLabel="Dismiss"
       >
-        <DialogTitle id="new-annotation-dialog">
-          Create new {resourceType}
-        </DialogTitle>
-        <DialogContent>
-          {form &&
-            typeof form.propertyEditor === 'function' &&
-            React.createElement(form.propertyEditor, {
-              update: this.update,
-              target: resource,
-            })}
-        </DialogContent>
-        <DialogActions>
-          <EditorConsumer>
-            {configuration =>
-              (
-                configuration.annotationFormButtons[
-                  formName + '.NewAnnotationForm'
-                ] || configuration.annotationFormButtons.NewAnnotationForm
-              ).map(button => (
-                <React.Fragment>
-                  {button === 'dismiss' && (
-                    <Button onClick={handleClose} color="primary">
-                      <Label
-                        names={[
-                          `${formName}.NewAnnotationForm.dismiss`,
-                          'NewAnnotationForm.dismiss',
-                        ]}
-                      >
-                        dismiss
-                      </Label>
-                    </Button>
-                  )}
-                  {button === 'fitContentToCanvas' && (
-                    <Button
-                      onClick={this.createAnnotation(
-                        SIZING_STRATEGY.SCALE_ANNOTATION_TO_CANVAS
-                      )}
-                      color="primary"
-                    >
-                      <Label
-                        names={[
-                          `${formName}.NewAnnotationForm.fitContentToCanvas`,
-                          'NewAnnotationForm.fitContentToCanvas',
-                        ]}
-                      >
-                        FIT CONTENT TO CANVAS
-                      </Label>
-                    </Button>
-                  )}
-                  {button === 'fitCanvasToContent' && (
-                    <Button
-                      onClick={this.createAnnotation(
-                        SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION
-                      )}
-                      color="primary"
-                    >
-                      <Label
-                        names={[
-                          `${formName}.NewAnnotationForm.fitCanvasToContent`,
-                          'NewAnnotationForm.fitCanvasToContent',
-                        ]}
-                      >
-                        FIT CANVAS TO CONTENT
-                      </Label>
-                    </Button>
-                  )}
-                  {button === 'add' && (
-                    <Button
-                      onClick={this.createAnnotation(SIZING_STRATEGY.NONE)}
-                      color="primary"
-                    >
-                      <Label
-                        names={[
-                          `${formName}.NewAnnotationForm.add`,
-                          'NewAnnotationForm.add',
-                        ]}
-                      >
-                        Add
-                      </Label>
-                    </Button>
-                  )}
-                </React.Fragment>
-              ))
-            }
-          </EditorConsumer>
-        </DialogActions>
-      </Dialog>
+        {form &&
+          typeof form.propertyEditor === 'function' &&
+          React.createElement(form.propertyEditor, {
+            update: this.update,
+            target: resource,
+          })}
+      </ManifestEditorDialog>
     );
   }
 }

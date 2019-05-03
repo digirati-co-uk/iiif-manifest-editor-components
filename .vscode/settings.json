@@ -1,6 +1,12 @@
 {
     "cSpell.words": [
+        "amzn",
+        "cognito",
+        "dlcs",
+        "dropzone",
         "iiifimagelist",
         "mixins"
-    ]
+    ],
+    "complexityAnalysis.exclude": ["**/node_modules/**/*.js"],
+    "complexityAnalysis.include": ["packages/core/src/**/*.js"]
 }
