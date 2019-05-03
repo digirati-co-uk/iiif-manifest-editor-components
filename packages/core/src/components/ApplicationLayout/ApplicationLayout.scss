@@ -6,9 +6,17 @@
   box-sizing: border-box;
   &__middle {
     flex: 1;
+    position: relative;
+  }
+  &__middle-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
-  };
+  }
   &__bottom {
     height: 120px;
     border-top: 2px solid rgba(0,0,0,0.1);
@@ -27,6 +35,7 @@
     display: flex;
     flex-direction: row;
   }
+  
   &__right {
     width: 420px;
     border-left: 2px solid rgba(0,0,0,0.1);

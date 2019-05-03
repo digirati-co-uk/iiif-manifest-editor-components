@@ -299,43 +299,45 @@ class SimpleEditorUI extends React.Component {
               />
             </AppBar>
             <Layout.Middle>
-              <Layout.Left>
-                <AnnotationList
-                  title="Painting"
-                  annotations={paintingAnnotations}
-                  lang={lang}
-                  selected={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  remove={this.deleteResource}
-                  invokeAction={this.invokeAction2}
-                  isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
-                  getResource={this.getResource}
-                />
-              </Layout.Left>
-              <Layout.Center>
-                <EditableCanvasPanel
-                  canvas={selectedCanvas}
-                  resources={this.state.resources}
-                  selectedAnnotation={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  update={this.updateProperty}
-                  getResource={this.getResource}
-                />
-              </Layout.Center>
-              <Layout.Right>
-                <TabPanel>
-                  <Properties
-                    manifest={this.state.resources[this.state.rootResource]}
-                    canvas={selectedCanvas}
-                    annotation={selectedAnnotation}
+              <Layout.MiddleContent>
+                <Layout.Left>
+                  <AnnotationList
+                    title="Painting"
+                    annotations={paintingAnnotations}
                     lang={lang}
-                    changeLanguage={this.changeLanguage}
-                    update={this.updateProperty}
+                    selected={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    remove={this.deleteResource}
+                    invokeAction={this.invokeAction2}
+                    isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
+                    getResource={this.getResource}
                   />
-                  <DLCSPanel title="DLCS" />
-                  <IIIFCollectionExplorer title="IIIF Explorer" />
-                </TabPanel>
-              </Layout.Right>
+                </Layout.Left>
+                <Layout.Center>
+                  <EditableCanvasPanel
+                    canvas={selectedCanvas}
+                    resources={this.state.resources}
+                    selectedAnnotation={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    update={this.updateProperty}
+                    getResource={this.getResource}
+                  />
+                </Layout.Center>
+                <Layout.Right>
+                  <TabPanel>
+                    <Properties
+                      manifest={this.state.resources[this.state.rootResource]}
+                      canvas={selectedCanvas}
+                      annotation={selectedAnnotation}
+                      lang={lang}
+                      changeLanguage={this.changeLanguage}
+                      update={this.updateProperty}
+                    />
+                    <DLCSPanel title="DLCS" />
+                    <IIIFCollectionExplorer title="IIIF Explorer" />
+                  </TabPanel>
+                </Layout.Right>
+              </Layout.MiddleContent>
             </Layout.Middle>
             <Layout.Bottom>
               <CanvasList

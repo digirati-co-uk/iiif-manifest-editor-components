@@ -18,8 +18,8 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "@fesk/scripts": "1.2.0-next.6f875fb9",
-    "@fesk/webpack-config": "1.2.0-next.6f875fb9",
+    "@fesk/scripts": "1.2.0",
+    "@fesk/webpack-config": "1.2.0",
     "@reach/component-component": "^0.1.1",
     "babel-core": "^7.0.0-bridge",
     "babel-jest": "^23.6.0",
@@ -33,7 +33,7 @@
   "dependencies": {
     "@canvas-panel/core": "^0.1.1",
     "@emotion/core": "^10.0.7",
-    "@fesk/export-common": "1.2.0-pr.8ef887a1",
+    "@fesk/export-common": "1.2.0",
     "@fesk/react-bem": "^1.1.2",
     "@material-ui/core": "^3.6.1",
     "@material-ui/icons": "^3.0.1",
