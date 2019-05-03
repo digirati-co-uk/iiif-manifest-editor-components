@@ -211,7 +211,6 @@ class Properties extends React.Component {
   render() {
     const {
       classes,
-      manifest,
       update,
     } = this.props;
     const { mirrorTranslationOpen } = this.state;
@@ -221,7 +220,8 @@ class Properties extends React.Component {
         {this.renderTranslationHeader()}
         {this.renderConfiguration()}
         <TranslationDialog
-          manifest={manifest}
+          resources={this.props.resources}
+          // manifest={manifest}
           open={mirrorTranslationOpen}
           handleClose={this.closeTranslations}
           update={update}

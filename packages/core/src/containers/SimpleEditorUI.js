@@ -326,6 +326,7 @@ class SimpleEditorUI extends React.Component {
                 <Layout.Right>
                   <TabPanel>
                     <Properties
+                      resources={this.state.resources}
                       manifest={this.state.resources[this.state.rootResource]}
                       canvas={selectedCanvas}
                       annotation={selectedAnnotation}
