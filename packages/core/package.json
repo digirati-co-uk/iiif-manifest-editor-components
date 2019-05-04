@@ -18,6 +18,7 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
+    "@fesk/babel-config": "1.2.0",
     "@fesk/scripts": "1.2.0",
     "@fesk/webpack-config": "1.2.0",
     "@reach/component-component": "^0.1.1",

@@ -1,6 +1,5 @@
 import download from './download';
 import renderResource, {
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,
@@ -27,7 +26,6 @@ export {
   download,
   // resource
   renderResource,
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,

@@ -40,6 +40,9 @@ const MetadataEditor = ({
   update,
   fieldConfig,
 }) => {
+  if (!target) {
+    return null;
+  }
   const { type } = target;
   const targetEntity = target;
   return (

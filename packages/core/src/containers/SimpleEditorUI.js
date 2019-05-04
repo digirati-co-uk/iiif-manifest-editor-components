@@ -10,7 +10,6 @@ import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanva
 import Properties from '../components/Properties/Properties';
 import TabPanel from '../components/TabPanel/TabPanel';
 import renderResource, {
-  queryResourceById,
   locale,
   update,
 } from '../utils/IIIFResource';

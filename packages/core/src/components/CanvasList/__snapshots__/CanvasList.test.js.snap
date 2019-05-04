@@ -27,8 +27,9 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "function",
+    "nodeType": "class",
     "props": Object {
+      "canvas": null,
       "canvases": Array [
         Object {
           "id": "test-canvas-1",
@@ -52,6 +53,7 @@ ShallowWrapper {
         "noCanvasesContainer": "CanvasList-noCanvasesContainer-12",
       },
       "direction": "horizontal",
+      "getResource": [Function],
       "invokeAction": [Function],
       "itemClass": null,
       "listClass": null,
@@ -67,8 +69,9 @@ ShallowWrapper {
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "function",
+      "nodeType": "class",
       "props": Object {
+        "canvas": null,
         "canvases": Array [
           Object {
             "id": "test-canvas-1",
@@ -92,6 +95,7 @@ ShallowWrapper {
           "noCanvasesContainer": "CanvasList-noCanvasesContainer-12",
         },
         "direction": "horizontal",
+        "getResource": [Function],
         "invokeAction": [Function],
         "itemClass": null,
         "listClass": null,

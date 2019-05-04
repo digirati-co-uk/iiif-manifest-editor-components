@@ -11,7 +11,7 @@ import ImagePainting from '../../annotation/ImagePainting';
 import VideoPainting from '../../annotation/VideoPainting';
 import AudioPainting from '../../annotation/AudioPainting';
 import generateURI from '../../utils/URIGenerator';
-import { queryResourceById, updateDefaults } from '../../utils/IIIFResource';
+import { updateDefaults } from '../../utils/IIIFResource';
 
 const getImageServiceURL = dlcsURL =>
   dlcsURL

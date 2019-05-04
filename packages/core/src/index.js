@@ -61,7 +61,6 @@ import {
   download,
   // resource
   renderResource,
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,
@@ -140,7 +139,6 @@ export {
   download,
   // resource
   renderResource,
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,

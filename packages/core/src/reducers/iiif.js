@@ -1,6 +1,5 @@
 import produce from 'immer';
 import renderResource, {
-  queryResourceById,
   getParentByChildId,
   fixManifest,
 } from '../utils/IIIFResource';
@@ -43,15 +42,12 @@ const IIIFReducer = (state, action) => {
         //    - the cost of this freshness is high, because every time we touch the object
         //      the functions need to traverse through the document, and it's like a
         //      dom traversal with all it's non linear characteristic.
-        //    - remember queryResourceById is a recursive function, which is extremely
-        //      dangerous if a circular reference accidentally created in the manifest.
         const parentId = !options.parent
           ? null
           : typeof options.parent === 'string'
           ? options.parent
           : options.parent.id;
 
-        //const parent = queryResourceById(parentId, nextState.rootResource);
         const parent = nextState.resources[parentId];
 
         const newResource =
@@ -128,7 +124,6 @@ const IIIFReducer = (state, action) => {
         break;
       case 'UPDATE_RESOURCE':
         // Updates the passed resource @id, NOTE it is a property merge
-        // const toUpdate = queryResourceById(options.id, nextState.rootResource);
         const toUpdate = nextState.resources[options.id];
         nextState.resources[options.id] = Object.assign(
           toUpdate,
@@ -173,6 +168,7 @@ const IIIFReducer = (state, action) => {
         break;
       case 'UPDATE_RESOURCE_ORDER':
         const { startIndex, targetIndex, id } = action.options;
+        
         const parentToUpdate = nextState.resources[id]['@parent'];
         if (parentToUpdate) {
           const parentResource = nextState.resources[parentToUpdate];
