@@ -4,7 +4,7 @@ route: /configuration/editor-context
 menu: 02. Configuration
 ---
 
-import { Playground, PropsTable } from 'docz';
+import { Playground, Props } from 'docz';
 import { EditorProvider } from './EditorContext'; 
 
 # Editor Context
@@ -12,7 +12,7 @@ import { EditorProvider } from './EditorContext';
 Different institutions have different needs, this component allows to create pluggable 
 extensions for different parts of the manifest editor applications.
 
-<PropsTable of={EditorProvider} />
+<Props of={EditorProvider} />
 
 Because we are using React context, a default context will be provided for the consumer components, ergo 
 creating a provider is not necessary to be able to use the manifest editor components.
