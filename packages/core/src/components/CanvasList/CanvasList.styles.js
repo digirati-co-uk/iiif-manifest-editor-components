@@ -46,12 +46,13 @@ export default theme => ({
     position: 'relative',
     height: '100%',
     width: '100%',
+    overflow: 'hidden',
     textAlign: 'center',
   },
   canvasThumbnail: {
-    maxWidth: 150,
-    haxHeight: 100,
     height: '100%',
+    width: '100%',
+    objectFit: 'contain',
   },
   canvasLabel: {
     whiteSpace: 'nowrap',

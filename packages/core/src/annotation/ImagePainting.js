@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Image } from '@material-ui/icons';
 
-// import IIIFReducer from '../reducers/iiif';
 import { addResource } from '../utils/addResource';
 import renderResource from '../utils/IIIFResource';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
-import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
 
 import ImagePropertiesForm from './forms/ImagePropertiesForm';
 
@@ -24,14 +22,9 @@ export default class ImagePainting extends BaseAnnotation {
     />
   );
 
-  static button = ({ title = 'Add Image Annotation', ...props }) => (
-    <ButtonWithTooltip title={title} {...props}>
-      <Image />
-    </ButtonWithTooltip>
-  );
-
   static icon = Image;
   static iconToolTip = 'Image Annotation';
+  static buttonTitle = 'Add Image Annotation';
   static propertyEditor = ImagePropertiesForm;
   static defaultBody = {
     type: 'Image',

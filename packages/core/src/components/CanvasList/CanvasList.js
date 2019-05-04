@@ -50,9 +50,6 @@ const CanvasListItem = ({
           [classes.listItemDragging]: snapshot.isDragging,
         }
       )}
-      // style={{
-      //   marginLeft: provided.innerRef.
-      // }}
     >
       {typeof children === 'function' ? (
         children(canvas, remove, select)

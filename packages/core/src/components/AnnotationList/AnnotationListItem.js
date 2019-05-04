@@ -4,26 +4,7 @@ import LocaleString from '../LocaleString/LocaleString';
 import { locale, getInternalAnnotationType } from '../../utils/IIIFResource';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
-
-const style = theme => ({
-  main: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'stretch',
-    maxWidth: 'calc(100% - 40px)',
-  },
-  textBlock: {
-    flex: 1,
-    padding: '0 0 0 1rem',
-    overflow: 'hidden',
-  },
-  label: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-});
+import style from './AnnotationListItem.styles';
 
 const getIconForAnnotationType = (annotationDefinition, color) => 
   annotationDefinition

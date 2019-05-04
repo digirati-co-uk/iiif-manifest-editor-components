@@ -5,6 +5,23 @@ import { Toolbar } from '@material-ui/core';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import NewAnnotationDialog from '../NewAnnotationDialog/NewAnnotationDialog';
 import { addResource } from '../../utils/addResource';
+import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
+
+const DefaultAnnotationListToolbarButton = ({ config, ...props }) => (
+  <ButtonWithTooltip title={config.iconToolTip} {...props}>
+    {React.createElement(config.icon)}
+  </ButtonWithTooltip>
+)
+
+DefaultAnnotationListToolbarButton.propTypes = {
+  config: PropTypes.shape({
+    icon: PropTypes.elementType,
+    iconToolTip: PropTypes.string
+  }),
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+}
+
 
 const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
   const [dialog, setDialog] = useState(null);
@@ -18,9 +35,11 @@ const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
           }}
         >
           {Object.entries(configuration.annotation).map(
-            ([type, config], index) =>
-              config.button({
-                onClick: () => {
+            ([type, config], index) => (
+              <DefaultAnnotationListToolbarButton
+                key={`DefaultAnnotationListToolbar_${index}_${type}`}
+                config={config}
+                onClick={() => {
                   if (config.propertyEditor) {
                     setDialog({
                       form: config,
@@ -29,10 +48,10 @@ const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
                   } else {
                     invokeAction(config.actions.add)();
                   }
-                },
-                key: `DefaultAnnotationListToolbar_${index}_${type}`,
-                disabled: disableActions,
-              })
+                }}
+                disabled={disableActions}
+              />
+            )
           )}
           <NewAnnotationDialog
             form={dialog && dialog.form}

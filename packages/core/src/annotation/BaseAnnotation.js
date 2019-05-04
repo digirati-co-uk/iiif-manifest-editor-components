@@ -7,12 +7,9 @@ class BaseAnnotation {
     throw 'Not Implemented error';
   };
 
-  static button = ({ title = 'button title', ...props }) => {
-    throw 'Not Implemented error';
-  };
-
   static icon = null;
   static iconToolTip = 'Text Annotation';
+  static buttonTitle = 'Add Text Annotation';
   static propertyEditor = 'TODO: custom property editor';
   static defaultSizing = SIZING_STRATEGY.SCALE_CANVAS_TO_ANNOTATION;
 

@@ -76,9 +76,6 @@ class Properties extends React.Component {
           target={annotation}
           lang={lang}
           update={update}
-          behaviorConfig={
-            configuration.behavior.Annotation
-          }
           fieldConfig={
             configuration.propertyFields.Annotation
           }
@@ -101,7 +98,6 @@ class Properties extends React.Component {
         target={canvas}
         lang={lang}
         update={update}
-        behaviorConfig={configuration.behavior.Canvas}
         fieldConfig={
           configuration.propertyFields.Canvas
         }
@@ -116,7 +112,6 @@ class Properties extends React.Component {
         target={manifest}
         lang={lang}
         update={update}
-        behaviorConfig={configuration.behavior.Manifest}
         fieldConfig={
           configuration.propertyFields.Manifest
         }
