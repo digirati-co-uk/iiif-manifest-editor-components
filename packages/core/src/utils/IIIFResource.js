@@ -89,7 +89,7 @@ const renderResource = (type, options = { props: {} }) => {
   } else {
     resource = {
       type,
-      ...{ props },
+      ...props,
     };
   }
   generateURI(resource, options.parent);

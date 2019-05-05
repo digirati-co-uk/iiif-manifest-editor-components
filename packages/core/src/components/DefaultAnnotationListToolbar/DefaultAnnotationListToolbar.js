@@ -14,10 +14,11 @@ const DefaultAnnotationListToolbarButton = ({ config, ...props }) => (
 )
 
 DefaultAnnotationListToolbarButton.propTypes = {
-  config: PropTypes.shape({
-    icon: PropTypes.elementType,
-    iconToolTip: PropTypes.string
-  }),
+  // config: PropTypes.shape({
+  //   icon: PropTypes.elementType,
+  //   iconToolTip: PropTypes.string
+  // }),
+  config: PropTypes.func,
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 }

@@ -1,11 +1,47 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import SimpleEditorUI from './containers/SimpleEditorUI';
-render(<SimpleEditorUI />, document.getElementById('app'));
+// import SimpleEditorUI from './containers/SimpleEditorUI';
+// render(<SimpleEditorUI />, document.getElementById('app'));
 //import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
 //render(<TUDelftManifestEditor />, document.getElementById('app'));
 //import VNASlideshowEditor from './containers/VNASlideshowEditor';
 //render(<VNASlideshowEditor />, document.getElementById('app'));
+
+import { createMuiTheme } from '@material-ui/core';
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#59bfec',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#fff',
+      contrastText: '#59bfec',
+    },
+  },
+  typography: {
+    fontSize: 12,
+    useNextVariants: true,
+  },
+  mixins: {
+    toolbar: {
+      minHeight: 36,
+    },
+  },
+});
+import ManifestEditorApp from './containers/ManifestEditorApp';
+render(
+  <ManifestEditorApp 
+    theme={theme}
+    config={{
+      s3: {
+        AMZN_S3_IDENTITY_POOL_HASH:
+          '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
+        AMZN_S3_REGION: 'eu-west-1',
+        AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+      },
+    }}
+  />, document.getElementById('app'));
 
 import {
   // TOP LEVEL Components

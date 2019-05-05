@@ -23,21 +23,25 @@
     "@fesk/webpack-config": "1.2.0",
     "@reach/component-component": "^0.1.1",
     "babel-core": "^7.0.0-bridge",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.6.0",
+    "canvas": "^2.4.1",
     "docz": "1.1.0",
     "docz-theme-default": "1.1.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
-    "jest": "^23.6.0",
+    "jest": "^24.6.0",
+    "jest-canvas-mock": "^2.0.0",
     "webpack-config": "^7.5.0"
   },
   "dependencies": {
-    "@canvas-panel/core": "^0.1.1",
+    "@babel/preset-react": "^7.0.0",
+    "@canvas-panel/core": "^0.2.0",
     "@emotion/core": "^10.0.7",
     "@fesk/export-common": "1.2.0",
     "@fesk/react-bem": "^1.1.2",
     "@material-ui/core": "^3.6.1",
     "@material-ui/icons": "^3.0.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "classnames": "^2.2.6",
     "deepmerge": "^3.0.0",
     "detect-it": "^3.0.5",
@@ -71,7 +75,16 @@
     "moduleNameMapper": {
       "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/setup.jest.js",
+    "setupFiles": ["jest-canvas-mock"],
+    "setupFilesAfterEnv": ["<rootDir>/setup.jest.js"],
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/",
+      ".*\\.js\\.snap",
+      "jest.transform.js",
+      ".json",
+      "webpack.config.js"
+    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/coverage/",
@@ -80,6 +93,10 @@
       ".json",
       "setup.jest.js",
       "webpack.config.js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
     ]
   },
   "directories": {
