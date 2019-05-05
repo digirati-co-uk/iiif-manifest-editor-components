@@ -136,6 +136,7 @@ class ManifestEditorApp extends React.Component {
   };
 
   updateProperty = (target, property, lang, value) => {
+    console.log('updateProperty', target, property, lang, value);
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE_PROPERTY',
       options: {
@@ -362,29 +363,23 @@ class ManifestEditorApp extends React.Component {
     : null;
 
   getConfig = () => {
-    const { 
-      config, 
-      annotation, 
-      translation, 
-      dragDrop, 
-      behavior, 
-      annotationFormButtons, 
-      propertyFields,
-      iiifResourceDefaults,
-      propertyPanel,
-    } = this.props;
-    
-    return {
-      config, 
-      annotation, 
-      translation, 
-      dragDrop, 
-      behavior, 
-      annotationFormButtons, 
-      propertyFields,
-      iiifResourceDefaults,
-      propertyPanel,
-    }
+    return [
+      'config', 
+      'annotation', 
+      'translation', 
+      'dragDrop', 
+      'behavior', 
+      'annotationFormButtons', 
+      'propertyFields',
+      'iiifResourceDefaults',
+      'propertyPanel'
+    ].reduce(
+        (extraconfs, property) => {
+          if (this.props[property]) {
+            extraconfs[property] = this.props[property]
+          }
+          return extraconfs;
+        }, {});
   };
 
   render() {

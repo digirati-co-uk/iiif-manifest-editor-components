@@ -24,6 +24,9 @@ const IIIFTextField = ({ classes, label, ...props }) => {
       clearTimeout(timer);
     }
     setTimer(setTimeout(() => {
+      if (props.value === internalValue) {
+        return;
+      }
       props.onChange({
         target: {
           value: internalValue

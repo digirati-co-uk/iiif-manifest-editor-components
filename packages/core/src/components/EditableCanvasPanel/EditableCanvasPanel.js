@@ -90,11 +90,15 @@ class EditableCanvasPanel extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    if (annotation.target && typeof annotation.target.id === 'string') {
-      this.props.update(annotation, 'target.id', null, `${canvas.id}${hash}`);
-    } else {
-      this.props.update(annotation, 'target', null, `${canvas.id}${hash}`);
-    }
+    
+    this.props.update(
+      annotation, 
+      annotation.target && typeof annotation.target.id === 'string' 
+        ? 'target.id'
+        : 'target', 
+      null, 
+      `${canvas.id}${hash}`
+    );
   };
 
   shouldComponentUpdate(nextProps, nextState) {

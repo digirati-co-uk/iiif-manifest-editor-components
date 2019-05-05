@@ -5,15 +5,6 @@ import { LabelProvider } from '../LabelContext/LabelContext';
 
 const TYPE_RX = /(.*)(\-.*)?/;
 
-// // TOOD: not happy with this, looks a bit out of space
-// const portal = document.createElement('div');
-// portal.classList.add('drag-drop-portal');
-
-// if (!document.body) {
-//   throw new Error('body not ready for portal creation!');
-// }
-// document.body.appendChild(portal);
-
 const ManifestEditor = ({
   children,
   invokeAction,

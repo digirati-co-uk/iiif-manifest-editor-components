@@ -8,15 +8,50 @@ import { render } from 'react-dom';
 //render(<VNASlideshowEditor />, document.getElementById('app'));
 
 import { createMuiTheme } from '@material-ui/core';
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       main: '#59bfec',
+//       contrastText: '#fff',
+//     },
+//     secondary: {
+//       main: '#fff',
+//       contrastText: '#59bfec',
+//     },
+//   },
+//   typography: {
+//     fontSize: 12,
+//     useNextVariants: true,
+//   },
+//   mixins: {
+//     toolbar: {
+//       minHeight: 36,
+//     },
+//   },
+// });
+// import ManifestEditorApp from './containers/ManifestEditorApp';
+// render(
+//   <ManifestEditorApp 
+//     theme={theme}
+//     config={{
+//       s3: {
+//         AMZN_S3_IDENTITY_POOL_HASH:
+//           '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
+//         AMZN_S3_REGION: 'eu-west-1',
+//         AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+//       },
+//     }}
+//   />, document.getElementById('app'));
+
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#59bfec',
+      main: '#1d1c73',
       contrastText: '#fff',
     },
     secondary: {
       main: '#fff',
-      contrastText: '#59bfec',
+      contrastText: '#1d1c73',
     },
   },
   typography: {
@@ -29,19 +64,12 @@ const theme = createMuiTheme({
     },
   },
 });
-import ManifestEditorApp from './containers/ManifestEditorApp';
+
+import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
 render(
-  <ManifestEditorApp 
-    theme={theme}
-    config={{
-      s3: {
-        AMZN_S3_IDENTITY_POOL_HASH:
-          '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
-        AMZN_S3_REGION: 'eu-west-1',
-        AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
-      },
-    }}
-  />, document.getElementById('app'));
+  <TUDelftManifestEditor theme={theme} />, document.getElementById('app')
+);
+
 
 import {
   // TOP LEVEL Components

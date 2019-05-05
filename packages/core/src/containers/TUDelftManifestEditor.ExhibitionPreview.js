@@ -10,17 +10,21 @@ import * as classnames from 'classnames';
 
 const XYWHRx = /(?:.*xywh\=(\d+),(\d+),(\d+),(\d+).*)/;
 
-export const getCanvasThumbnails = canvas => {
+export const getCanvasThumbnails = (canvas, getResource) => {
   let thumbnails = null;
-  const annotations =
-    canvas.items &&
+  const annotationList = canvas.items &&
     canvas.items.length &&
-    canvas.items[0].items &&
-    canvas.items[0].items.length &&
-    canvas.items[0].items; // hopefully for now
-
+    getResource(canvas.items[0])
+  
+  const annotations = 
+    annotationList && 
+    annotationList.items && 
+    annotationList.items.length && 
+    annotationList.items  
+  
   if (annotations) {
-    thumbnails = annotations.reduce((results, annotation, index) => {
+    thumbnails = annotations.reduce((results, annotationId, index) => {
+      const annotation = getResource(annotationId);
       let xywh = null;
       if (annotation.target) {
         const targetXYWH = annotation.target.match(XYWHRx);
@@ -322,6 +326,8 @@ const ExhibitionPreview = ({
   listClass,
   itemClass,
   toggleZoom,
+  getResource,
+  resources,
 }) => (
   <Panel horizontal={false}>
     <Panel.Content>
@@ -352,14 +358,15 @@ const ExhibitionPreview = ({
             </div>
             {canvases && canvases.length > 0 ? (
               <React.Fragment>
-                {canvases.map((canvas, index) => (
+                {canvases.map((canvasId, index) => (
                   <Draggable
-                    key={canvas.id}
-                    draggableId={canvas.id}
+                    key={canvasId}
+                    draggableId={canvasId}
                     index={index}
                   >
                     {(provided, snapshot) => {
-                      const thumbnails = getCanvasThumbnails(canvas);
+                      const canvas = getResource(canvasId);
+                      const thumbnails = getCanvasThumbnails(canvas, getResource);
                       const behaviouralClasses = (canvas.behavior || []).reduce(
                         (acc, next) => {
                           acc[next] = true;
