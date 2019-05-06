@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as PropTypes from 'prop-types';
-import * as classnames from 'classnames';
+import classnames from 'classnames';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Toolbar, withStyles } from '@material-ui/core';
 import { Cancel, AddCircle } from '@material-ui/icons';
