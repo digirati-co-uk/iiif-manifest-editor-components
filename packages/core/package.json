@@ -1,6 +1,6 @@
 {
   "name": "@iiif-mec/core",
-  "version": "1.0.29",
+  "version": "1.0.30-1.1.0-0.0",
   "description": "Core components for manifest editing",
   "author": "Adam Meszaros <adam.meszaros@digirati.com>",
   "license": "MIT",
@@ -75,8 +75,12 @@
     "moduleNameMapper": {
       "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
     },
-    "setupFiles": ["jest-canvas-mock"],
-    "setupFilesAfterEnv": ["<rootDir>/setup.jest.js"],
+    "setupFiles": [
+      "jest-canvas-mock"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup.jest.js"
+    ],
     "transformIgnorePatterns": [
       "/node_modules/",
       "/coverage/",
@@ -85,7 +89,6 @@
       ".json",
       "webpack.config.js"
     ],
-    
     "moduleDirectories": [
       "node_modules",
       "src"
