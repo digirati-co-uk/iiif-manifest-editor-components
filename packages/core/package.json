@@ -12,8 +12,8 @@
     "watch": "fesk-watch",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
-    "test": "jest --coverage",
-    "test:watch": "jest --coverage --watch"
+    "test": "jest --collect-coverage",
+    "test:watch": "jest --collect-coverage --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -85,15 +85,7 @@
       ".json",
       "webpack.config.js"
     ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/coverage/",
-      ".*\\.js\\.snap",
-      "jest.transform.js",
-      ".json",
-      "setup.jest.js",
-      "webpack.config.js"
-    ],
+    
     "moduleDirectories": [
       "node_modules",
       "src"
