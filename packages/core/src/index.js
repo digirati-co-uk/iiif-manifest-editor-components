@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { render } from 'react-dom';
+// import * as React from 'react';
+// import { render } from 'react-dom';
 // import SimpleEditorUI from './containers/SimpleEditorUI';
 // render(<SimpleEditorUI />, document.getElementById('app'));
 //import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
@@ -7,7 +7,7 @@ import { render } from 'react-dom';
 //import VNASlideshowEditor from './containers/VNASlideshowEditor';
 //render(<VNASlideshowEditor />, document.getElementById('app'));
 
-import { createMuiTheme } from '@material-ui/core';
+// import { createMuiTheme } from '@material-ui/core';
 // const theme = createMuiTheme({
 //   palette: {
 //     primary: {
@@ -43,32 +43,32 @@ import { createMuiTheme } from '@material-ui/core';
 //     }}
 //   />, document.getElementById('app'));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#1d1c73',
-      contrastText: '#fff',
-    },
-    secondary: {
-      main: '#fff',
-      contrastText: '#1d1c73',
-    },
-  },
-  typography: {
-    fontSize: 12,
-    useNextVariants: true,
-  },
-  mixins: {
-    toolbar: {
-      minHeight: 36,
-    },
-  },
-});
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       main: '#1d1c73',
+//       contrastText: '#fff',
+//     },
+//     secondary: {
+//       main: '#fff',
+//       contrastText: '#1d1c73',
+//     },
+//   },
+//   typography: {
+//     fontSize: 12,
+//     useNextVariants: true,
+//   },
+//   mixins: {
+//     toolbar: {
+//       minHeight: 36,
+//     },
+//   },
+// });
 
-import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
-render(
-  <TUDelftManifestEditor theme={theme} />, document.getElementById('app')
-);
+// import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
+// render(
+//   <TUDelftManifestEditor theme={theme} />, document.getElementById('app')
+// );
 
 
 import {
@@ -147,7 +147,9 @@ import {
 import IIIFReducer from './reducers/iiif';
 import EditorReducer from './reducers/editor';
 import { SIZING_STRATEGY } from './constants/sizing';
+import ManifestEditorApp from './containers/ManifestEditorApp';
 export {
+  ManifestEditorApp,
   // Components
   // TOP LEVEL Components
   ManifestEditor,
