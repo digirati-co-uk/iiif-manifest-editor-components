@@ -10,7 +10,7 @@ import {
 import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
 import style from './IIIFTextField.style';
 
-const IS_HTML_REGEX = /<[^>]>/;
+const IS_HTML_REGEX = /<[^>]+>/g;
 
 const IIIFTextField = ({ classes, label, ...props }) => {
   const isHTML = IS_HTML_REGEX.test(props.value);
@@ -23,10 +23,11 @@ const IIIFTextField = ({ classes, label, ...props }) => {
     if (timer) {
       clearTimeout(timer);
     }
+    if (props.value === internalValue) {
+      return;
+    }
     setTimer(setTimeout(() => {
-      if (props.value === internalValue) {
-        return;
-      }
+      console.log('IIIFTextField->timer', props.value, internalValue);
       props.onChange({
         target: {
           value: internalValue

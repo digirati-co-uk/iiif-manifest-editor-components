@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
 import style from './IIIFKeyValueField.style';
 
-const IS_HTML_REGEX = /<[^>]>/;
+const IS_HTML_REGEX = /<[^>]+>/g;
 
 const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
   const isHTML = IS_HTML_REGEX.test(valueProps.value);
@@ -26,6 +26,9 @@ const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
     if (keyTimer) {
       clearTimeout(keyTimer);
     }
+    if (internalKey === keyProps.value) {
+      return;
+    }
     setKeyTimer(setTimeout(() => {
       internalKey !== '' && internalValue !== '' &&
       keyProps.onChange && 
@@ -40,6 +43,9 @@ const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
   useEffect(() => {
     if (valueTimer) {
       clearTimeout(valueTimer);
+    }
+    if (internalValue === valueProps.value) {
+      return;
     }
     setValueTimer(setTimeout(() => {
       internalKey !== '' && internalValue !== '' &&

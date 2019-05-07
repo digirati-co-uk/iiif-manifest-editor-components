@@ -11,7 +11,11 @@ const IIIFInputField = ({ value, onChange, ...props}) => {
     if (timer) {
       clearTimeout(timer);
     }
+    if (value === query) {
+      return;
+    }
     setTimer(setTimeout(() => {
+      console.log('IIIFInputField->timer', value, query);
       onChange({
         target: {
           value: query
