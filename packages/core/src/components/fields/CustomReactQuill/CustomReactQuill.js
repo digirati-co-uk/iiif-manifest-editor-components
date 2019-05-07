@@ -3,22 +3,30 @@ import {
   Button,
   TextField,
 } from '@material-ui/core';
-import * as ReactQuill from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './quill-extras.scss';
+import CustomReactQuillPopupForm from './CustomReactQuill.PopupForm';
 
+//TODO: refactor the form to a separate component
 class CustomReactQuill extends React.Component {
   constructor (props) {
     super(props);
     this.quillRef = React.createRef();
-    this.state = {
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-      promptRange: null,
-    };
+    this.quillConfig = this.generateQuillConf();
+    this.state = this.getDefaultState();
   }
+
+  getDefaultState = () => ({
+    promptLabel: '',
+    promptVisible: false,
+    promptValue: '',
+    promptCallback: null,
+    promptRange: null,
+  });
+
+  resetState = () =>
+    this.setState(this.getDefaultState());
   
   addImage = (image, callback) => {
     this.setState({
@@ -70,13 +78,7 @@ class CustomReactQuill extends React.Component {
     }
   };
 
-  cancelPrompt = () =>
-    this.setState({
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-    });
+  cancelPrompt = () => this.resetState();
 
   setPromptValue = ev => {
     this.setState({
@@ -85,17 +87,31 @@ class CustomReactQuill extends React.Component {
   };
 
   applyPrompt = () => {
-    if (this.state.promptCallback) {
+    if (this.state.promptCallback && 
+      typeof this.state.promptCallback === 'function') {
       this.state.promptCallback();
     }
-    this.setState({
-      promptLabel: '',
-      promptVisible: false,
-      promptValue: '',
-      promptCallback: null,
-      promptRange: null,
-    });
+    this.resetState();
   };
+
+  generateQuillConf = () => {
+    const { editorConfig } = this.props;
+    const aggregatedConfig = {
+      ...JSON.parse(JSON.stringify(editorConfig)),
+    };
+    aggregatedConfig.toolbar.handlers = {
+      image: this.addImage,
+      video: this.addVideo,
+    };
+    return aggregatedConfig;
+  };
+
+  changeHandler = changedValue => 
+    this.props.onChange({
+      target: {
+        value: changedValue,
+      },
+    })
 
   render() {
     const { value, onChange, ...props } = this.props;
@@ -105,68 +121,37 @@ class CustomReactQuill extends React.Component {
         <ReactQuill
           value={value || ''}
           ref={el => (this.quillRef = el)}
-          modules={{
-            toolbar: {
-              container: [
-                //[{ header: [1, 2, false] }],
-                ['bold', 'italic'],
-                ['link', 'blockquote', 'image', 'video'], //,
-                //[{ list: 'ordered' }, { list: 'bullet' }]
-              ],
-              handlers: {
-                image: this.addImage,
-                video: this.addVideo,
-              },
-            },
-          }}
-          onChange={changedValue =>
-            onChange({
-              target: {
-                value: changedValue,
-              },
-            })
-          }
+          modules={this.quillConfig}
+          onChange={this.changeHandler}
           {...props}
         />
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
-            display: promptVisible ? 'flex' : 'none',
-            alignItems: 'flex-end',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <div
+        <CustomReactQuillPopupForm open={promptVisible}>
+          <TextField
             style={{
-              width: '100%',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              padding: '16px',
-              display: 'flex',
-              background: 'white',
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end',
+              flex: 1,
             }}
-          >
-            <TextField
-              style={{
-                flex: 1,
-              }}
-              label={promptLabel}
-              value={promptValue}
-              onChange={this.setPromptValue}
-            />
-            <Button onClick={this.cancelPrompt}>Cancel</Button>
-            <Button onClick={this.applyPrompt}>OK</Button>
-          </div>
-        </div>
+            label={promptLabel}
+            value={promptValue}
+            onChange={this.setPromptValue}
+          />
+          <Button onClick={this.cancelPrompt}>Cancel</Button>
+          <Button onClick={this.applyPrompt}>OK</Button>
+        </CustomReactQuillPopupForm>
       </div>
     );
+  }
+}
+
+CustomReactQuill.defaultProps = {
+  editorConfig: {
+    toolbar: {
+      container: [
+        //[{ header: [1, 2, false] }],
+        ['bold', 'italic'],
+        ['link', 'blockquote', 'image', 'video'], //,
+        //[{ list: 'ordered' }, { list: 'bullet' }]
+      ],
+    },
   }
 }
 
