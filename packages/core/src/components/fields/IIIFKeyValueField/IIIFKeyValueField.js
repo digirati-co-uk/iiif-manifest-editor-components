@@ -8,8 +8,7 @@ import {
 import { useState, useEffect } from 'react';
 import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
 import style from './IIIFKeyValueField.style';
-
-const IS_HTML_REGEX = /<[^>]+>/g;
+import { IS_HTML_REGEX, INPUT_DEBOUNCE_TIME } from '../../../constants/fields';
 
 const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
   const isHTML = IS_HTML_REGEX.test(valueProps.value);
@@ -37,7 +36,7 @@ const IIIFKeyValueField = ({ classes, keyProps, valueProps }) => {
           value: internalKey
         }
       });
-    }, 1000));
+    }, INPUT_DEBOUNCE_TIME));
   }, [internalKey]);
 
   useEffect(() => {

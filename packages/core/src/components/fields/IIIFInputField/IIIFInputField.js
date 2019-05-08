@@ -3,6 +3,8 @@ import * as PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { TextField } from '@material-ui/core';
 
+import { INPUT_DEBOUNCE_TIME } from '../../../constants/fields';
+
 const IIIFInputField = ({ value, onChange, ...props}) => {
   const [query, setQuery] = useState(value);
   const [timer, setTimer] = useState();
@@ -15,13 +17,12 @@ const IIIFInputField = ({ value, onChange, ...props}) => {
       return;
     }
     setTimer(setTimeout(() => {
-      console.log('IIIFInputField->timer', value, query);
       onChange({
         target: {
           value: query
         }
       });
-    }, 1000));
+    }, INPUT_DEBOUNCE_TIME));
   }, [query]);
 
   const handleOnChange = e => setQuery(e.target.value);

@@ -9,8 +9,7 @@ import {
 } from '@material-ui/core';
 import CustomReactQuill from '../CustomReactQuill/CustomReactQuill';
 import style from './IIIFTextField.style';
-
-const IS_HTML_REGEX = /<[^>]+>/g;
+import { IS_HTML_REGEX, INPUT_DEBOUNCE_TIME } from '../../../constants/fields';
 
 const IIIFTextField = ({ classes, label, ...props }) => {
   const isHTML = IS_HTML_REGEX.test(props.value);
@@ -27,13 +26,12 @@ const IIIFTextField = ({ classes, label, ...props }) => {
       return;
     }
     setTimer(setTimeout(() => {
-      console.log('IIIFTextField->timer', props.value, internalValue);
       props.onChange({
         target: {
           value: internalValue
         }
       });
-    }, 1000));
+    }, INPUT_DEBOUNCE_TIME));
   }, [internalValue]);
 
   const handleOnChange = e => setInternalValue(e.target.value);

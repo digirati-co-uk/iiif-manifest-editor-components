@@ -5,7 +5,7 @@ import {
   FormLabel,
 } from '@material-ui/core';
 
-import IIIFBehaviours from '../IIIFBehaviours/IIIFBehaviours';
+import IIIFBehaviours from '../fields/IIIFBehaviours/IIIFBehaviours';
 
 const IIIFPropertyBehaviourInput = ({
   labels,
@@ -24,6 +24,7 @@ const IIIFPropertyBehaviourInput = ({
       target={targetEntity}
       lang={lang}
       update={update}
+      labels={labels}
     />
   </FormControl>
 )
