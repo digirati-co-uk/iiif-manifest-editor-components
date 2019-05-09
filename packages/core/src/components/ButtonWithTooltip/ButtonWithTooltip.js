@@ -13,9 +13,11 @@ const ButtonWithTooltip = ({
   ...props
 }) => (
   <Tooltip title={title}>
-    <IconButton onClick={onClick} {...props}>
-      {children}
-    </IconButton>
+    <div>
+      <IconButton onClick={onClick} {...props}>
+        {children}
+      </IconButton>
+    </div>
   </Tooltip>
 );
 

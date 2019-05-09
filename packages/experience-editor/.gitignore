@@ -1,0 +1,5 @@
+.env
+lib/
+dist/
+.docz/
+coverage/

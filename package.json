@@ -45,6 +45,6 @@
   },
   "homepage": "https://github.com/digirati-co-uk/iiif-manifest-editor-components#readme",
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "lerna": "^3.13.4"
   }
 }

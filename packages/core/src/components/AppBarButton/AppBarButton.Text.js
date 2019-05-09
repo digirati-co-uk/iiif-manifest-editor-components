@@ -8,7 +8,7 @@ const style = theme => ({
   },
 });
 
-const TextAppBarButton = ({ text, onClick, icon }) => (
+const TextAppBarButton = ({ classes, text, onClick, icon }) => (
   <Button color="secondary" onClick={onClick}>
     {icon}
     <Typography color="secondary" className={classes.text}>
@@ -18,8 +18,9 @@ const TextAppBarButton = ({ text, onClick, icon }) => (
 );
 
 TextAppBarButton.propTypes = {
+  classes: PropTypes.object,
   /* icon component used for the app bar button */
-  icon: PropTypes.elementType,
+  icon: PropTypes.element,
   /* click event handler */
   onClick: PropTypes.func,
   /* button text */

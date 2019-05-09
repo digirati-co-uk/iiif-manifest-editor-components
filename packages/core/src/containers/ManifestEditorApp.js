@@ -29,6 +29,8 @@ import convertToV3ifNecessary from '../utils/IIIFUpgrader';
 import './SimpleEditorUI.scss';
 
 class ManifestEditorApp extends React.Component {
+  appBarProps = {};
+
   constructor(props) {
     super(props);
     //const initialNewManifest = this.newManifest();
@@ -42,23 +44,30 @@ class ManifestEditorApp extends React.Component {
       },
       lang: 'en',
     };
-    this.dialogs = [{
+    this.setUpDialogComponents();
+  }
+
+  buildAppBarProps = () =>
+    this.props.appBarProps || this.appBarProps;
+
+  setUpDialogComponents = () => {
+    this.modalDefinitions = [{
       renderer: this.renderSourcePreviewDialog,
       openState: 'previewDialogOpen'
     }, {
       renderer: this.renderDefaultLoadManifestDialog,
       openState: 'loadManifestDialogOpen'
     }];
-  }
+  };
 
   changeLanguage = lang => {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });
   };
 
-  resetDialogs = () => 
-    this.dialogs.reduce((dialogStates, dialog) => {
-      dialogStates[dialog.openState] = false;
-      return dialogStates;
+  resetPopupStates = () => 
+    this.modalDefinitions.reduce((popupStates, dialog) => {
+      popupStates[dialog.openState] = false;
+      return popupStates;
     }, {});
 
   prepareAutoSave = () =>
@@ -66,7 +75,7 @@ class ManifestEditorApp extends React.Component {
       Object.assign(
         {}, 
         this.state, 
-        this.resetDialogs()
+        this.resetPopupStates()
       )
     )
 
@@ -89,6 +98,16 @@ class ManifestEditorApp extends React.Component {
         afterStateChange();
       }
     });
+  };
+
+  regenerateIds = (manifestId, afterStateChange) => {
+    this.dispatch(
+      IIIFReducer,
+      {
+        type: 'REGENERATE_IDS',
+        manifestId,
+      },
+      afterStateChange);
   };
 
   selectResource = resource => {
@@ -118,6 +137,16 @@ class ManifestEditorApp extends React.Component {
       options
     );
   };
+
+  addNewCanvas = () => {
+    this.dispatch(IIIFReducer, {
+      type: 'ADD_RESOURCE',
+      options: {
+        type: 'Canvas',
+        parent: this.state.rootResource,
+      },
+    });
+  }
   //TODO: deprecated replaced by the above
   invokeAction = (action, options) => {
     switch (action) {
@@ -135,7 +164,7 @@ class ManifestEditorApp extends React.Component {
     }
   };
 
-  updateProperty = (target, property, lang, value) => {
+  updateProperty = (target, property, lang, value, afterStateChange) => {
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE_PROPERTY',
       options: {
@@ -144,7 +173,7 @@ class ManifestEditorApp extends React.Component {
         lang,
         value,
       },
-    });
+    }, afterStateChange);
   };
 
   saveProject = () => {
@@ -195,10 +224,9 @@ class ManifestEditorApp extends React.Component {
     return this.state.resources[id];
   };
 
-  /**
-   * Override this if for different buttons
-   * @memberof ManifestEditorApp
-   */
+  //----------------------------------------
+  // Override this if for different buttons
+  //----------------------------------------
   renderAppBarButtons = () => (
     <React.Fragment>
       <AppBarButton
@@ -224,8 +252,8 @@ class ManifestEditorApp extends React.Component {
     </React.Fragment>
   );
 
-  renderLeftPanel = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => {
-    const leftPanelComponents = this.renderLeftPanelComponents(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang);
+  renderLeftPanel = (panelProps) => {
+    const leftPanelComponents = this.renderLeftPanelComponents(panelProps);
     if (leftPanelComponents) {
       return (
         <Layout.Left>
@@ -235,9 +263,91 @@ class ManifestEditorApp extends React.Component {
     }
   };
 
-  renderLeftPanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => (
+  renderCentrePanel = (panelProps) => {
+    const centrePanelComponents = this.renderCentrePanelComponents(panelProps);
+    if (centrePanelComponents) {
+      return (
+        <Layout.Center>
+          {centrePanelComponents}
+        </Layout.Center>
+      );
+    }
+  };
+
+  renderRightPanel = (panelProps) => {
+    const rightPanelComponents = this.renderRightPanelComponents(panelProps);
+    if (rightPanelComponents) {
+      return (
+        <Layout.Right>
+          {rightPanelComponents}
+        </Layout.Right>
+      );
+    }
+  };
+
+
+  renderBottomPanel = (panelProps) => {
+    const bottomPanelComponents = this.renderBottomPanelComponents(panelProps);
+    if (bottomPanelComponents) {
+      return (
+        <Layout.Bottom>
+          {bottomPanelComponents}
+        </Layout.Bottom>
+      );
+    }
+  };
+
+  //------------------------------------------------------------
+  // Use these functions in the overridden panel layout 
+  // functions below.
+  //------------------------------------------------------------
+  renderCanvasList = ({ canvases, selectedCanvas, lang }) => (
+    <CanvasList
+      canvas={selectedCanvas}
+      canvases={canvases}
+      lang={lang}
+      selected={this.state.selectedIdsByType.Canvas}
+      select={this.selectResource}
+      remove={this.deleteResource}
+      addNewCanvas={this.addNewCanvas}
+      getResource={this.getResource}
+    />
+  );
+
+  renderProperties = ({ selectedCanvas, selectedAnnotation, lang }) => (
+    <Properties
+      resources={this.state.resources}
+      manifest={this.state.resources[this.state.rootResource]}
+      canvas={selectedCanvas}
+      annotation={selectedAnnotation}
+      lang={lang}
+      changeLanguage={this.changeLanguage}
+      update={this.updateProperty}
+    />
+  );
+
+  renderDlcsPanel = () => (
+    <DLCSPanel title="DLCS" />
+  )
+
+  renderCollectionExplorer = () => (
+    <IIIFCollectionExplorer title="IIIF Explorer" />
+  )
+
+  renderCanvasEditor = ({ selectedCanvas }) => (
+    <EditableCanvasPanel
+      canvas={selectedCanvas}
+      resources={this.state.resources}
+      selectedAnnotation={this.state.selectedIdsByType.Annotation}
+      select={this.selectResource}
+      update={this.updateProperty}
+      getResource={this.getResource}
+    />
+  );
+
+  renderAnnotationList = ({ paintingAnnotations, lang }) => (
     <AnnotationList
-      title="Painting"
+      title="Annotations"
       annotations={paintingAnnotations}
       lang={lang}
       selected={this.state.selectedIdsByType.Annotation}
@@ -248,93 +358,47 @@ class ManifestEditorApp extends React.Component {
       getResource={this.getResource}
     />
   );
-
-  renderCentrePanel = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => {
-    const centrePanelComponents = this.renderCentrePanelComponents(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang);
-    if (centrePanelComponents) {
-      return (
-        <Layout.Center>
-          {centrePanelComponents}
-        </Layout.Center>
-      );
-    }
-  };
   
+  //------------------------------------------------------------
+  // Override the following functions if you want to modify 
+  // layout of the panels.
+  //------------------------------------------------------------
+  renderLeftPanelComponents = (panelProps) => 
+    this.renderAnnotationList(panelProps);
 
-  renderCentrePanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => (
-    <EditableCanvasPanel
-      canvas={selectedCanvas}
-      resources={this.state.resources}
-      selectedAnnotation={this.state.selectedIdsByType.Annotation}
-      select={this.selectResource}
-      update={this.updateProperty}
-      getResource={this.getResource}
-    />
-  )
-
-  renderRightPanel = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => {
-    const rightPanelComponents = this.renderRightPanelComponents(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang);
-    if (rightPanelComponents) {
-      return (
-        <Layout.Right>
-          {rightPanelComponents}
-        </Layout.Right>
-      );
-    }
-  };
-
-  renderRightPanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => (
+  renderRightPanelComponents = (panelProps) => (
     <TabPanel>
-      <Properties
-        resources={this.state.resources}
-        manifest={this.state.resources[this.state.rootResource]}
-        canvas={selectedCanvas}
-        annotation={selectedAnnotation}
-        lang={lang}
-        changeLanguage={this.changeLanguage}
-        update={this.updateProperty}
-      />
-      <DLCSPanel title="DLCS" />
-      <IIIFCollectionExplorer title="IIIF Explorer" />
+      {this.renderProperties(panelProps)}
+      {this.renderDlcsPanel(panelProps)}
+      {this.renderCollectionExplorer(panelProps)}
     </TabPanel>
-  )
+  );
 
-  renderBottomPanel = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => {
-    const bottomPanelComponents = this.renderBottomPanelComponents(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang);
-    if (bottomPanelComponents) {
-      return (
-        <Layout.Bottom>
-          {bottomPanelComponents}
-        </Layout.Bottom>
-      );
-    }
-  }
+  renderCentrePanelComponents = (panelProps) => 
+    this.renderCanvasEditor(panelProps);
 
-  renderBottomPanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => (
-    <CanvasList
-      canvas={selectedCanvas}
-      canvases={canvases}
-      lang={lang}
-      selected={this.state.selectedIdsByType.Canvas}
-      select={this.selectResource}
-      remove={this.deleteResource}
-      invokeAction={this.invokeAction}
-      getResource={this.getResource}
-    />
-  )
+  renderBottomPanelComponents = (panelProps) => 
+    this.renderCanvasList(panelProps);  
 
-  renderDialogs = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => 
-    this.dialogs.map(dialog => dialog.renderer(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang));
+  
+  /**
+   * Unified dialog renderer
+   */
+  renderDialogs = (panelProps) => 
+    this.modalDefinitions.map(dialog => dialog.renderer(panelProps));
 
   renderSourcePreviewDialog = () => (
     <SourcePreviewDialog
+      key={'SourcePreviewDialog'}
       json={this.state.jsonSnapshot}
       open={this.state.previewDialogOpen}
       handleClose={this.togglePreviewDialog}
     />
   );
+
   renderDefaultLoadManifestDialog = () => (
     <DefaultLoadManifestDialog
+      key={'DefaultLoadManifestDialog'}
       open={this.state.loadManifestDialogOpen}
       loadManifest={this.loadManifest}
       handleClose={this.toggleManifestDialog}
@@ -387,7 +451,14 @@ class ManifestEditorApp extends React.Component {
     const paintingAnnotations = this.getPaintingAnnotations(selectedCanvas);
     const selectedAnnotation = this.getSelectedAnnotation();
     const { lang } = this.state;
-    
+    const panelProps = {
+      canvases,
+      selectedCanvas,
+      paintingAnnotations,
+      selectedAnnotation,
+      lang
+    };
+    const appBarProps = this.buildAppBarProps();
     return (
       <MuiThemeProvider theme={this.props.theme}>
         <ManifestEditor
@@ -395,20 +466,20 @@ class ManifestEditorApp extends React.Component {
           {...this.getConfig()}
         >
           <Layout>
-            <AppBar>
+            <AppBar {...appBarProps}>
               {this.renderAppBarButtons()}
             </AppBar>
             <Layout.Middle>
               <Layout.MiddleContent>
-                {this.renderLeftPanel(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
-                {this.renderCentrePanel(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
-                {this.renderRightPanel(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
+                {this.renderLeftPanel(panelProps)}
+                {this.renderCentrePanel(panelProps)}
+                {this.renderRightPanel(panelProps)}
               </Layout.MiddleContent>
             </Layout.Middle>
-            {this.renderBottomPanel(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
+            {this.renderBottomPanel(panelProps)}
           </Layout>
         </ManifestEditor>
-        {this.renderDialogs(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
+        {this.renderDialogs(panelProps)}
       </MuiThemeProvider>
     );
   }

@@ -174,13 +174,13 @@ class CanvasList extends React.Component {
     );
   };
   noContentRenderer = () => {
-    const { direction, classes, invokeAction } = this.props;
+    const { direction, classes, addNewCanvas } = this.props;
     return (
       direction === 'horizontal' && (
         <div className={classes.noCanvasesContainer}>
           No canvases in the manifest,
           <Tooltip title="Add">
-            <IconButton onClick={() => invokeAction('add-canvas')}>
+            <IconButton onClick={addNewCanvas}>
               <AddCircle />
             </IconButton>
           </Tooltip>
@@ -197,7 +197,7 @@ class CanvasList extends React.Component {
       canvases,
       toolbar,
       selected,
-      invokeAction,
+      addNewCanvas,
       direction,
       listClass,
       itemClass,
@@ -254,7 +254,7 @@ class CanvasList extends React.Component {
                         <div className={classes.defaultAddButtonSpacer}>
                           <Tooltip title="Add Canvas">
                             <IconButton
-                              onClick={() => invokeAction('add-canvas')}
+                              onClick={addNewCanvas}
                             >
                               <AddCircle />
                             </IconButton>
@@ -279,7 +279,7 @@ class CanvasList extends React.Component {
             }}
           >
             <Tooltip title="Add Canvas">
-              <IconButton onClick={() => invokeAction('add-canvas')}>
+              <IconButton onClick={addNewCanvas}>
                 <AddCircle />
               </IconButton>
             </Tooltip>
@@ -309,8 +309,8 @@ CanvasList.propTypes = {
   select: PropTypes.func,
   /* on remove callback */
   remove: PropTypes.func,
-  /* toolbar action dispacher */
-  invokeAction: PropTypes.func.isRequired,
+  /* add new canvas action dispacher */
+  addNewCanvas: PropTypes.func.isRequired,
   /* Canvas panel direction */
   direction: PropTypes.string.isRequired,
   /* Custom list class  */
@@ -326,7 +326,7 @@ CanvasList.defaultProps = {
   selected: null,
   select: emptyFn,
   remove: emptyFn,
-  invokeAction: emptyFn,
+  addNewCanvas: emptyFn,
   direction: 'horizontal',
   listClass: null,
   itemClass: null,

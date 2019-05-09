@@ -339,7 +339,7 @@ class SimpleEditorUI extends React.Component {
                 selected={this.state.selectedIdsByType.Canvas}
                 select={this.selectResource}
                 remove={this.deleteResource}
-                invokeAction={this.invokeAction}
+                addNewCanvas={this.addNewCanvas}
                 getResource={this.getResource}
               />
             </Layout.Bottom>

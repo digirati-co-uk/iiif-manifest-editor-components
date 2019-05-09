@@ -13,7 +13,7 @@ const SlimAppBarButton = ({ text, onClick, icon }) => (
 
 SlimAppBarButton.propTypes = {
   /* icon component used for the app bar button */
-  icon: PropTypes.elementType,
+  icon: PropTypes.element,
   /* click event handler */
   onClick: PropTypes.func,
   /* button text */

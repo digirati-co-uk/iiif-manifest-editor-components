@@ -1,5 +1,5 @@
-// import * as React from 'react';
-// import { render } from 'react-dom';
+import * as React from 'react';
+import { render } from 'react-dom';
 // import SimpleEditorUI from './containers/SimpleEditorUI';
 // render(<SimpleEditorUI />, document.getElementById('app'));
 //import TUDelftManifestEditor from './containers/TUDelftManifestEditor';
@@ -8,40 +8,7 @@
 //render(<VNASlideshowEditor />, document.getElementById('app'));
 
 // import { createMuiTheme } from '@material-ui/core';
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: {
-//       main: '#59bfec',
-//       contrastText: '#fff',
-//     },
-//     secondary: {
-//       main: '#fff',
-//       contrastText: '#59bfec',
-//     },
-//   },
-//   typography: {
-//     fontSize: 12,
-//     useNextVariants: true,
-//   },
-//   mixins: {
-//     toolbar: {
-//       minHeight: 36,
-//     },
-//   },
-// });
-// import ManifestEditorApp from './containers/ManifestEditorApp';
-// render(
-//   <ManifestEditorApp 
-//     theme={theme}
-//     config={{
-//       s3: {
-//         AMZN_S3_IDENTITY_POOL_HASH:
-//           '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
-//         AMZN_S3_REGION: 'eu-west-1',
-//         AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
-//       },
-//     }}
-//   />, document.getElementById('app'));
+
 
 // const theme = createMuiTheme({
 //   palette: {
@@ -148,6 +115,48 @@ import IIIFReducer from './reducers/iiif';
 import EditorReducer from './reducers/editor';
 import { SIZING_STRATEGY } from './constants/sizing';
 import ManifestEditorApp from './containers/ManifestEditorApp';
+// import ExperienceEditorApp from './containers/ExperienceEditorApp';
+
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       main: '#59bfec',
+//       contrastText: '#fff',
+//     },
+//     secondary: {
+//       main: '#fff',
+//       contrastText: '#59bfec',
+//     },
+//   },
+//   typography: {
+//     fontSize: 12,
+//     useNextVariants: true,
+//   },
+//   mixins: {
+//     toolbar: {
+//       minHeight: 36,
+//     },
+//   },
+// });
+
+// render(
+//   <ManifestEditorApp 
+//     theme={theme}
+//     config={{
+//       s3: {
+//         AMZN_S3_IDENTITY_POOL_HASH:
+//           '4ef2005b-0ce9-40f9-9e24-b5d50e72c0f1',
+//         AMZN_S3_REGION: 'eu-west-1',
+//         AMZN_S3_BUCKET: 'dlcs-dlcservices-test-ingest',
+//       },
+//     }}
+//   />, document.getElementById('app'));
+
+// render(
+//   <ExperienceEditorApp 
+//     theme={theme}
+//   />, document.getElementById('app'));
+
 export {
   ManifestEditorApp,
   // Components

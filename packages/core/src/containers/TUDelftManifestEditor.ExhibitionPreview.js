@@ -322,7 +322,7 @@ const ExhibitionPreview = ({
   lang,
   select,
   remove,
-  invokeAction,
+  addNewCanvas,
   listClass,
   itemClass,
   toggleZoom,
@@ -495,7 +495,7 @@ const ExhibitionPreview = ({
       }}
     >
       <Tooltip title="Add Canvas">
-        <IconButton onClick={() => invokeAction('add-canvas')}>
+        <IconButton onClick={addNewCanvas}>
           <AddCircle />
         </IconButton>
       </Tooltip>
@@ -526,7 +526,7 @@ ExhibitionPreview.propTypes = {
   /* on remove callback */
   remove: PropTypes.func,
   /* toolbar action dispacher */
-  invokeAction: PropTypes.func.isRequired,
+  addNewCanvas: PropTypes.func.isRequired,
   /* Custom list class  */
   listClass: PropTypes.string,
   /* Custom item class  */
@@ -539,7 +539,7 @@ ExhibitionPreview.defaultProps = {
   selected: null,
   select: emptyFn,
   remove: emptyFn,
-  invokeAction: emptyFn,
+  addNewCanvas: emptyFn,
   listClass: 'blocks',
   itemClass: 'block',
   toggleZoom: emptyFn,

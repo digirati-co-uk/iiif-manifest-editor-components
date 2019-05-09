@@ -26,9 +26,9 @@ import {
 // } from '@iiif-mec/core';
 import AppBarButton from '../components/AppBarButton/AppBarButton';
 import TabPanel from '../components/TabPanel/TabPanel';
-import AnnotationList from '../components/AnnotationList/AnnotationList';
-import CanvasList from '../components/CanvasList/CanvasList';
-import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanvasPanel';
+// import AnnotationList from '../components/AnnotationList/AnnotationList';
+// import CanvasList from '../components/CanvasList/CanvasList';
+// import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanvasPanel';
 import TextPainting from '../annotation/TextPainting';
 import TextLayoutViewFocus from '../annotation/TextLayoutViewFocus';
 import ImagePainting from '../annotation/ImagePainting';
@@ -88,9 +88,9 @@ class TUDelftManifestEditor extends ManifestEditorApp {
     behavior: this.state.exhibitionMode && {
       Canvas: {
         groups: [
-          ['row', 'column'],
+          ['row', 'column', 'info'],
           props => <ExhibitionCanvasWidthHeight {...props} />,
-          ['caption-left', 'info'],
+          ['caption-left'],
         ],
       },
     }
@@ -151,95 +151,38 @@ class TUDelftManifestEditor extends ManifestEditorApp {
     </React.Fragment>
   );
 
-  renderLeftPanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => 
-    !(this.state.exhibitionMode && this.state.exhibitionFullView) && (
-      <TabPanel>
-        <AnnotationList
-          title="annotations"
+  renderDelftLeftPanel = ({canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang}) => (
+    <TabPanel>
+      {this.renderAnnotationList(canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang)}
+      {this.state.exhibitionMode && (
+        <ExhibitionPreview
+          title="Exhibition Preview"
           getResource={this.getResource}
-          annotations={paintingAnnotations}
+          resources={this.state.resources}
+          canvases={canvases}
+          manifest={this.state.resources[this.state.rootResource]}
+          direction="vertical"
           lang={lang}
-          selected={this.state.selectedIdsByType.Annotation}
+          selected={this.state.selectedIdsByType.Canvas}
           select={this.selectResource}
           remove={this.deleteResource}
-          invokeAction={this.invokeAction2}
-          isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
+          invokeAction={this.invokeAction}
+          toggleZoom={this.toggleExhibitionFullView}
         />
-        {this.state.exhibitionMode && (
-          <ExhibitionPreview
-            title="Exhibition Preview"
-            getResource={this.getResource}
-            resources={this.state.resources}
-            canvases={canvases}
-            manifest={this.state.resources[this.state.rootResource]}
-            direction="vertical"
-            lang={lang}
-            selected={this.state.selectedIdsByType.Canvas}
-            select={this.selectResource}
-            remove={this.deleteResource}
-            invokeAction={this.invokeAction}
-            toggleZoom={this.toggleExhibitionFullView}
-          />
-        )}
-      </TabPanel>
-    );
+      )}
+    </TabPanel>
+  );
 
-  renderCentrePanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => 
-    !(this.state.exhibitionMode && this.state.exhibitionFullView) ? (
-      <EditableCanvasPanel
-        title="annotations"
-        canvas={selectedCanvas}
-        resources={this.state.resources}
-        selectedAnnotation={this.state.selectedIdsByType.Annotation}
-        select={this.selectResource}
-        update={this.updateProperty}
-        getResource={this.getResource}
-      />
-    ) : (
-      <TabPanel>
-        <AnnotationList
-          title="annotations"
-          getResource={this.getResource}
-          annotations={paintingAnnotations}
-          lang={lang}
-          selected={this.state.selectedIdsByType.Annotation}
-          select={this.selectResource}
-          remove={this.deleteResource}
-          invokeAction={this.invokeAction2}
-          isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
-        />
-        {this.state.exhibitionMode && (
-          <ExhibitionPreview
-            getResource={this.getResource}
-            resources={this.state.resources}
-            title="Exhibition Preview"
-            canvases={canvases}
-            manifest={this.state.resources[this.state.rootResource]}
-            direction="vertical"
-            lang={lang}
-            selected={this.state.selectedIdsByType.Canvas}
-            select={this.selectResource}
-            remove={this.deleteResource}
-            invokeAction={this.invokeAction}
-            toggleZoom={this.toggleExhibitionFullView}
-          />
-        )}
-      </TabPanel>
-    );
+  renderLeftPanelComponents = (panelProps) => 
+    !(this.state.exhibitionMode && this.state.exhibitionFullView) && this.renderDelftLeftPanel(panelProps);
+
+  renderCentrePanelComponents = (panelProps) => 
+    !(this.state.exhibitionMode && this.state.exhibitionFullView) 
+      ? this.renderCanvasEditor(panelProps)
+      : this.renderDelftLeftPanel(panelProps);
   
-  renderBottomPanelComponents = (canvases, selectedCanvas, paintingAnnotations, selectedAnnotation, lang) => 
-    !this.state.exhibitionMode && (
-      <CanvasList
-        getResource={this.getResource}
-        canvases={canvases}
-        lang={lang}
-        direction="horizontal"
-        selected={this.state.selectedIdsByType.Canvas}
-        select={this.selectResource}
-        remove={this.deleteResource}
-        invokeAction={this.invokeAction}
-      />
-    );
+  renderBottomPanelComponents = (panelProps) =>
+    !this.state.exhibitionMode && this.renderCanvasList(panelProps)
 }
 
 export default TUDelftManifestEditor;
