@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 
-import { LibraryAdd, LibraryBooks, SaveAlt, Visibility } from '@material-ui/icons';
+import { LibraryAdd, LibraryBooks, SaveAlt, Visibility, Save, Forward } from '@material-ui/icons';
 import { AppBarButton, ManifestEditorApp } from '@iiif-mec/core';
 
 import EditorModeSelector from '../components/EditorModeSelector';
@@ -10,6 +10,48 @@ import SaveManifestModal from '../components/SaveManifestModal';
 import PreviewModal from '../components/Preview/PreviewModal';
 import SlideEditor from '../components/SlideEditor';
 import configs from '../defaults';
+
+const ExperienceEditorAppSaveIcon = () => (
+  <span 
+    style={{
+      position: 'relative',
+      maxHeight: '24px',
+    }}
+  >
+    <Save />
+    <Forward 
+      style={{
+        fill: '#000',
+        transformOrigin: '50% 50%',
+        transform: 'rotate(-90deg) scale(0.5)',
+        top: '30%',
+        left: '40%',
+        position: 'absolute',
+      }} 
+    />
+  </span>
+);
+
+const ExperienceEditorAppLoadIcon = () => (
+  <span 
+    style={{
+      position: 'relative',
+      maxHeight: '24px',
+    }}
+  >
+    <Save />
+    <Forward
+      style={{
+        fill: '#000',
+        transformOrigin: '50% 50%',
+        transform: 'rotate(90deg) scale(0.5)',
+        top: '30%',
+        left: '40%',
+        position: 'absolute',
+      }} 
+    />
+  </span>
+);
 
 class ExperienceEditorApp extends ManifestEditorApp {
 
@@ -85,12 +127,12 @@ class ExperienceEditorApp extends ManifestEditorApp {
       <AppBarButton
         text="Load"
         onClick={this.toggleLoadManifestDialog}
-        icon={<LibraryBooks />}
+        icon={<ExperienceEditorAppLoadIcon />}
       />
       <AppBarButton
         text="Save"
         onClick={this.toggleSaveManifestDialog}
-        icon={<LibraryBooks />}
+        icon={<ExperienceEditorAppSaveIcon />}
       />
       <AppBarButton
         text="Download"
@@ -141,8 +183,8 @@ class ExperienceEditorApp extends ManifestEditorApp {
         (panelProps.selectedAnnotation && panelProps.selectedAnnotation.motivation !== 'layout-viewport-focus')) 
       ? (
         <SlideEditor
-          manifestJSON={this.state.rootResource}
-          canvasId={this.state.selectedIdsByType.Canvas}
+          selectedCanvas={panelProps.selectedCanvas} 
+          resources={this.state.resources}
         />
       ) 
       : this.renderCanvasEditor(panelProps);
@@ -151,6 +193,15 @@ class ExperienceEditorApp extends ManifestEditorApp {
     this.state.editorMode !== 'annotated-zoom' && 
     this.renderCanvasList(panelProps);
   
+  setUpDialogComponents = () => {
+    this.modalDefinitions = [{
+      renderer: this.renderSourcePreviewDialog,
+      openState: 'previewDialogOpen'
+    }, {
+      renderer: this.renderDefaultLoadManifestDialog,
+      openState: 'loadManifestDialogOpen'
+    }];
+  };
 };
 
 export default ExperienceEditorApp;
