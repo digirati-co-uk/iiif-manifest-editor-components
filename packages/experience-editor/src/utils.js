@@ -93,6 +93,10 @@ export const saveFixtures = manifest => {
     return saveAnnotatedZoom(outputManifest);
   } else if (behaviors.indexOf('vam-slideshow') !== -1) {
     return saveSlideshow(outputManifest);
+  } else if (behaviors.indexOf('annotated-zoom') !== -1) {
+    return saveAnnotatedZoom(outputManifest);
+  } else if (behaviors.indexOf('slideshow') !== -1) {
+    return saveSlideshow(outputManifest);
   }
   return outputManifest;
 };

@@ -44,13 +44,6 @@ class ManifestEditorApp extends React.Component {
       },
       lang: 'en',
     };
-    this.setUpDialogComponents();
-  }
-
-  buildAppBarProps = () =>
-    this.props.appBarProps || this.appBarProps;
-
-  setUpDialogComponents = () => {
     this.modalDefinitions = [{
       renderer: this.renderSourcePreviewDialog,
       openState: 'previewDialogOpen'
@@ -58,7 +51,10 @@ class ManifestEditorApp extends React.Component {
       renderer: this.renderDefaultLoadManifestDialog,
       openState: 'loadManifestDialogOpen'
     }];
-  };
+  }
+
+  buildAppBarProps = () =>
+    this.props.appBarProps || this.appBarProps;
 
   changeLanguage = lang => {
     this.dispatch(EditorReducer, { type: 'CHANGE_LANGUAGE', lang });

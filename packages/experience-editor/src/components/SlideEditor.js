@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core';
 import { Manifest, RangeNavigationProvider } from '@canvas-panel/core';
 import { Slide } from '@canvas-panel/slideshow';
 import { transformSlideCanvas } from '../utils';
@@ -33,28 +34,22 @@ const renderManifest = canvas => ({
   items: [canvas]
 });
 
-const SlideEditor = ({ selectedCanvas, resources }) => {
+const SlideEditor = ({ classes, selectedCanvas, resources }) => {
   if (!selectedCanvas) {
     return 'Please select a slide to edit';
   }
-  
+
   const rawCanvas = saveResource(selectedCanvas.id, resources);
   if (rawCanvas) {
     transformHeaderHack(rawCanvas);
     rawCanvas.id = 'cnvs_' + new Date().getTime();
     rawCanvas.items[0].items[0].target = rawCanvas.id;
   }
+
   const manifestJSONLD = renderManifest(rawCanvas);
+
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-      }}
-    >
+    <div className={classes.root}>
      <Manifest key={manifestJSONLD.id} jsonLd={manifestJSONLD}>
         <RangeNavigationProvider currentIndex={0}>
           {({ manifest, canvas, region }) => (
@@ -74,4 +69,16 @@ const SlideEditor = ({ selectedCanvas, resources }) => {
   );
 };
 
-export default SlideEditor;
+export default withStyles(()=>({
+  root: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    '& .slide__overlay-content': {
+      overflowX: 'hidden',
+      overflowY: 'auto'
+    }
+  }
+}))(SlideEditor);

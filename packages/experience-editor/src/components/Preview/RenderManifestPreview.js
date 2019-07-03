@@ -8,7 +8,7 @@ const RenderManifest = ({ manifest, isDemoPage }) => {
   const isAnnotatedZoom =
     manifest &&
     manifest.behavior &&
-    manifest.behavior.filter(behavior => behavior === 'vam-annotated-zoom')
+    manifest.behavior.filter(behavior => behavior === 'annotated-zoom')
       .length > 0;
 
   if (isAnnotatedZoom && isDemoPage) {
@@ -39,7 +39,11 @@ const RenderManifest = ({ manifest, isDemoPage }) => {
       </div>
     );
   } else {
-    return <SlideShow jsonLd={manifest} />;
+    return (
+      <div class="slideshow-wrapper">
+        <SlideShow jsonLd={manifest} />
+      </div>
+    );
   }
 };
 

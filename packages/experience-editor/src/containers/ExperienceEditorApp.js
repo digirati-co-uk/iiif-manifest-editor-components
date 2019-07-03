@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 
-import { LibraryAdd, LibraryBooks, SaveAlt, Visibility, Save, Forward } from '@material-ui/icons';
-import { AppBarButton, ManifestEditorApp } from '@iiif-mec/core';
+import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
+import { AppBarButton, ManifestEditorApp, saveResource } from '@iiif-mec/core';
 
 import EditorModeSelector from '../components/EditorModeSelector';
 import LoadManifestModal from '../components/LoadManifestModal';
@@ -10,50 +10,27 @@ import SaveManifestModal from '../components/SaveManifestModal';
 import PreviewModal from '../components/Preview/PreviewModal';
 import SlideEditor from '../components/SlideEditor';
 import configs from '../defaults';
+import LoadIcon from '../components/LoadIcon';
+import SaveIcon from '../components/SaveIcon';
 
-const ExperienceEditorAppSaveIcon = () => (
-  <span 
-    style={{
-      position: 'relative',
-      maxHeight: '24px',
-    }}
-  >
-    <Save />
-    <Forward 
-      style={{
-        fill: '#000',
-        transformOrigin: '50% 50%',
-        transform: 'rotate(-90deg) scale(0.5)',
-        top: '30%',
-        left: '40%',
-        position: 'absolute',
-      }} 
-    />
-  </span>
-);
-
-const ExperienceEditorAppLoadIcon = () => (
-  <span 
-    style={{
-      position: 'relative',
-      maxHeight: '24px',
-    }}
-  >
-    <Save />
-    <Forward
-      style={{
-        fill: '#000',
-        transformOrigin: '50% 50%',
-        transform: 'rotate(90deg) scale(0.5)',
-        top: '30%',
-        left: '40%',
-        position: 'absolute',
-      }} 
-    />
-  </span>
-);
 
 class ExperienceEditorApp extends ManifestEditorApp {
+  constructor(props) {
+    super(props);
+    this.modalDefinitions = [{
+      renderer: this.renderSourcePreviewDialog,
+      openState: 'previewDialogOpen'
+    }, {
+      renderer: this.renderLoadManifestDialog,
+      openState: 'loadManifestDialogOpen'
+    }, {
+      renderer: this.renderSaveManifestDialog,
+      openState: 'saveManifestDialogOpen'
+    }, {
+      renderer: this.renderPreviewDialog,
+      openState: 'previewInContextDialogOpen'
+    }];
+  }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onUnload);
@@ -127,12 +104,12 @@ class ExperienceEditorApp extends ManifestEditorApp {
       <AppBarButton
         text="Load"
         onClick={this.toggleLoadManifestDialog}
-        icon={<ExperienceEditorAppLoadIcon />}
+        icon={<LoadIcon />}
       />
       <AppBarButton
         text="Save"
         onClick={this.toggleSaveManifestDialog}
-        icon={<ExperienceEditorAppSaveIcon />}
+        icon={<SaveIcon />}
       />
       <AppBarButton
         text="Download"
@@ -192,15 +169,59 @@ class ExperienceEditorApp extends ManifestEditorApp {
   renderBottomPanelComponents = (panelProps) => 
     this.state.editorMode !== 'annotated-zoom' && 
     this.renderCanvasList(panelProps);
+
   
-  setUpDialogComponents = () => {
-    this.modalDefinitions = [{
-      renderer: this.renderSourcePreviewDialog,
-      openState: 'previewDialogOpen'
-    }, {
-      renderer: this.renderDefaultLoadManifestDialog,
-      openState: 'loadManifestDialogOpen'
-    }];
+  toggleLoadManifestDialog = () => {
+    this.setState({
+      loadManifestDialogOpen: !this.state.loadManifestDialogOpen,
+    });
+  };
+
+  renderLoadManifestDialog = () => (
+    <LoadManifestModal
+      key={'LoadManifestDialog'}
+      collectionURL={'https://iiif-collection.ch.digtest.co.uk/p3/'}
+      open={this.state.loadManifestDialogOpen}
+      loadManifest={this.loadManifest}
+      handleClose={this.toggleLoadManifestDialog}
+    />
+  );
+
+  toggleSaveManifestDialog = () => {
+    this.setState({
+      saveManifestDialogOpen: !this.state.saveManifestDialogOpen,
+    });
+  };
+
+  renderSaveManifestDialog = () => {
+    const { resources, rootResource, saveManifestDialogOpen } = this.state;
+    return saveManifestDialogOpen && (
+      <SaveManifestModal
+        manifest={saveResource(rootResource, resources)} 
+        open={saveManifestDialogOpen}
+        handleClose={this.toggleSaveManifestDialog}
+        regenerateIds={this.regenerateIds}
+        //enqueueSnackbar={enqueueSnackbar}
+      />
+    );
+  };
+
+  toggleItemPreview = () => {
+    this.setState({
+      previewInContextDialogOpen: !this.state.previewInContextDialogOpen,
+    });
+  };
+
+
+  renderPreviewDialog = () => {
+    const { resources, rootResource, previewInContextDialogOpen } = this.state;
+    return previewInContextDialogOpen && (
+      <PreviewModal
+        manifest={saveResource(rootResource, resources)} 
+        open={previewInContextDialogOpen}
+        handleClose={this.toggleItemPreview}
+      />
+    );
   };
 };
 
