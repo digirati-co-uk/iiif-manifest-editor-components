@@ -2,57 +2,50 @@ import React from 'react';
 import { Manifest, RangeNavigationProvider } from '@canvas-panel/core';
 import { Slide } from '@canvas-panel/slideshow';
 import { transformSlideCanvas } from '../utils';
+import { saveResource } from '@iiif-mec/core';
 
-const SlideEditor = ({ manifestJSON, canvasId }) => {
-  // Dumb way to update after edit, sorry, deadlines...
-  let manifestJSONLD = canvasId
-    ? {
-        '@context': [
-          'http://www.w3.org/ns/anno.jsonld',
-          'http://iiif.io/api/presentation/3/context.json',
-        ],
-        id: 'manifest_' + new Date().getTime(),
-        type: 'Manifest',
-        items: JSON.parse(
-          JSON.stringify(
-            (manifestJSON.items || [])
-              .filter(canvas => canvas.id === canvasId)
-              .map(transformSlideCanvas)
-          )
-        ),
-      }
-    : null;
-  if (manifestJSONLD && manifestJSONLD.items && manifestJSON.items.length > 0) {
-    manifestJSONLD.items[0].id = 'cnvs_' + new Date().getTime();
-    // this is a hack, first thing to remove,
-    // the modification requires to retrofit delft as well.
-    try {
-      // console.log(
-      // 	'manifestJSONLD.items[0].items[0].items[0]',
-      // 	manifestJSONLD.items[0].items[0].items[0]
-      // )
-    } catch (err) {}
-    if (
-      manifestJSONLD.items &&
-      manifestJSONLD.items.length &&
-      manifestJSONLD.items[0] &&
-      manifestJSONLD.items[0].items.length &&
-      manifestJSONLD.items[0].items[0] &&
-      manifestJSONLD.items[0].items[0].items.length &&
-      manifestJSONLD.items[0].items[0].items[0] &&
-      manifestJSONLD.items[0].items[0].items[0].body &&
-      manifestJSONLD.items[0].items[0].items[0].body.service &&
-      !Array.isArray(manifestJSONLD.items[0].items[0].items[0].body.service)
-    ) {
-      manifestJSONLD.items[0].items[0].items[0].body.service.type =
-        'ImageService2';
-      manifestJSONLD.items[0].items[0].items[0].body.service.profile = 'level1';
-      manifestJSONLD.items[0].items[0].items[0].body.service = [
-        manifestJSONLD.items[0].items[0].items[0].body.service,
-      ];
-    }
+const transformHeaderHack = canvas => {
+  if (
+    canvas.items.length &&
+    canvas.items[0] &&
+    canvas.items[0].items.length &&
+    canvas.items[0].items[0] &&
+    canvas.items[0].items[0].body &&
+    canvas.items[0].items[0].body.service &&
+    !Array.isArray(canvas.items[0].items[0].body.service)
+  ) {
+    canvas.items[0].items[0].body.service.type =
+      'ImageService2';
+    canvas.items[0].items[0].body.service.profile = 'level1';
+    canvas.items[0].items[0].body.service = [
+      canvas.items[0].items[0].body.service,
+    ];
   }
-  return canvasId ? (
+};
+
+const renderManifest = canvas => ({
+  '@context': [
+    'http://www.w3.org/ns/anno.jsonld',
+    'http://iiif.io/api/presentation/3/context.json',
+  ],
+  id: 'manifest_' + new Date().getTime(),
+  type: 'Manifest',
+  items: [canvas]
+});
+
+const SlideEditor = ({ selectedCanvas, resources }) => {
+  if (!selectedCanvas) {
+    return 'Please select a slide to edit';
+  }
+  
+  const rawCanvas = saveResource(selectedCanvas.id, resources);
+  if (rawCanvas) {
+    transformHeaderHack(rawCanvas);
+    rawCanvas.id = 'cnvs_' + new Date().getTime();
+    rawCanvas.items[0].items[0].target = rawCanvas.id;
+  }
+  const manifestJSONLD = renderManifest(rawCanvas);
+  return (
     <div
       style={{
         width: '100%',
@@ -62,27 +55,22 @@ const SlideEditor = ({ manifestJSON, canvasId }) => {
         left: 0,
       }}
     >
-      <Manifest key={manifestJSONLD.id} jsonLd={manifestJSONLD}>
+     <Manifest key={manifestJSONLD.id} jsonLd={manifestJSONLD}>
         <RangeNavigationProvider currentIndex={0}>
-          {rangeProps => {
-            const { manifest, canvas, region } = rangeProps;
-            return (
-              <Slide
-                fullscreenProps={{
-                  isFullscreen: false,
-                }}
-                behaviors={canvas.__jsonld.behavior || []}
-                manifest={manifest}
-                canvas={canvas}
-                region={region}
-              />
-            );
-          }}
+          {({ manifest, canvas, region }) => (
+            <Slide
+              fullscreenProps={{
+                isFullscreen: false,
+              }}
+              behaviors={canvas.__jsonld.behavior || []}
+              manifest={manifest}
+              canvas={canvas}
+              region={region}
+            />
+          )}
         </RangeNavigationProvider>
       </Manifest>
     </div>
-  ) : (
-    'Please select a slide to edit'
   );
 };
 
