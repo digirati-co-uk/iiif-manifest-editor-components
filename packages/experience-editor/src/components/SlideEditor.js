@@ -43,7 +43,9 @@ const SlideEditor = ({ classes, selectedCanvas, resources }) => {
   if (rawCanvas) {
     transformHeaderHack(rawCanvas);
     rawCanvas.id = 'cnvs_' + new Date().getTime();
-    rawCanvas.items[0].items[0].target = rawCanvas.id;
+    if (rawCanvas.items[0].items.length > 0) {
+      rawCanvas.items[0].items[0].target = rawCanvas.id;
+    }
   }
 
   const manifestJSONLD = renderManifest(rawCanvas);

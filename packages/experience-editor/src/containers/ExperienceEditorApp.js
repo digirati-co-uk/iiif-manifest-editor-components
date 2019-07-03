@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 
 import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
-import { AppBarButton, ManifestEditorApp, saveResource } from '@iiif-mec/core';
+import { AppBarButton, ManifestEditorApp, saveResource, IIIFReducer } from '@iiif-mec/core';
 
 import EditorModeSelector from '../components/EditorModeSelector';
 import LoadManifestModal from '../components/LoadManifestModal';
