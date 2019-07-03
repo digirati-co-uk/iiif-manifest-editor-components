@@ -20,10 +20,13 @@ import {
   isCanvasChangedEditor,
   isCanvasChangedAnnotationList,
 } from './changeDetection';
-
+import { loadResource, saveResource } from './IIIFPersistance';
 export {
   //download
   download,
+  // persistence 
+  loadResource, 
+  saveResource,
   // resource
   renderResource,
   locale,

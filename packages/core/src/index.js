@@ -88,8 +88,11 @@ import {
   FormStyles,
 } from './annotation';
 import {
-  //download
+  // download
   download,
+  // persistence,
+  loadResource, 
+  saveResource,
   // resource
   renderResource,
   locale,
@@ -115,6 +118,7 @@ import IIIFReducer from './reducers/iiif';
 import EditorReducer from './reducers/editor';
 import { SIZING_STRATEGY } from './constants/sizing';
 import ManifestEditorApp from './containers/ManifestEditorApp';
+
 // import ExperienceEditorApp from './containers/ExperienceEditorApp';
 
 // const theme = createMuiTheme({
@@ -212,6 +216,9 @@ export {
   //...utils,
   //download
   download,
+  // persistence
+  loadResource, 
+  saveResource,
   // resource
   renderResource,
   locale,
