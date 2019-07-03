@@ -2,14 +2,13 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 
 import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
-import { AppBarButton, ManifestEditorApp, saveResource, IIIFReducer } from '@iiif-mec/core';
+import { AppBarButton, ManifestEditorApp, saveResource, IIIFReducer, IIIFCollectionExplorer } from '@iiif-mec/core';
 
 import EditorModeSelector from '../components/EditorModeSelector';
 import LoadManifestModal from '../components/LoadManifestModal';
 import SaveManifestModal from '../components/SaveManifestModal';
 import PreviewModal from '../components/Preview/PreviewModal';
 import SlideEditor from '../components/SlideEditor';
-import configs from '../defaults';
 import LoadIcon from '../components/LoadIcon';
 import SaveIcon from '../components/SaveIcon';
 
@@ -30,6 +29,9 @@ class ExperienceEditorApp extends ManifestEditorApp {
       renderer: this.renderPreviewDialog,
       openState: 'previewInContextDialogOpen'
     }];
+    if (!this.state.editorMode) {
+      this.state.editorMode = 'default';
+    }
   }
 
   componentDidMount() {
@@ -49,22 +51,12 @@ class ExperienceEditorApp extends ManifestEditorApp {
     )
   });
 
-  setUpDialogComponents = () => {
-    this.dialogs = [{
-      renderer: this.renderSourcePreviewDialog,
-      openState: 'previewDialogOpen'
-    }, {
-      renderer: this.renderDefaultLoadManifestDialog,
-      openState: 'loadManifestDialogOpen'
-    }];
-  };
-
   getConfig = () => ({
     config: {
       appBarButtonStyle: 'icon-and-label',
       hideHeaderForSingleTab: true,
     },
-    ...configs[this.state.editorMode || 'default']
+    ...this.props.configs[this.state.editorMode || 'default']
   });
 
   newProject = () => {
@@ -138,6 +130,9 @@ class ExperienceEditorApp extends ManifestEditorApp {
       },
       () => {
         const manifest = this.state.resources[this.state.rootResource];
+        if (!manifest) {
+          return;
+        }
         const behaviours = (manifest.behavior || []).filter(
           item => item !== 'slideshow' && item !== 'annotated-zoom'
         );
@@ -180,7 +175,7 @@ class ExperienceEditorApp extends ManifestEditorApp {
   renderLoadManifestDialog = () => (
     <LoadManifestModal
       key={'LoadManifestDialog'}
-      collectionURL={'https://iiif-collection.ch.digtest.co.uk/p3/'}
+      collectionURL={this.props.configs.rootManifestUrl || ''}
       open={this.state.loadManifestDialogOpen}
       loadManifest={this.loadManifest}
       handleClose={this.toggleLoadManifestDialog}
@@ -215,7 +210,7 @@ class ExperienceEditorApp extends ManifestEditorApp {
 
   renderPreviewDialog = () => {
     const { resources, rootResource, previewInContextDialogOpen } = this.state;
-    return previewInContextDialogOpen && (
+    return previewInContextDialogOpen && rootResource && resources[rootResource] && (
       <PreviewModal
         manifest={saveResource(rootResource, resources)} 
         open={previewInContextDialogOpen}
@@ -223,6 +218,10 @@ class ExperienceEditorApp extends ManifestEditorApp {
       />
     );
   };
+
+  renderCollectionExplorer = () => (
+    <IIIFCollectionExplorer title="IIIF Explorer" url={this.props.configs.rootCollection || ''}/>
+  );
 };
 
 export default ExperienceEditorApp;

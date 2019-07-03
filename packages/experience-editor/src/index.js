@@ -5,6 +5,7 @@ import { createMuiTheme } from '@material-ui/core';
 //Start vna manifest editor
 import ExperienceEditorApp from './containers/ExperienceEditorApp';
 import { SnackbarProvider } from 'notistack';
+import configs from './defaults';
 
 const theme = createMuiTheme({
   palette: {
@@ -30,7 +31,7 @@ const theme = createMuiTheme({
 
 const App = () => (
   <SnackbarProvider maxStack={3}>
-    <ExperienceEditorApp theme={theme}/>
+    <ExperienceEditorApp theme={theme} configs={configs}/>
   </SnackbarProvider>
 );
 
