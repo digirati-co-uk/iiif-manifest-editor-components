@@ -27,7 +27,8 @@ const ConfiguredBehaviorRenderer = ({
     // Radio
     if (Array.isArray(group)) {
       return doesHaveMultipleOptions(group) ? (
-          <RadioGroupBehaviour 
+          <RadioGroupBehaviour
+            key={`behaviour__${index}`}
             {...{
               target,
               index,
@@ -38,6 +39,7 @@ const ConfiguredBehaviorRenderer = ({
           />
         ) : (
           <CheckboxBehaviour
+            key={`behaviour__${index}`}
             {...{
                 label: group[0],
                 target,
@@ -51,6 +53,7 @@ const ConfiguredBehaviorRenderer = ({
     } else if (isFreetextBehaviour(group)) {
       return (
         <FreeTextBehaviour
+          key={`behaviour__${index}`}
           {...{
             target,
             index,
@@ -61,6 +64,7 @@ const ConfiguredBehaviorRenderer = ({
     } else if (isRadioGroupConfig(group)) {
       return (
         <RadioGroupBehaviour 
+          key={`behaviour__${index}`}
           {...{
             label: group.label,
             target,
@@ -73,11 +77,13 @@ const ConfiguredBehaviorRenderer = ({
       );
     } else if (isCustomBehaviourFunction(group)) {
       return group({
+        key: `behaviour__${index}`,
         target,
         update,
       });
     } else if (isCustomBehaviourComponent(group)) {
       return React.createElement(group.name, {
+        key: `behaviour__${index}`,
         target,
         update,
       });
