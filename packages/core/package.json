@@ -1,6 +1,6 @@
 {
   "name": "@iiif-mec/core",
-  "version": "1.2.2-12",
+  "version": "1.2.2-13",
   "description": "Core components for manifest editing",
   "author": "Adam Meszaros <adam.meszaros@digirati.com>",
   "license": "MIT",
