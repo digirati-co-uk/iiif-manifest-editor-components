@@ -4,8 +4,12 @@
         "cognito",
         "dlcs",
         "dropzone",
+        "extraconfs",
+        "fesk",
         "iiifimagelist",
-        "mixins"
+        "meszaros",
+        "mixins",
+        "prezi"
     ],
     "complexityAnalysis.exclude": ["**/node_modules/**/*.js"],
     "complexityAnalysis.include": ["packages/core/src/**/*.js"]

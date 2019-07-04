@@ -190,13 +190,14 @@ class ExperienceEditorApp extends ManifestEditorApp {
 
   renderSaveManifestDialog = () => {
     const { resources, rootResource, saveManifestDialogOpen } = this.state;
+    const { enqueueSnackbar } = this.props;
     return saveManifestDialogOpen && (
       <SaveManifestModal
         manifest={saveResource(rootResource, resources)} 
         open={saveManifestDialogOpen}
         handleClose={this.toggleSaveManifestDialog}
         regenerateIds={this.regenerateIds}
-        //enqueueSnackbar={enqueueSnackbar}
+        enqueueSnackbar={enqueueSnackbar}
       />
     );
   };
