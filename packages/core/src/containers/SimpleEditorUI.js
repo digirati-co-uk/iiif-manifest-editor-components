@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
-import { LibraryAdd, SaveAlt, Visibility } from '@material-ui/icons';
+import { LibraryAdd, SaveAlt, Visibility, Input } from '@material-ui/icons';
 
 import AnnotationList from '../components/AnnotationList/AnnotationList';
 import CanvasList from '../components/CanvasList/CanvasList';
@@ -10,7 +10,6 @@ import EditableCanvasPanel from '../components/EditableCanvasPanel/EditableCanva
 import Properties from '../components/Properties/Properties';
 import TabPanel from '../components/TabPanel/TabPanel';
 import renderResource, {
-  queryResourceById,
   locale,
   update,
 } from '../utils/IIIFResource';
@@ -22,6 +21,9 @@ import download from '../utils/download';
 import Layout from '../components/ApplicationLayout/ApplicationLayout';
 import AppBar from '../components/ManifestEditorAppBar/ManifestEditorAppBar';
 import AppBarButton from '../components/AppBarButton/AppBarButton';
+import { loadResource, saveResource } from '../utils/IIIFPersistance';
+import DefaultLoadManifestDialog from '../components/DefaultLoadManifestDialog/DefaultLoadManifestDialog';
+import convertToV3ifNecessary from '../utils/IIIFUpgrader';
 
 import './SimpleEditorUI.scss';
 
@@ -47,23 +49,16 @@ const theme = createMuiTheme({
   },
 });
 
-const emptyFn = () => {};
-
-const demoManifest = renderResource('Manifest');
-const demoCanvas = renderResource('Canvas', {
-  parent: demoManifest,
-});
-demoManifest.items.push(demoCanvas);
-
 class SimpleEditorUI extends React.Component {
   constructor(props) {
     super(props);
-    const initialNewManifest = this.newManifest();
+    // const initialNewManifest = this.newManifest();
     const stateToRestore = JSON.parse(localStorage.getItem('autoSave'));
     this.state = stateToRestore || {
-      rootResource: demoManifest,
+      resources: {},
+      rootResource: null,
       selectedIdsByType: {
-        Canvas: demoCanvas.id,
+        Canvas: null,
         Annotation: null, //demoAnnotation1.id,
       },
       lang: 'en',
@@ -148,7 +143,6 @@ class SimpleEditorUI extends React.Component {
   };
 
   updateProperty = (target, property, lang, value) => {
-    //console.log('updateProperty', update(target, property, lang, value));
     this.dispatch(IIIFReducer, {
       type: 'UPDATE_RESOURCE_PROPERTY',
       options: {
@@ -156,26 +150,15 @@ class SimpleEditorUI extends React.Component {
         property,
         lang,
         value,
-        // id: target.id,
-        // props: update(target, property, lang, value),
-      },
-    });
-  };
-
-  updateResource = (target, props) => {
-    this.dispatch(IIIFReducer, {
-      type: 'UPDATE_RESOURCE',
-      options: {
-        id: target.id,
-        props,
       },
     });
   };
 
   saveProject = () => {
+    const { resources, rootResource } = this.state;
     download(
-      this.state.rootResource,
-      locale(this.state.rootResource.label, this.state.lang) + '.json'
+      saveResource(rootResource, resources),
+      locale(resources[rootResource].label, this.state.lang) + '.json'
     );
   };
 
@@ -194,35 +177,48 @@ class SimpleEditorUI extends React.Component {
   };
 
   togglePreviewDialog = () => {
+    const { resources, rootResource } = this.state;
     this.setState({
       previewDialogOpen: !this.state.previewDialogOpen,
+      jsonSnapshot: saveResource(rootResource, resources),
     });
+  };
+
+  toggleManifestDialog = () => {
+    this.setState({
+      loadManifestDialogOpen: !this.state.loadManifestDialogOpen,
+    });
+  };
+
+  loadManifest = json => {
+    this.dispatch(IIIFReducer, {
+      type: 'LOAD_MANIFEST',
+      manifest: convertToV3ifNecessary(json),
+    });
+    this.toggleManifestDialog();
+  };
+
+  getResource = id => {
+    return this.state.resources[id];
   };
 
   render() {
     const canvases = this.state.rootResource
-      ? this.state.rootResource.items
+      ? this.state.resources[this.state.rootResource].items
       : [];
-    const selectedCanvas = queryResourceById(
-      this.state.selectedIdsByType.Canvas,
-      this.state.rootResource
-    );
+
+    const selectedCanvas = this.state.selectedIdsByType.Canvas
+      ? this.state.resources[this.state.selectedIdsByType.Canvas] || null
+      : null;
+
     const paintingAnnotations =
       selectedCanvas && selectedCanvas.items && selectedCanvas.items.length > 0
-        ? selectedCanvas.items[0].items || null
+        ? this.state.resources[selectedCanvas.items[0]].items || null
         : null;
 
-    const taggingAnnotations =
-      selectedCanvas &&
-      selectedCanvas.annotations &&
-      selectedCanvas.annotations.length > 0
-        ? selectedCanvas.annotations[0].items || null
-        : null;
-
-    const selectedAnnotation = queryResourceById(
-      this.state.selectedIdsByType.Annotation,
-      selectedCanvas
-    );
+    const selectedAnnotation = this.state.selectedIdsByType.Annotation
+      ? this.state.resources[this.state.selectedIdsByType.Annotation] || null
+      : null;
     const { lang } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
@@ -287,59 +283,77 @@ class SimpleEditorUI extends React.Component {
                 onClick={this.togglePreviewDialog}
                 icon={<Visibility />}
               />
+              <AppBarButton
+                text="Load Manifest"
+                onClick={this.toggleManifestDialog}
+                icon={<Input />}
+              />
             </AppBar>
             <Layout.Middle>
-              <Layout.Left>
-                <AnnotationList
-                  title="Painting"
-                  annotations={paintingAnnotations}
-                  lang={lang}
-                  selected={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  remove={this.deleteResource}
-                  invokeAction={this.invokeAction2}
-                  isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
-                />
-              </Layout.Left>
-              <Layout.Center>
-                <EditableCanvasPanel
-                  canvas={selectedCanvas}
-                  selectedAnnotation={this.state.selectedIdsByType.Annotation}
-                  select={this.selectResource}
-                  update={this.updateResource}
-                />
-              </Layout.Center>
-              <Layout.Right>
-                <TabPanel>
-                  <Properties
-                    manifest={this.state.rootResource}
-                    canvas={selectedCanvas}
-                    annotation={selectedAnnotation}
+              <Layout.MiddleContent>
+                <Layout.Left>
+                  <AnnotationList
+                    title="Painting"
+                    annotations={paintingAnnotations}
                     lang={lang}
-                    changeLanguage={this.changeLanguage}
-                    update={this.updateProperty}
+                    selected={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    remove={this.deleteResource}
+                    invokeAction={this.invokeAction2}
+                    isEditingAllowed={!!this.state.selectedIdsByType.Canvas}
+                    getResource={this.getResource}
                   />
-                  <DLCSPanel title="DLCS" />
-                  <IIIFCollectionExplorer title="IIIF Explorer" />
-                </TabPanel>
-              </Layout.Right>
+                </Layout.Left>
+                <Layout.Center>
+                  <EditableCanvasPanel
+                    canvas={selectedCanvas}
+                    resources={this.state.resources}
+                    selectedAnnotation={this.state.selectedIdsByType.Annotation}
+                    select={this.selectResource}
+                    update={this.updateProperty}
+                    getResource={this.getResource}
+                  />
+                </Layout.Center>
+                <Layout.Right>
+                  <TabPanel>
+                    <Properties
+                      resources={this.state.resources}
+                      manifest={this.state.resources[this.state.rootResource]}
+                      canvas={selectedCanvas}
+                      annotation={selectedAnnotation}
+                      lang={lang}
+                      changeLanguage={this.changeLanguage}
+                      update={this.updateProperty}
+                    />
+                    <DLCSPanel title="DLCS" />
+                    <IIIFCollectionExplorer title="IIIF Explorer" />
+                  </TabPanel>
+                </Layout.Right>
+              </Layout.MiddleContent>
             </Layout.Middle>
             <Layout.Bottom>
               <CanvasList
+                canvas={selectedCanvas}
                 canvases={canvases}
                 lang={lang}
                 selected={this.state.selectedIdsByType.Canvas}
                 select={this.selectResource}
                 remove={this.deleteResource}
-                invokeAction={this.invokeAction}
+                addNewCanvas={this.addNewCanvas}
+                getResource={this.getResource}
               />
             </Layout.Bottom>
           </Layout>
         </ManifestEditor>
         <SourcePreviewDialog
-          json={this.state.rootResource}
+          json={this.state.jsonSnapshot}
           open={this.state.previewDialogOpen}
           handleClose={this.togglePreviewDialog}
+        />
+        <DefaultLoadManifestDialog
+          open={this.state.loadManifestDialogOpen}
+          loadManifest={this.loadManifest}
+          handleClose={this.toggleManifestDialog}
         />
       </MuiThemeProvider>
     );

@@ -1,4 +1,9 @@
-export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
+export const isCanvasChangedEditor = (
+  nextCanvas,
+  currentCanvas,
+  getResource,
+  getNextResource
+) => {
   if (nextCanvas === null && currentCanvas === null) {
     return false;
   }
@@ -10,8 +15,9 @@ export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
     nextCanvas.height !== currentCanvas.height ||
     nextCanvas.items.length !== currentCanvas.items.length ||
     nextCanvas.items
-      .map((nextAnnotationList, index) => {
-        const currentAnnotationList = currentCanvas.items[index];
+      .map((nextAnnotationListId, index) => {
+        const currentAnnotationList = getResource(currentCanvas.items[index]);
+        const nextAnnotationList = getNextResource(nextAnnotationListId);
         return (
           nextAnnotationList.id !== currentAnnotationList.id ||
           (!currentAnnotationList.items && !!nextAnnotationList.items) ||
@@ -19,9 +25,11 @@ export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
           nextAnnotationList.items.length !==
             currentAnnotationList.items.length ||
           nextAnnotationList.items
-            .map((nextAnnotation, annotationIndex) => {
-              const currentAnnotation =
-                currentAnnotationList.items[annotationIndex];
+            .map((nextAnnotationId, annotationIndex) => {
+              const currentAnnotation = getResource(
+                currentAnnotationList.items[annotationIndex]
+              );
+              const nextAnnotation = getNextResource(nextAnnotationId);
               return (
                 nextAnnotation.id !== currentAnnotation.id ||
                 nextAnnotation.target !== currentAnnotation.target ||
@@ -39,7 +47,12 @@ export const isCanvasChangedEditor = (nextCanvas, currentCanvas) => {
   );
 };
 
-export const isCanvasChangedAnnotationList = (nextCanvas, currentCanvas) => {
+export const isCanvasChangedAnnotationList = (
+  nextCanvas,
+  currentCanvas,
+  getResource
+) => {
+  //return true;
   if (nextCanvas === null && currentCanvas === null) {
     return false;
   }
@@ -51,8 +64,9 @@ export const isCanvasChangedAnnotationList = (nextCanvas, currentCanvas) => {
     nextCanvas.height !== currentCanvas.height ||
     nextCanvas.items.length !== currentCanvas.items.length ||
     nextCanvas.items
-      .map((nextAnnotationList, index) => {
-        const currentAnnotationList = currentCanvas.items[index];
+      .map((nextAnnotationListId, index) => {
+        const currentAnnotationList = getResource(currentCanvas.items[index]);
+        const nextAnnotationList = getResource(nextAnnotationListId);
         return (
           nextAnnotationList.id !== currentAnnotationList.id ||
           (!currentAnnotationList.items && !!nextAnnotationList.items) ||
@@ -60,9 +74,11 @@ export const isCanvasChangedAnnotationList = (nextCanvas, currentCanvas) => {
           nextAnnotationList.items.length !==
             currentAnnotationList.items.length ||
           nextAnnotationList.items
-            .map((nextAnnotation, annotationIndex) => {
-              const currentAnnotation =
-                currentAnnotationList.items[annotationIndex];
+            .map((nextAnnotationId, annotationIndex) => {
+              const currentAnnotation = getResource(
+                currentAnnotationList.items[annotationIndex]
+              );
+              const nextAnnotation = getResource(nextAnnotationId);
               return (
                 nextAnnotation.id !== currentAnnotation.id ||
                 nextAnnotation.target !== currentAnnotation.target ||
@@ -75,6 +91,20 @@ export const isCanvasChangedAnnotationList = (nextCanvas, currentCanvas) => {
             .indexOf(true) !== -1
         );
       })
+      .indexOf(true) !== -1
+  );
+};
+
+export const isCanvasListChanged = (nextCanvasList, currentCanvasList) => {
+  if (nextCanvasList === null && currentCanvasList === null) {
+    return false;
+  }
+  return (
+    (nextCanvasList === null && currentCanvasList !== null) ||
+    (nextCanvasList !== null && currentCanvasList === null) ||
+    nextCanvasList.length !== currentCanvasList.length ||
+    nextCanvasList
+      .map((canvasId, index) => canvasId !== currentCanvasList[index])
       .indexOf(true) !== -1
   );
 };

@@ -1,6 +1,5 @@
 import download from './download';
 import renderResource, {
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,
@@ -21,13 +20,15 @@ import {
   isCanvasChangedEditor,
   isCanvasChangedAnnotationList,
 } from './changeDetection';
-
+import { loadResource, saveResource } from './IIIFPersistance';
 export {
   //download
   download,
+  // persistence 
+  loadResource, 
+  saveResource,
   // resource
   renderResource,
-  queryResourceById,
   locale,
   update,
   getAnnotationDimensions,

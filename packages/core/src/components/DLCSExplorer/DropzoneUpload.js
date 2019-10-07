@@ -136,11 +136,9 @@ class DLCSDropzoneUpload extends React.Component {
         if (!(response.status === 200 || response.status === 201)) {
           throw `${response.status} - ${response.statusText}`;
         }
-        return response;
+        return response.json();
       })
-      .then(response => response.json())
       .then(response => {
-        //console.log('putImage - doneish', response);
         this.setState({
           uploaded: {
             ...this.state.uploaded,
@@ -300,9 +298,6 @@ class DLCSDropzoneUpload extends React.Component {
               <DialogActions>
                 <Button
                   onClick={this.resetUploadState}
-                  // disabled={
-                  //   this.state.files.length === this.state.uploaded.length
-                  // }
                   color="primary"
                 >
                   Ok

@@ -1,4 +1,4 @@
-import { queryResourceById, getAnnotationDimensions } from './IIIFResource';
+import { getAnnotationDimensions } from './IIIFResource';
 import generateURI from './URIGenerator';
 import { SIZING_STRATEGY } from '../constants/sizing';
 import IIIFReducer from '../reducers/iiif';
@@ -12,10 +12,7 @@ export const addResource = (
   motivation
 ) => {
   const newProps = JSON.parse(JSON.stringify(data));
-  const canvas = queryResourceById(
-    state.selectedIdsByType.Canvas,
-    state.rootResource
-  );
+  const canvas = state.resources[state.selectedIdsByType.Canvas];
   const { width, height } = getAnnotationDimensions(data);
   const ratio = width / height;
   if (!newProps.target) {

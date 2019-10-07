@@ -5,15 +5,25 @@ import { Toolbar } from '@material-ui/core';
 import { EditorConsumer } from '../EditorContext/EditorContext';
 import NewAnnotationDialog from '../NewAnnotationDialog/NewAnnotationDialog';
 import { addResource } from '../../utils/addResource';
-// import IIIFReducer from '../../reducers/iiif';
-// import generateURI from '../../utils/URIGenerator';
-// import { SIZING_STRATEGY } from '../../constants/sizing';
-// import {
-//   queryResourceById,
-//   getAnnotationDimensions,
-// } from '../../utils/IIIFResource';
+import ButtonWithTooltip from '../ButtonWithTooltip/ButtonWithTooltip';
 
-// NOTE: waiting for docz to be compatible with the new React 16.8.x...
+const DefaultAnnotationListToolbarButton = ({ config, ...props }) => (
+  <ButtonWithTooltip title={config.iconToolTip} {...props}>
+    {React.createElement(config.icon)}
+  </ButtonWithTooltip>
+)
+
+DefaultAnnotationListToolbarButton.propTypes = {
+  // config: PropTypes.shape({
+  //   icon: PropTypes.elementType,
+  //   iconToolTip: PropTypes.string
+  // }),
+  config: PropTypes.func,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+}
+
+
 const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
   const [dialog, setDialog] = useState(null);
   return (
@@ -26,9 +36,11 @@ const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
           }}
         >
           {Object.entries(configuration.annotation).map(
-            ([type, config], index) =>
-              config.button({
-                onClick: () => {
+            ([type, config], index) => (
+              <DefaultAnnotationListToolbarButton
+                key={`DefaultAnnotationListToolbar_${index}_${type}`}
+                config={config}
+                onClick={() => {
                   if (config.propertyEditor) {
                     setDialog({
                       form: config,
@@ -37,10 +49,10 @@ const DefaultAnnotationListToolbar = ({ invokeAction, disableActions }) => {
                   } else {
                     invokeAction(config.actions.add)();
                   }
-                },
-                key: `DefaultAnnotationListToolbar_${index}_${type}`,
-                disabled: disableActions,
-              })
+                }}
+                disabled={disableActions}
+              />
+            )
           )}
           <NewAnnotationDialog
             form={dialog && dialog.form}

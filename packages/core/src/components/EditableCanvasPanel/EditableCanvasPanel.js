@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-//import { Rnd } from 'react-rnd';
 import { Droppable } from 'react-beautiful-dnd';
 import { IconButton, withStyles } from '@material-ui/core';
 import { ZoomIn, ZoomOut } from '@material-ui/icons';
@@ -10,7 +9,6 @@ import AnnotationBodyRenderer from '../AnnotationBodyRenderer/AnnotationBodyRend
 import { getBounds, makeURLHash } from '../../utils/IIIFResource';
 //Experimental workaround for again Canvas Panel....
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
-import { addAlphaToHex } from '../../utils/colors';
 import {
   Viewport,
   OpenSeadragonViewport,
@@ -19,63 +17,7 @@ import {
 } from '@canvas-panel/core';
 import EditableAnnotation from './EditableAnnotation';
 import { isCanvasChangedEditor } from '../../utils/changeDetection';
-
-const styles = theme => ({
-  '@global': {
-    '.navigator': {
-      zIndex: 1000,
-    },
-  },
-  noCanvasSelectedMessage: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  root: {
-    overflow: 'hidden',
-    position: 'relative',
-    webkitUserSelect: 'none',
-    mozUserSelect: 'none',
-    msUserSelect: 'none',
-    userSelect: 'none',
-  },
-  container: {
-    width: '100%',
-    position: 'absolute',
-    height: '100%',
-    flex: 1,
-    top: 0,
-    left: 0,
-  },
-  canvasBackground: {
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0,0,0,0.2)',
-    position: 'relative',
-  },
-  zoomButtons: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-  },
-  boxClass: {
-    outline: '1px solid transparent',
-    background: addAlphaToHex(theme.palette.primary.main, 0.6),
-  },
-  boxClassSelected: {
-    outline: `1px solid ${theme.palette.primary.main}`,
-    background: addAlphaToHex(theme.palette.primary.main, 0.9),
-  },
-  boxClassSecondary: {
-    outline: '1px solid transparent',
-    background: addAlphaToHex(theme.palette.secondary.main, 0.6),
-  },
-  boxClassSecondarySelected: {
-    outline: `1px solid ${theme.palette.secondary.main}`,
-    background: addAlphaToHex(theme.palette.secondary.main, 0.9),
-  },
-});
+import styles from './EditableCanvasPanel.styles';
 
 const emptyFn = () => {};
 const getListStyle = (isDraggingOver, draggableStyle) => ({
@@ -148,38 +90,70 @@ class EditableCanvasPanel extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    if (typeof annotation.target.id === 'string') {
-      this.props.update(annotation.target, {
-        id: `${canvas.id}${hash}`,
-      });
-    } else {
-      this.props.update(annotation, {
-        target: `${canvas.id}${hash}`,
-      });
-    }
+    
+    this.props.update(
+      annotation, 
+      annotation.target && typeof annotation.target.id === 'string' 
+        ? 'target.id'
+        : 'target', 
+      null, 
+      `${canvas.id}${hash}`
+    );
   };
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
+      isCanvasChangedEditor(
+        nextProps.canvas,
+        this.props.canvas,
+        id => this.props.resources[id],
+        id => nextProps.resources[id]
+      )
     );
   }
 
   setViewport = v => (this.viewport = v);
+
+  getAnnotationClasses = () => {
+    const { annotationColor } = this.props;
+    return annotationColor === 'primary'
+      ? ['boxClass', 'boxClassSelected']
+      : ['boxClassSecondary', 'boxClassSecondarySelected']
+  };
+
+  getAnnotationList = canvas => 
+    canvas && canvas.items ? this.props.resources[canvas.items[0]] : null;
+  
+  getAnnotations = annotationList => 
+    annotationList && annotationList.items
+      ? annotationList.items.map(
+          annotationId => this.props.resources[annotationId]
+        )
+      : [];
+
+  renderZoomControls = () => {
+    const { classes } = this.props;
+    return (
+      <div className={classes.zoomButtons}>
+        <IconButton onClick={this.zoomIn}>
+          <ZoomIn />
+        </IconButton>
+        <IconButton onClick={this.zoomOut}>
+          <ZoomOut />
+        </IconButton>
+      </div>
+    )
+  };
 
   render() {
     let {
       classes,
       canvas,
       style,
-      annotationColor,
       selectedAnnotation,
     } = this.props;
-    const annotationClasses =
-      annotationColor === 'primary'
-        ? ['boxClass', 'boxClassSelected']
-        : ['boxClassSecondary', 'boxClassSecondarySelected'];
+    const annotationClasses = this.getAnnotationClasses();
 
     if (!canvas) {
       return (
@@ -188,10 +162,8 @@ class EditableCanvasPanel extends React.Component {
         </div>
       );
     }
-    const annotations =
-      canvas && canvas.items && canvas.items[0] && canvas.items[0].items
-        ? canvas.items[0].items
-        : [];
+    const annotationList = this.getAnnotationList(canvas);
+    const annotations = this.getAnnotations(annotationList);
 
     const ratio = 1;
     if (
@@ -293,17 +265,7 @@ class EditableCanvasPanel extends React.Component {
                                 )
                               }
                             >
-                              {/* <ReactScrollWheelHandler
-                                upHandler={this.zoomIn}
-                                downHandler={this.zoomOut}
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  outline: 0,
-                                }}
-                              > */}
                               <AnnotationBodyRenderer annotation={annotation} />
-                              {/* </ReactScrollWheelHandler> */}
                             </EditableAnnotation>
                           );
                         })}
@@ -314,14 +276,7 @@ class EditableCanvasPanel extends React.Component {
               </div>
             )}
           </Droppable>
-          <div className={classes.zoomButtons}>
-            <IconButton onClick={this.zoomIn}>
-              <ZoomIn />
-            </IconButton>
-            <IconButton onClick={this.zoomOut}>
-              <ZoomOut />
-            </IconButton>
-          </div>
+          {this.renderZoomControls()}
         </div>
       </div>
     );
@@ -329,13 +284,21 @@ class EditableCanvasPanel extends React.Component {
 }
 
 EditableCanvasPanel.propTypes = {
-  /* Editable canvas  */
+  /* the canvas being displayed  */
   canvas: PropTypes.object,
+  /* the annotation selected currently */
   selectedAnnotation: PropTypes.string,
+  /* for certain annotation types the aspect ratio 
+   needs to be locked due to the behaviour of the OpenSeaDragon */
   lockAspectRatio: PropTypes.array.isRequired,
+  /* annotation select callback */
   select: PropTypes.func,
+  /* update properties callback */
   update: PropTypes.func,
-  annotationColor: PropTypes.string,
+  /* select between the primary or secondary colour used for the annotations */
+  annotationColor: PropTypes.oneOf(['primary', 'secondary']),
+  /* all resources in the manifest */
+  resources: PropTypes.any,
 };
 
 EditableCanvasPanel.defaultProps = {
@@ -344,6 +307,7 @@ EditableCanvasPanel.defaultProps = {
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
   annotationColor: 'primary',
+  resources: {},
 };
 
 export default withStyles(styles)(EditableCanvasPanel);

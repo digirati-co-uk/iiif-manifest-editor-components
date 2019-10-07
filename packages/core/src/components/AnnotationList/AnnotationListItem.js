@@ -1,27 +1,21 @@
 import * as React from 'react';
 import { Typography, withStyles } from '@material-ui/core';
 import LocaleString from '../LocaleString/LocaleString';
+import { locale, getInternalAnnotationType } from '../../utils/IIIFResource';
 import { EditorConsumer } from '../EditorContext/EditorContext';
+import Tooltip from '../DefaultTooltip/DefaultTooltip';
+import style from './AnnotationListItem.styles';
 
-const style = theme => ({
-  main: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'stretch',
-    maxWidth: 'calc(100% - 40px)',
-  },
-  textBlock: {
-    flex: 1,
-    padding: '0 0 0 1rem',
-    overflow: 'hidden',
-  },
-  typo: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-});
+const getIconForAnnotationType = (annotationDefinition, color) => 
+  annotationDefinition
+    ? (
+        <Tooltip title={annotationDefinition.iconToolTip}>
+          {React.createElement(annotationDefinition.icon, {
+            color,
+          })}
+        </Tooltip>
+      )
+    : '';
 
 const AnnotationListItem = ({
   classes,
@@ -31,36 +25,27 @@ const AnnotationListItem = ({
   isSelected,
   selectedColor,
 }) => {
-  const internalAnnotationType = [
-    annotation.body.type,
-    annotation.motivation,
-  ].join('::');
+  const internalAnnotationType = getInternalAnnotationType(annotation);
   const textColor = isSelected ? selectedColor : 'inherit';
   return (
     <EditorConsumer>
-      {configuration => (
+      {configuration => {
+        const annotationDefinition = configuration.annotation[internalAnnotationType];
+        return (
         <div
           key={annotation.id}
           className={classes.main}
           onClick={() => onSelect(annotation)}
         >
-          {configuration.annotation[internalAnnotationType]
-            ? configuration.annotation[internalAnnotationType].icon({
-                color: textColor,
-              })
-            : ''}
+          {getIconForAnnotationType(annotationDefinition, textColor)}
           <div
             className={classes.textBlock}
-            title={
-              annotation.label && annotation.label[lang]
-                ? annotation.label[lang]
-                : annotation.id
-            }
+            title={locale(annotation.label, lang, annotation.id)}
           >
             <Typography
               color={textColor}
               variant="subtitle2"
-              className={classes.typo}
+              className={classes.label}
             >
               <LocaleString fallback={annotation.id} lang={lang}>
                 {annotation.label}
@@ -69,6 +54,7 @@ const AnnotationListItem = ({
           </div>
         </div>
       )}
+    }
     </EditorConsumer>
   );
 };

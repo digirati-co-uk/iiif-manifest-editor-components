@@ -47,20 +47,22 @@ const RUNTIME_DEFAULTS = {
   Annotation: {},
 };
 
+const cloneResource = resource => JSON.parse(JSON.stringify(resource));
+
 const defaultResourceRenderers = {
   Manifest: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Manifest)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Manifest)),
+    ...cloneResource(DEFAULT_RESOURCES.Manifest),
+    ...cloneResource(RUNTIME_DEFAULTS.Manifest),
     ...props,
   }),
   Canvas: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Canvas)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Canvas)),
+    ...cloneResource(DEFAULT_RESOURCES.Canvas),
+    ...cloneResource(RUNTIME_DEFAULTS.Canvas),
     ...props,
   }),
   Annotation: props => ({
-    ...JSON.parse(JSON.stringify(DEFAULT_RESOURCES.Annotation)),
-    ...JSON.parse(JSON.stringify(RUNTIME_DEFAULTS.Annotation)),
+    ...cloneResource(DEFAULT_RESOURCES.Annotation),
+    ...cloneResource(RUNTIME_DEFAULTS.Annotation),
     ...props,
   }),
 };
@@ -87,50 +89,17 @@ const renderResource = (type, options = { props: {} }) => {
   } else {
     resource = {
       type,
-      ...{ props },
+      ...props,
     };
   }
   generateURI(resource, options.parent);
+  // NOTE: hack to generate an id for the 
+  if (resource.type === 'Canvas') {
+    generateURI(resource.items[0], resource);
+  }
   return resource;
 };
 
-/**
- * Queries a resource form a given root
- * @param {*} id - the resource id to find
- * @param {*} resource - root of the query, in order to narrow down the results more quickly
- */
-export const queryResourceById = (id, resource) => {
-  if (
-    id === null ||
-    resource === null ||
-    typeof resource === 'string' ||
-    typeof resource === 'number' ||
-    typeof resource === 'boolean'
-  ) {
-    return null;
-  }
-  if (resource.id === id) {
-    return resource;
-  } else {
-    let subq = null;
-    if (Array.isArray(resource)) {
-      for (let subResource of resource) {
-        subq = queryResourceById(id, subResource);
-        if (subq !== null) {
-          return subq;
-        }
-      }
-    } else {
-      for (let key in resource) {
-        subq = queryResourceById(id, resource[key]);
-        if (subq !== null) {
-          return subq;
-        }
-      }
-    }
-  }
-  return null;
-};
 
 export const getParentByChildId = (id, resource, parent = null) => {
   if (
@@ -166,6 +135,8 @@ export const getParentByChildId = (id, resource, parent = null) => {
   return null;
 };
 
+// TODO: update to walk on the parents instead
+// TODO: also not used in the base package, lets see why we created it.
 export const getPath = (id, resource, path = []) => {
   if (
     id === null ||
@@ -286,6 +257,7 @@ export const getW3cAnnotationStyle = styleStr =>
     return acc;
   }, {});
 
+// TODO: this is obsolete
 // Internal 'magic constants' for the updater, will be updated when
 // new issues rising unfortunately I had to cut some time on the
 // implementation of this and will return to implement the update
@@ -300,9 +272,7 @@ export const update = (target, property, lang, value) => {
   const targetClone = JSON.parse(JSON.stringify(target));
   let currentLevel = targetClone;
   const keys = property ? property.split('.') : [];
-  //console.log('update', JSON.stringify(targetClone, null, 2));
   if (keys.length > 1) {
-    //console.log('update', 'keys.length > 1');
     keys.forEach((key, index) => {
       if (lang === null && index === keys.length - 1) {
         currentLevel[key] = value;
@@ -314,13 +284,10 @@ export const update = (target, property, lang, value) => {
       }
     });
     if (lang !== null) {
-      //console.log('update', 'keys.length > 1', 'lang !== null', '...');
       currentLevel[lang] = value.split('\n');
     }
   } else {
-    //console.log('update', 'keys.length not > 1');
     if (keys.length === 0) {
-      //console.log('update', 'pass the value');
       // if no property set we just pass the value...
       // this is a hack for now. Fix it later.
       // if (targetClone.items) {
@@ -332,19 +299,15 @@ export const update = (target, property, lang, value) => {
       return value;
       //return Object.apply(targetClone, value);
     } else if (lang === null) {
-      //console.log('update', 'no language');
       targetClone[property] =
         SINGLE_VALUE_KEYS.indexOf(property) !== -1 ? value : value.split('\n');
     } else {
       if (!targetClone.hasOwnProperty(property)) {
-        //console.log('update', 'property does not exist');
         targetClone[property] = {};
       }
-      //console.log('update', 'property...');
       currentLevel[property][lang] = value.split('\n');
     }
   }
-  //console.log('update', JSON.stringify(targetClone, null, 2));
   return targetClone;
 };
 
@@ -840,3 +803,6 @@ export const fixManifest = manifest => {
   fixLevel(manifest, null);
   return manifest;
 };
+
+export const getInternalAnnotationType = annotation => 
+  annotation && `${annotation.body.type}::${annotation.motivation}`;

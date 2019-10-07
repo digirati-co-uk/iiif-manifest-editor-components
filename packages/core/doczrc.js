@@ -7,32 +7,9 @@ const feskPackConfig = require('./webpack.config');
 module.exports = {
   title: 'IIIF-MEC/core',
   description: 'IIIF Manifest Editor Core Components',
-  files: '**/*.mdx',
-  src: './src/',
   dest: './dist/docs',
-  base: '/',
-  debug: true,
+  // debug: true,
   port: 5001,
-  protocol: 'http',
-  menu: [
-    '00. index',
-    '01. Simple Editor UI',
-    {
-      name: '02. Configuration',
-      menu: [
-        '01. Editor Context',
-        '02. Image Painting',
-        '03. Text Painting',
-        '04. Video Painting',
-        '05. Audio Painting',
-      ],
-    },
-    '02. High Level Components',
-    '03. Components',
-    '04. Reducers',
-    '05. Layout',
-    '06. Implementations'
-  ],
   wrapper: undefined,
   themeConfig: {
     styles: {

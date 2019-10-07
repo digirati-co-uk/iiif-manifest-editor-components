@@ -1,14 +1,9 @@
 import * as React from 'react';
 import { Audiotrack } from '@material-ui/icons';
 
-//import IIIFReducer from '../reducers/iiif';
 import { addResource } from '../utils/addResource';
 import renderResource from '../utils/IIIFResource';
-import { SIZING_STRATEGY } from '../constants/sizing';
 import BaseAnnotation from './BaseAnnotation';
-import Tooltip from '../components/DefaultTooltip/DefaultTooltip';
-import ButtonWithTooltip from '../components/ButtonWithTooltip/ButtonWithTooltip';
-
 import AudioPropertiesForm from './forms/AudioPropertiesForm';
 
 export default class AudioPainting extends BaseAnnotation {
@@ -28,20 +23,10 @@ export default class AudioPainting extends BaseAnnotation {
     </audio>
   );
 
-  static button = ({ title = 'Add Audio Annotation', ...props }) => (
-    <ButtonWithTooltip title={title} {...props}>
-      <Audiotrack />
-    </ButtonWithTooltip>
-  );
-
-  static icon = ({ color, title = 'Audio Annotation' }) => (
-    <Tooltip title={title}>
-      <Audiotrack color={color} />
-    </Tooltip>
-  );
-
+  static icon = Audiotrack;
+  static iconToolTip = 'Audio Annotation';
+  static buttonTitle = 'Add Audio Annotation';
   static propertyEditor = AudioPropertiesForm;
-
   static defaultBody = {
     type: 'Audio',
     id: 'https://www.w3schools.com/html/horse.ogg',

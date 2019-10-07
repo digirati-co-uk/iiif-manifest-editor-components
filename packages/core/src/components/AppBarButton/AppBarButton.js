@@ -1,48 +1,34 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { IconButton, Button, Typography, withStyles } from '@material-ui/core';
-import DefaultTooltip from '../DefaultTooltip/DefaultTooltip';
 import { EditorConsumer } from '../EditorContext/EditorContext';
+import SlimAppBarButton from './AppBarButton.Slim';
+import TextAppBarButton from './AppBarButton.Text';
 
-const style = theme => ({
-  typo: {
-    marginLeft: theme.spacing.unit,
-  },
-});
+const BUTTON_TYPES = {
+  'icon-and-tooltip': SlimAppBarButton,
+  'icon-and-label': TextAppBarButton
+};
 
-const AppBarButton = ({ classes, icon, text, onClick, variant }) => (
+const AppBarButton = ({ icon, text, onClick, variant }) => (
   <EditorConsumer>
     {configuration => {
-      const buttonType =
-        variant || configuration.appBarButtonStyle || 'icon-and-tooltip';
-      if (buttonType === 'icon-and-tooltip') {
-        return (
-          <DefaultTooltip title={text} placement="bottom">
-            <IconButton color="secondary" onClick={onClick}>
-              {icon}
-            </IconButton>
-          </DefaultTooltip>
-        );
-      } else if (buttonType === 'icon-and-label') {
-        return (
-          <Button color="secondary" onClick={onClick}>
-            {icon}
-            <Typography color="secondary" className={classes.typo}>
-              {text}
-            </Typography>
-          </Button>
-        );
-      }
+      const buttonType = BUTTON_TYPES[variant] || 
+        BUTTON_TYPES[configuration.appBarButtonStyle] ||
+        BUTTON_TYPES['icon-and-tooltip'];
+      return React.createElement(buttonType, {text, icon, onClick});
     }}
   </EditorConsumer>
 );
 
 AppBarButton.propTypes = {
-  classes: PropTypes.any.isRequired,
-  icon: PropTypes.any,
+  /* icon component used for the app bar button */
+  icon: PropTypes.element,
+  /* click event handler */
   onClick: PropTypes.func,
+  /* button text */
   text: PropTypes.string,
-  variant: PropTypes.string,
+  /* the button ui needs to be used */
+  variant: PropTypes.oneOf(Object.keys(BUTTON_TYPES)),
 };
 
 AppBarButton.defaultProps = {
@@ -51,4 +37,4 @@ AppBarButton.defaultProps = {
   onClick: () => {},
 };
 
-export default withStyles(style)(AppBarButton);
+export default AppBarButton;

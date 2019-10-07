@@ -66,7 +66,12 @@ class EditableCanvas extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.selectedAnnotation !== this.props.selectedAnnotation ||
-      isCanvasChangedEditor(nextProps.canvas, this.props.canvas)
+      isCanvasChangedEditor(
+        nextProps.canvas,
+        this.props.canvas,
+        this.props.getResource,
+        id => nextState.resources[id]
+      )
     );
   }
 
@@ -86,27 +91,8 @@ class EditableCanvas extends React.Component {
   isAspectRationLocked = type => this.props.lockAspectRatio.includes(type);
 
   onDrag = annotation => (ev, direction, src) => emptyFn;
-  // TODO: I leave it like this just for performance reasons for now.
-  // So if the store/state getting updated on each and every mousemove
-  // the experience becomes sluggish so we only update the store on the
-  // mouse up.
-  // (ev, data) => {
-  //   // TODO: this should operate on a temporary annotation
-  //   let cords = data.node.style.transform.match(PARSE_TRANSFORM);
-  //   if (cords) {
-  //     this.updateBounds(
-  //       annotation,
-  //       {
-  //         x: parseInt(parseInt(cords[1], 10) / this.state.zoom, 10),
-  //         y: parseInt(parseInt(cords[2], 10) / this.state.zoom, 10),
-  //       },
-  //       this.props.canvas
-  //     );
-  //   }
-  // };
 
   onDragStop = annotation => (ev, data) => {
-    // TODO: this should update the annotation
     let cords = data.node.style.transform.match(PARSE_TRANSFORM);
     if (cords) {
       this.updateBounds(
@@ -121,21 +107,8 @@ class EditableCanvas extends React.Component {
   };
 
   onResize = annotation => (ev, direction, src) => emptyFn;
-  // TODO: same as for drag.
-  // (ev, direction, src) => {
-  //   // TODO: this should update the annotation
-  //   this.updateBounds(
-  //     annotation,
-  //     {
-  //       w: parseInt(src.offsetWidth / this.state.zoom, 10),
-  //       h: parseInt(src.offsetHeight / this.state.zoom, 10),
-  //     },
-  //     this.props.canvas
-  //   );
-  // };
 
   onResizeStop = annotation => (ev, direction, src) => {
-    // TODO: this should update the annotation
     this.updateBounds(
       annotation,
       {
@@ -155,16 +128,68 @@ class EditableCanvas extends React.Component {
     const hash = makeURLHash({
       xywh: `${bounds.x},${bounds.y},${bounds.w},${bounds.h}`,
     });
-    if (typeof annotation.target.id === 'string') {
-      this.props.update(annotation.target, {
-        id: `${canvas.id}${hash}`,
-      });
+    if (annotation.target && typeof annotation.target.id === 'string') {
+      this.props.update(annotation, 'target.id', null, `${canvas.id}${hash}`);
     } else {
-      this.props.update(annotation, {
-        target: `${canvas.id}${hash}`,
-      });
+      this.props.update(annotation, 'target', null, `${canvas.id}${hash}`);
     }
   };
+
+  renderAnnotation = canvas => annotation => {
+    let lockAspectRatio = this.isAspectRationLocked(
+      annotation.body.type
+    );
+    const { selectedAnnotation } = this.props;
+    let bounds = getBounds(annotation, canvas);
+    return (
+      <Rnd
+        key={'annotation__' + canvas.id + '_' + annotation.id}
+        style={{
+          ...style,
+          outline:
+            annotation.id === selectedAnnotation
+              ? '2px solid rgb(89, 191, 236)'
+              : '0',
+        }}
+        position={{
+          x: parseInt(bounds.x * this.state.zoom, 10),
+          y: parseInt(bounds.y * this.state.zoom, 10),
+        }}
+        size={{
+          width: parseInt(bounds.w * this.state.zoom, 10),
+          height: parseInt(bounds.h * this.state.zoom, 10),
+        }}
+        onDrag={this.onDrag(annotation)}
+        onDragStop={this.onDragStop(annotation)}
+        onResize={this.onResize(annotation)}
+        onResizeStop={this.onResizeStop(annotation)}
+        bounds="parent"
+        lockAspectRatio={lockAspectRatio}
+        onClick={this.selectItem(annotation)}
+      >
+        <AnnotationBodyRenderer annotation={annotation} />
+      </Rnd>
+    );
+  }
+
+  renderZoomControls = () => {
+    const { classes } = this.props;
+    return (
+      <div className={classes.zoomButtons}>
+        <IconButton onClick={this.zoomIn}>
+          <ZoomIn />
+        </IconButton>
+        <IconButton onClick={this.zoomOut}>
+          <ZoomOut />
+        </IconButton>
+      </div>
+    )
+  };
+
+  getAnnotations = canvas =>
+    canvas && canvas.items && canvas.items[0] && canvas.items[0].items
+      ? canvas.items[0].items
+      : [];
 
   render() {
     let { classes, canvas } = this.props;
@@ -175,11 +200,8 @@ class EditableCanvas extends React.Component {
         </div>
       );
     }
-    const annotations =
-      canvas && canvas.items && canvas.items[0] && canvas.items[0].items
-        ? canvas.items[0].items
-        : [];
-    const { selectedAnnotation } = this.props;
+    const annotations = this.getAnnotations(canvas);
+
     return (
       <div className={classes.root}>
         <div className={classes.canvasBackground}>
@@ -193,53 +215,12 @@ class EditableCanvas extends React.Component {
                   height: canvas.height * this.state.zoom,
                 })}
               >
-                {annotations.map((annotation, idx) => {
-                  let lockAspectRatio = this.isAspectRationLocked(
-                    annotation.body.type
-                  );
-                  let bounds = getBounds(annotation, canvas);
-                  return (
-                    <Rnd
-                      key={'annotation__' + canvas.id + '_' + annotation.id}
-                      style={{
-                        ...style,
-                        outline:
-                          annotation.id === selectedAnnotation
-                            ? '2px solid rgb(89, 191, 236)'
-                            : '0',
-                      }}
-                      position={{
-                        x: parseInt(bounds.x * this.state.zoom, 10),
-                        y: parseInt(bounds.y * this.state.zoom, 10),
-                      }}
-                      size={{
-                        width: parseInt(bounds.w * this.state.zoom, 10),
-                        height: parseInt(bounds.h * this.state.zoom, 10),
-                      }}
-                      onDrag={this.onDrag(annotation)}
-                      onDragStop={this.onDragStop(annotation)}
-                      onResize={this.onResize(annotation)}
-                      onResizeStop={this.onResizeStop(annotation)}
-                      bounds="parent"
-                      lockAspectRatio={lockAspectRatio}
-                      onClick={this.selectItem(annotation)}
-                    >
-                      <AnnotationBodyRenderer annotation={annotation} />
-                    </Rnd>
-                  );
-                })}
+                {annotations.map(this.renderAnnotation(canvas))}
               </div>
             )}
           </Droppable>
         </div>
-        <div className={classes.zoomButtons}>
-          <IconButton onClick={this.zoomIn}>
-            <ZoomIn />
-          </IconButton>
-          <IconButton onClick={this.zoomOut}>
-            <ZoomOut />
-          </IconButton>
-        </div>
+        {this.renderZoomControls()}
       </div>
     );
   }
@@ -252,6 +233,7 @@ EditableCanvas.propTypes = {
   lockAspectRatio: PropTypes.array.isRequired,
   select: PropTypes.func,
   update: PropTypes.func,
+  getResource: PropTypes.func,
 };
 
 EditableCanvas.defaultProps = {
@@ -259,6 +241,7 @@ EditableCanvas.defaultProps = {
   select: emptyFn,
   update: emptyFn,
   lockAspectRatio: ['Image', 'Video', 'Audio'],
+  getResource: emptyFn,
 };
 
 export default withStyles(styles)(EditableCanvas);

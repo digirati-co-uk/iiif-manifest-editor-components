@@ -1,5 +1,16 @@
 {
     "cSpell.words": [
-        "mixins"
-    ]
+        "amzn",
+        "cognito",
+        "dlcs",
+        "dropzone",
+        "extraconfs",
+        "fesk",
+        "iiifimagelist",
+        "meszaros",
+        "mixins",
+        "prezi"
+    ],
+    "complexityAnalysis.exclude": ["**/node_modules/**/*.js"],
+    "complexityAnalysis.include": ["packages/core/src/**/*.js"]
 }

@@ -1,0 +1,118 @@
+{
+  "name": "@iiif-mec/experience-editor",
+  "version": "1.2.2",
+  "description": "Core components for manifest editing",
+  "author": "Adam Meszaros <adam.meszaros@digirati.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "fesk-start",
+    "release": "NODE_ENV=production fesk-build --cjs",
+    "build": "NODE_ENV=production fesk-build && docz build",
+    "watch": "fesk-watch",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "test": "jest --collect-coverage",
+    "test:watch": "jest --collect-coverage --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@fesk/babel-config": "1.2.1",
+    "@fesk/scripts": "1.2.1",
+    "@fesk/webpack-config": "1.2.1",
+    "@reach/component-component": "^0.1.1",
+    "babel-core": "^7.0.0-bridge",
+    "babel-jest": "^24.6.0",
+    "canvas": "^2.4.1",
+    "docz": "1.1.0",
+    "docz-theme-default": "1.1.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "jest": "^24.6.0",
+    "jest-canvas-mock": "^2.0.0",
+    "webpack-config": "^7.5.0"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "@canvas-panel/core": "^0.2.0",
+    "@canvas-panel/full-page-plugin": "^0.2.0",
+    "@canvas-panel/patchwork-plugin": "^0.2.0",
+    "@canvas-panel/slideshow": "^0.2.0",
+    "@emotion/core": "^10.0.7",
+    "@fesk/export-common": "1.2.1",
+    "@fesk/react-bem": "^1.1.2",
+    "@iiif-mec/core": "^1.2.2",
+    "@material-ui/core": "3.6.1",
+    "@material-ui/icons": "3.0.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "classnames": "^2.2.6",
+    "deepmerge": "^3.0.0",
+    "detect-it": "^3.0.5",
+    "dotenv-webpack": "^1.7.0",
+    "fs-extra": "2.1.2",
+    "iiif-prezi2to3": "^1.0.8",
+    "immer": "^1.8.0",
+    "langs": "^2.0.0",
+    "notistack": "^0.8.2",
+    "prop-types": "^15.6.2",
+    "react": "16.8.6",
+    "react-beautiful-dnd": "^10.0.2",
+    "react-container-dimensions": "^1.4.1",
+    "react-dom": "16.8.6",
+    "react-dropzone": "7.0.1",
+    "react-input-range": "^1.3.0",
+    "react-lazy-images": "^1.1.0",
+    "react-quill": "^1.3.3",
+    "react-rnd": "^9.0.4",
+    "react-scroll-wheel-handler": "^1.0.6",
+    "react-virtualized": "^9.21.0",
+    "throttle-debounce": "^2.1.0",
+    "webpack-merge": "^4.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/jest.transform.js"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "setupFiles": [
+      "jest-canvas-mock"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup.jest.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/",
+      ".*\\.js\\.snap",
+      "jest.transform.js",
+      ".json",
+      "webpack.config.js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ]
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digirati-co-uk/iiif-manifest-editor-components.git"
+  },
+  "keywords": [
+    "manifest",
+    "editor",
+    "components"
+  ],
+  "bugs": {
+    "url": "https://github.com/digirati-co-uk/iiif-manifest-editor-components/issues"
+  },
+  "homepage": "https://github.com/digirati-co-uk/iiif-manifest-editor-components#readme"
+}

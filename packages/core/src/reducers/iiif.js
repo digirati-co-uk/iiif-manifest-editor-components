@@ -1,21 +1,20 @@
 import produce from 'immer';
 import renderResource, {
-  queryResourceById,
   getParentByChildId,
   fixManifest,
 } from '../utils/IIIFResource';
+import { loadResource, saveResource } from '../utils/IIIFPersistance';
 
 import generateURI from '../utils/URIGenerator';
 
 const ARRAY_TYPE_KEYS = ['metadata', 'thumbnail', 'behavior'];
-const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id'];
+const SINGLE_VALUE_KEYS = ['navDate', 'rights', 'behavior', 'id', 'target'];
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
@@ -43,15 +42,13 @@ const IIIFReducer = (state, action) => {
         //    - the cost of this freshness is high, because every time we touch the object
         //      the functions need to traverse through the document, and it's like a
         //      dom traversal with all it's non linear characteristic.
-        //    - remember queryResourceById is a recursive function, which is extremely
-        //      dangerous if a circular reference accidentally created in the manifest.
         const parentId = !options.parent
           ? null
           : typeof options.parent === 'string'
           ? options.parent
           : options.parent.id;
 
-        const parent = queryResourceById(parentId, nextState.rootResource);
+        const parent = nextState.resources[parentId];
 
         const newResource =
           action.type === 'ADD_RESOURCE'
@@ -60,7 +57,11 @@ const IIIFReducer = (state, action) => {
                 parent: parent,
               })
             : options.props;
-
+        if (!newResource.hasOwnProperty('id')) {
+          generateURI(newResource, parentId);
+        }
+        Object.assign(nextState.resources, loadResource(newResource, parentId));
+        //nextState.resources[newResource.id]['@parent'] = parentId;
         // this part is a bit of chaos, TODO: clean up
         if (parent) {
           let targetCollection = parent.items;
@@ -80,34 +81,41 @@ const IIIFReducer = (state, action) => {
             newResource.type === 'Annotation'
           ) {
             if (parent.items.length === 0) {
-              targetCollection = renderResource('AnnotationPage', {
+              targetCollectionResource = renderResource('AnnotationPage', {
                 parent: newResource,
               });
-              parent.items.push(targetCollection);
+              nextState.resources[
+                targetCollectionResource.id
+              ] = targetCollectionResource;
+              parent.items.push(targetCollectionResource.id);
+              targetCollection = targetCollectionResource.items;
             }
-            targetCollection = parent.items[0].items;
+            targetCollection = nextState.resources[parent.items[0]].items;
+            nextState.resources[newResource.id]['@parent'] = parent.items[0];
+            //targetCollection.id;
           }
           if (typeof options.index === 'number') {
             targetCollection.splice(
               Math.max(0, Math.min(options.index, parent.items.length)),
               0,
-              newResource
+              newResource.id
             );
           } else {
-            targetCollection.push(newResource);
+            targetCollection.push(newResource.id);
           }
         } else {
-          nextState.rootResource = newResource;
+          nextState.rootResource = newResource.id;
         }
         break;
       case 'REMOVE_RESOURCE':
-        const toRemoveFrom = getParentByChildId(
-          action.id,
-          nextState.rootResource
-        );
-        toRemoveFrom.items = toRemoveFrom.items.filter(
-          resource => resource.id !== action.id
-        );
+        const itemToRemove = nextState.resources[action.id];
+        if (itemToRemove['@parent']) {
+          const toRemoveFrom = nextState.resources[itemToRemove['@parent']];
+          toRemoveFrom.items = toRemoveFrom.items.filter(
+            resourceId => resourceId !== action.id
+          );
+        }
+        delete nextState.resources[action.id];
         Object.entries(nextState.selectedIdsByType).forEach(([type, id]) => {
           if (id === action.id) {
             nextState.selectedIdsByType[type] = null;
@@ -116,14 +124,14 @@ const IIIFReducer = (state, action) => {
         break;
       case 'UPDATE_RESOURCE':
         // Updates the passed resource @id, NOTE it is a property merge
-        const toUpdate = queryResourceById(options.id, nextState.rootResource);
-        Object.assign(toUpdate, options.props || {});
+        const toUpdate = nextState.resources[options.id];
+        nextState.resources[options.id] = Object.assign(
+          toUpdate,
+          options.props || {}
+        );
         break;
       case 'UPDATE_RESOURCE_PROPERTY':
-        const toUpdateProperty = queryResourceById(
-          action.options.target.id,
-          nextState.rootResource
-        );
+        const toUpdateProperty = nextState.resources[action.options.target.id];
         const { property, value, lang } = action.options;
         let currentLevel = toUpdateProperty;
         const keys = property ? property.split('.') : [];
@@ -160,17 +168,22 @@ const IIIFReducer = (state, action) => {
         break;
       case 'UPDATE_RESOURCE_ORDER':
         const { startIndex, targetIndex, id } = action.options;
-        const parentToUpdate = getParentByChildId(id, nextState.rootResource);
-        parentToUpdate.items = reorder(
-          parentToUpdate.items,
-          startIndex,
-          targetIndex
-        );
+        
+        const parentToUpdate = nextState.resources[id]['@parent'];
+        if (parentToUpdate) {
+          const parentResource = nextState.resources[parentToUpdate];
+          nextState.resources[parentToUpdate].items = reorder(
+            parentResource.items,
+            startIndex,
+            targetIndex
+          );
+        }
         break;
       case 'LOAD_MANIFEST':
-        nextState.rootResource = fixManifest(
-          JSON.parse(JSON.stringify(action.manifest))
+        nextState.resources = loadResource(
+          fixManifest(JSON.parse(JSON.stringify(action.manifest)))
         );
+        nextState.rootResource = action.manifest.id;
         // This is wrong selection should be isolated this, maybe sagas
         nextState.selectedIdsByType.Canvas =
           action.manifest.items.length > 0 ? action.manifest.items[0].id : null;

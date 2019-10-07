@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import * as classnames from 'classnames';
+import classnames from 'classnames';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { IconButton, Typography, withStyles, Divider } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
@@ -8,44 +8,10 @@ import { Cancel } from '@material-ui/icons';
 import Panel from '../Panel/Panel';
 import DefaultAnnotationListToolbar from '../DefaultAnnotationListToolbar/DefaultAnnotationListToolbar';
 import Tooltip from '../DefaultTooltip/DefaultTooltip';
+import style from './AnnotationList.styles';
 import AnnotationListItem from './AnnotationListItem';
 
 const emptyFn = () => {};
-
-const style = theme => ({
-  list: {
-    width: '100%',
-    padding: theme.spacing.unit,
-    position: 'relative',
-  },
-  annotationDraggable: {
-    userSelect: 'none',
-    padding: `${theme.spacing.unit / 2}px 0 ${theme.spacing.unit / 2}px ${
-      theme.spacing.unit
-    }px`,
-    margin: `0`,
-    background: theme.palette.background.paper,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'stretch',
-    alignItems: 'center',
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  annotationDragging: {
-    outline: `2px solid ${theme.palette.primary.main}`,
-  },
-  defaultNoAnnotationIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 const AnnotationList = ({
   classes,
@@ -59,6 +25,7 @@ const AnnotationList = ({
   invokeAction,
   selectedColor,
   isEditingAllowed,
+  getResource,
 }) => (
   <Panel>
     {toolbar ? (
@@ -75,41 +42,44 @@ const AnnotationList = ({
         {(providedDroppable, snapshotDroppable) => (
           <div ref={providedDroppable.innerRef} className={classes.list}>
             {annotations ? (
-              annotations.map((annotation, index) => (
-                <Draggable
-                  key={annotation.id}
-                  draggableId={annotation.id}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={classnames(classes.annotationDraggable, {
-                        [classes.annotationDragging]: snapshot.isDragging,
-                      })}
-                    >
-                      {typeof children === 'function' ? (
-                        children(annotation, remove, select)
-                      ) : (
-                        <AnnotationListItem
-                          annotation={annotation}
-                          lang={lang}
-                          onSelect={select}
-                          isSelected={selected === annotation.id}
-                          selectedColor={selectedColor}
-                        />
-                      )}
-                      <Tooltip title="Delete Annotation" placement="right">
-                        <IconButton onClick={() => remove(annotation)}>
-                          <Cancel />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  )}
-                </Draggable>
-              ))
+              annotations.map((annotationId, index) => {
+                const annotation = getResource(annotationId);
+                return (
+                  <Draggable
+                    key={annotation.id}
+                    draggableId={annotation.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={classnames(classes.annotationDraggable, {
+                          [classes.annotationDragging]: snapshot.isDragging,
+                        })}
+                      >
+                        {typeof children === 'function' ? (
+                          children(annotation, remove, select)
+                        ) : (
+                          <AnnotationListItem
+                            annotation={annotation}
+                            lang={lang}
+                            onSelect={select}
+                            isSelected={selected === annotation.id}
+                            selectedColor={selectedColor}
+                          />
+                        )}
+                        <Tooltip title="Delete Annotation" placement="right">
+                          <IconButton onClick={() => remove(annotation)}>
+                            <Cancel />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })
             ) : (
               <Typography
                 variant="caption"
@@ -147,6 +117,7 @@ AnnotationList.propTypes = {
   invokeAction: PropTypes.func.isRequired,
   /* Sets the toolbar buttons disabled and TODO: disable delete and drag and drop */
   isEditingAllowed: PropTypes.bool,
+  /* get individual resource */
 };
 
 AnnotationList.defaultProps = {
@@ -156,6 +127,7 @@ AnnotationList.defaultProps = {
   invokeAction: emptyFn,
   selectedColor: 'primary',
   isEditingAllowed: true,
+  getResource: emptyFn,
 };
 
 export default withStyles(style)(AnnotationList);

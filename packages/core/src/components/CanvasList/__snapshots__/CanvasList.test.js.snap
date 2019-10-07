@@ -1,132 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CanvasList renders the canvas list unchanged 1`] = `
-ShallowWrapper {
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <WithStyles(CanvasList)
-    canvases={
-      Array [
-        Object {
-          "id": "test-canvas-1",
-        },
-        Object {
-          "id": "test-canvas-2",
-        },
-      ]
-    }
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "checkPropTypes": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateError": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "function",
-    "props": Object {
-      "canvases": Array [
-        Object {
-          "id": "test-canvas-1",
-        },
-        Object {
-          "id": "test-canvas-2",
-        },
-      ],
-      "classes": Object {
-        "canvas": "CanvasList-canvas-7",
-        "canvasLabel": "CanvasList-canvasLabel-9",
-        "canvasThumbnail": "CanvasList-canvasThumbnail-8",
-        "defaultAddButtonSpacer": "CanvasList-defaultAddButtonSpacer-11",
-        "deleteButton": "CanvasList-deleteButton-10",
-        "droppable": "CanvasList-droppable-1",
-        "droppableVertical": "CanvasList-droppableVertical-2",
-        "listItem": "CanvasList-listItem-3",
-        "listItemDragging": "CanvasList-listItemDragging-4",
-        "listItemSelected": "CanvasList-listItemSelected-5",
-        "listItemVertical": "CanvasList-listItemVertical-6",
-        "noCanvasesContainer": "CanvasList-noCanvasesContainer-12",
-      },
-      "direction": "horizontal",
-      "invokeAction": [Function],
-      "itemClass": null,
-      "listClass": null,
-      "remove": [Function],
-      "select": [Function],
-      "selected": null,
+initialize {
+  "0": Object {
+    "attribs": Object {
+      "class": "panel panel--horizontal ",
     },
-    "ref": null,
-    "rendered": null,
-    "type": [Function],
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "function",
-      "props": Object {
-        "canvases": Array [
+    "children": Array [
+      Object {
+        "attribs": Object {
+          "class": "panel__content ",
+        },
+        "children": Array [
           Object {
-            "id": "test-canvas-1",
-          },
-          Object {
-            "id": "test-canvas-2",
+            "attribs": Object {},
+            "children": Array [],
+            "name": "div",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": null,
+            "parent": [Circular],
+            "prev": null,
+            "type": "tag",
+            "x-attribsNamespace": Object {},
+            "x-attribsPrefix": Object {},
           },
         ],
-        "classes": Object {
-          "canvas": "CanvasList-canvas-7",
-          "canvasLabel": "CanvasList-canvasLabel-9",
-          "canvasThumbnail": "CanvasList-canvasThumbnail-8",
-          "defaultAddButtonSpacer": "CanvasList-defaultAddButtonSpacer-11",
-          "deleteButton": "CanvasList-deleteButton-10",
-          "droppable": "CanvasList-droppable-1",
-          "droppableVertical": "CanvasList-droppableVertical-2",
-          "listItem": "CanvasList-listItem-3",
-          "listItemDragging": "CanvasList-listItemDragging-4",
-          "listItemSelected": "CanvasList-listItemSelected-5",
-          "listItemVertical": "CanvasList-listItemVertical-6",
-          "noCanvasesContainer": "CanvasList-noCanvasesContainer-12",
+        "name": "div",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": null,
+        "parent": [Circular],
+        "prev": null,
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
         },
-        "direction": "horizontal",
-        "invokeAction": [Function],
-        "itemClass": null,
-        "listClass": null,
-        "remove": [Function],
-        "select": [Function],
-        "selected": null,
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
       },
-      "ref": null,
-      "rendered": null,
-      "type": [Function],
+    ],
+    "name": "div",
+    "namespace": "http://www.w3.org/1999/xhtml",
+    "next": null,
+    "parent": null,
+    "prev": null,
+    "root": Object {
+      "attribs": Object {},
+      "children": Array [
+        [Circular],
+      ],
+      "name": "root",
+      "namespace": "http://www.w3.org/1999/xhtml",
+      "next": null,
+      "parent": null,
+      "prev": null,
+      "type": "root",
+      "x-attribsNamespace": Object {},
+      "x-attribsPrefix": Object {},
     },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-        "legacyContextMode": "parent",
-        "lifecycles": Object {
-          "componentDidUpdate": Object {
-            "onSetState": true,
-          },
-          "getChildContext": Object {
-            "calledByRenderer": false,
-          },
-          "getDerivedStateFromProps": Object {
-            "hasShouldComponentUpdateBug": false,
-          },
-          "getSnapshotBeforeUpdate": true,
-          "setState": Object {
-            "skipsComponentDidUpdateOnNullish": true,
-          },
-        },
-      },
+    "type": "tag",
+    "x-attribsNamespace": Object {
+      "class": undefined,
+    },
+    "x-attribsPrefix": Object {
+      "class": undefined,
     },
   },
-  Symbol(enzyme.__childContext__): null,
+  "_root": [Circular],
+  "length": 1,
+  "options": Object {
+    "decodeEntities": true,
+    "normalizeWhitespace": false,
+    "withDomLvl1": true,
+    "xml": false,
+  },
 }
 `;

@@ -1,14 +1,11 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
   TextField,
   withStyles,
 } from '@material-ui/core';
+import ManifestEditorDialog from '../ManifestEditorDialog/ManifestEditorDialog'
 
 //TODO: Error handling...
 
@@ -26,38 +23,11 @@ const DefaultLoadManifestDialog = ({
   open,
   handleClose,
 }) => (
-  <Dialog
+  <ManifestEditorDialog
     open={open}
-    onClose={handleClose}
-    scroll="paper"
-    maxWidth="md"
-    aria-labelledby="preview-dialog-title"
-  >
-    <DialogTitle id="preview-dialog-title">Open Manifest</DialogTitle>
-    <DialogContent>
-      <form id="manifest_form" className={classes.form}>
-        <TextField
-          label="Type a IIIF Manifest Url"
-          margin="dense"
-          variant="outlined"
-          name="manifestUrl"
-          type="url"
-        />
-        <TextField
-          label="Or paste the IIIF Manifest Body"
-          margin="dense"
-          multiline
-          variant="outlined"
-          name="manifestBody"
-          type="text"
-          rowsMax={20}
-        />
-      </form>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose} color="primary">
-        Close
-      </Button>
+    handleClose={handleClose}
+    title="Open Manifest"
+    actions={
       <Button
         onClick={ev => {
           ev.preventDefault();
@@ -77,8 +47,27 @@ const DefaultLoadManifestDialog = ({
       >
         Open
       </Button>
-    </DialogActions>
-  </Dialog>
+    }
+  >
+    <form id="manifest_form" className={classes.form}>
+      <TextField
+        label="Type a IIIF Manifest Url"
+        margin="dense"
+        variant="outlined"
+        name="manifestUrl"
+        type="url"
+      />
+      <TextField
+        label="Or paste the IIIF Manifest Body"
+        margin="dense"
+        multiline
+        variant="outlined"
+        name="manifestBody"
+        type="text"
+        rowsMax={20}
+      />
+    </form>
+  </ManifestEditorDialog>
 );
 
 DefaultLoadManifestDialog.propTypes = {
