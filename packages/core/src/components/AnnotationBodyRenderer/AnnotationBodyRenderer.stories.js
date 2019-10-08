@@ -8,9 +8,10 @@ storiesOf('AnnotationBodyRenderer', module)
   .addDecorator(withKnobs)
   .add('AnnotationBodyRenderer', () => {
     const annotation = {
-      motivation: 'painting',
+      motivation: text('Motivation', 'painting'),
       body: {
-        type: '3DModel',
+        type: text('Type', '3DModel'),
+        value: text('Value', 'Value'),
       },
     };
     return <AnnotationBodyRenderer annotation={annotation} />;
