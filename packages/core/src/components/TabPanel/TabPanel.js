@@ -72,6 +72,7 @@ class TabPanelComponent extends React.Component {
   };
 
   render() {
+    console.log('in here')
     const { children, hideHeaderIfSingleTab } = this.props;
     const { activeIdx } = this.state;
     const tabs = (children || []).filter(child => !!child);
