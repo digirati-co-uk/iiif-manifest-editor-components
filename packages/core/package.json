@@ -42,6 +42,7 @@
     "@fesk/react-bem": "^1.1.2",
     "@material-ui/core": "3.6.1",
     "@material-ui/icons": "3.0.1",
+    "@storybook/addon-a11y": "^5.2.3",
     "@storybook/addon-knobs": "^5.2.3",
     "@storybook/react": "^5.2.3",
     "babel-loader": "^8.0.6",
