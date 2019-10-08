@@ -9,7 +9,7 @@ storiesOf('AppBarButton', module)
     return (
       <AppBarButton
         icon={':)'}
-        text={text('Label', 'Update me')}
+        text={text('Text', 'Update me')}
         onClick={() => {}}
         variant={'icon-and-label'}
       />
@@ -19,7 +19,7 @@ storiesOf('AppBarButton', module)
     return (
       <AppBarButton
         icon={':)'}
-        text={text('Label', 'Update me')}
+        text={text('Text', 'Update me')}
         onClick={() => {}}
         variant={'icon-and-tooltip'}
       />
