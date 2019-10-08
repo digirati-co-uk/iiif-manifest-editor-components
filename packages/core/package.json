@@ -8,6 +8,7 @@
   "scripts": {
     "start": "fesk-start",
     "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
     "release": "NODE_ENV=production fesk-build --cjs",
     "build": "NODE_ENV=production fesk-build && docz build",
     "watch": "fesk-watch",
