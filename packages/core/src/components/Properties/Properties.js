@@ -1,9 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import {
-  InputLabel,
-  withStyles,
-} from '@material-ui/core';
+import { InputLabel, withStyles } from '@material-ui/core';
 import { Translate } from '@material-ui/icons';
 
 import { EditorConsumer } from '../EditorContext/EditorContext';
@@ -44,29 +41,26 @@ class Properties extends React.Component {
   };
 
   renderTranslationHeader = () => {
-    const {
-      classes,
-      lang,
-      changeLanguage,
-      noTranslation,
-    } = this.props;
-    return !noTranslation && (
-      <div className={classes.translationBar}>
-        <ButtonWithTooltip
-          title="Launch mirror translation tool"
-          onClick={this.openTranslations}
-        >
-          <Translate />
-        </ButtonWithTooltip>
-        <InputLabel className={classes.currentLanguageLabel}>
-          Current Language
-        </InputLabel>
-        <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
-      </div>
+    const { classes, lang, changeLanguage, noTranslation } = this.props;
+    return (
+      !noTranslation && (
+        <div className={classes.translationBar}>
+          <ButtonWithTooltip
+            title="Launch mirror translation tool"
+            onClick={this.openTranslations}
+          >
+            <Translate />
+          </ButtonWithTooltip>
+          <InputLabel className={classes.currentLanguageLabel}>
+            Current Language
+          </InputLabel>
+          <LanguagesDropdown changeLanguage={changeLanguage} lang={lang} />
+        </div>
+      )
     );
   };
 
-  renderAnnotationEditor = (configuration) => {
+  renderAnnotationEditor = configuration => {
     const annotationType = this.getAnnotationType();
     const form = configuration.annotation[annotationType];
     const { annotation, lang, update } = this.props;
@@ -76,9 +70,7 @@ class Properties extends React.Component {
           target={annotation}
           lang={lang}
           update={update}
-          fieldConfig={
-            configuration.propertyFields.Annotation
-          }
+          fieldConfig={configuration.propertyFields.Annotation}
         />
         {annotationType}
         {form &&
@@ -88,48 +80,44 @@ class Properties extends React.Component {
             target: annotation,
           })}
       </React.Fragment>
-    )
+    );
   };
 
-  renderCanvasEditor = (configuration) => {
+  renderCanvasEditor = configuration => {
     const { canvas, lang, update } = this.props;
     return (
       <MetadataEditor
         target={canvas}
         lang={lang}
         update={update}
-        fieldConfig={
-          configuration.propertyFields.Canvas
-        }
+        fieldConfig={configuration.propertyFields.Canvas}
       />
     );
   };
 
-  renderManifestEditor = (configuration) => {
+  renderManifestEditor = configuration => {
     const { manifest, lang, update } = this.props;
     return (
       <MetadataEditor
         target={manifest}
         lang={lang}
         update={update}
-        fieldConfig={
-          configuration.propertyFields.Manifest
-        }
+        fieldConfig={configuration.propertyFields.Manifest}
       />
     );
   };
 
   editors = {
-    'Annotation': this.renderAnnotationEditor,
-    'Canvas': this.renderCanvasEditor,
-    'Manifest': this.renderManifestEditor,
+    Annotation: this.renderAnnotationEditor,
+    Canvas: this.renderCanvasEditor,
+    Manifest: this.renderManifestEditor,
   };
 
   renderPropertyEditorAsList = (propertyTables, configuration) => {
     const { classes } = this.props;
     return propertyTables.map(resourceType => {
       if (!(resourceType in this.editors)) {
-        return ''
+        return '';
       }
       return (
         <SimplePanel
@@ -141,15 +129,14 @@ class Properties extends React.Component {
           {this.editors[resourceType](configuration)}
         </SimplePanel>
       );
-
     });
-  }
+  };
 
   renderPropertyEditorAsAccordion = (propertyTables, configuration) => {
     const { classes } = this.props;
     return propertyTables.map((resourceType, index) => {
       if (!(resourceType in this.editors)) {
-        return ''
+        return '';
       }
       return (
         <AccordionPanel
@@ -163,7 +150,7 @@ class Properties extends React.Component {
         </AccordionPanel>
       );
     });
-  }
+  };
 
   getAnnotationType = () => {
     const { annotation } = this.props;
@@ -184,7 +171,7 @@ class Properties extends React.Component {
     if (annotation) {
       smallestSelectedType = 'Annotation';
     }
-    
+
     return propertyPanelConfig.selectionVisibility[smallestSelectedType];
   };
 
@@ -196,18 +183,18 @@ class Properties extends React.Component {
         if (propertyPanelConfig.selectionType === 'list') {
           return this.renderPropertyEditorAsList(propertyTables, configuration);
         } else if (propertyPanelConfig.selectionType === 'accordion') {
-          return this.renderPropertyEditorAsAccordion(propertyTables, configuration);
+          return this.renderPropertyEditorAsAccordion(
+            propertyTables,
+            configuration
+          );
         }
         return 'invalid selection configuration';
       }}
     </EditorConsumer>
-  )
+  );
 
   render() {
-    const {
-      classes,
-      update,
-    } = this.props;
+    const { classes, update } = this.props;
     const { mirrorTranslationOpen } = this.state;
 
     return (
