@@ -6,4 +6,4 @@ import TabPanel from './TabPanel.js';
 
 storiesOf('TabPanel', module)
   .addDecorator(withKnobs)
-  .add('TabPanel with Label', () => {return null});
+  .add('TabPanel', () => {return null});

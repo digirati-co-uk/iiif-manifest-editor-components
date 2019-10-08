@@ -6,7 +6,7 @@ import DefaultTooltip from './DefaultTooltip.js';
 
 storiesOf('DefaultTooltip', module)
   .addDecorator(withKnobs)
-  .add('DefaultTooltip with Label', () => {
+  .add('DefaultTooltip', () => {
     return (
       <DefaultTooltip
         title={text('Text', 'Update me')}
