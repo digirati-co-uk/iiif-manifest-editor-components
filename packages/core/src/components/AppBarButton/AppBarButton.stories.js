@@ -1,11 +1,8 @@
 import * as React from 'react';
-import { storiesOf, addDecorator } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
 import { withKnobs, text } from '@storybook/addon-knobs';
-import { withA11y } from '@storybook/addon-a11y';
 
 import AppBarButton from './AppBarButton.js';
-
-addDecorator(withA11y);
 
 storiesOf('AppBarButton', module)
   .addDecorator(withKnobs)
