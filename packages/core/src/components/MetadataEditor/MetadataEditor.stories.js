@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, boolean } from '@storybook/addon-knobs';
+import { withKnobs, array } from '@storybook/addon-knobs';
 import MetadataEditor from './MetadataEditor.js';
 
 const TEST_CANVAS = {
@@ -21,7 +21,7 @@ storiesOf('MetadataEditor', module)
         canvas={TEST_CANVAS}
         annotation={TEST_ANNOTATION}
         lang={'en'}
-        fieldConfig={[]}
+        fieldConfig={array('FieldConfig', ['one', 'two', 'three'])}
       />
     );
   });
