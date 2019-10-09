@@ -11,8 +11,10 @@ storiesOf('ImageCropper', module)
       <ImageCropper
         imgHeight={300}
         imgWidth={200}
-        //TODO get accurate URL for this component
-        iiifUrl={'https://wellcomelibrary.org/iiif/b18035723/'}
+        onChange={() => {}}
+        iiifUrl={
+          'https://dlcs.io/thumbs/wellcome/1/ff2085d5-a9c7-412e-9dbe-dda87712228d/info.json'
+        }
       />
     );
   });
