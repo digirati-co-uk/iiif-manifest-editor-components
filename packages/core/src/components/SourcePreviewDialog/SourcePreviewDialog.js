@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import ManifestEditorDialog from '../ManifestEditorDialog/ManifestEditorDialog'
+import ManifestEditorDialog from '../ManifestEditorDialog/ManifestEditorDialog';
 
 const SourcePreviewDialog = ({ json, open, handleClose }) => (
   <ManifestEditorDialog

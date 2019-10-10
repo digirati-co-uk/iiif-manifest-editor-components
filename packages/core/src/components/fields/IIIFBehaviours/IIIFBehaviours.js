@@ -10,7 +10,7 @@ const IIIFBehavior = ({ target, update, labels }) => (
     {configuration => {
       const behaviorConfig = configuration.behavior[target.type];
       return behaviorConfig ? (
-        <ConfiguredBehaviorRenderer 
+        <ConfiguredBehaviorRenderers
           groups={behaviorConfig.groups}
           target={target}
           update={update}
