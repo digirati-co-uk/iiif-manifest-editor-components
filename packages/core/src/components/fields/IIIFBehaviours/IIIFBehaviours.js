@@ -8,10 +8,9 @@ import DefaultBehaviorListRenderer from './DefaultBehaviorListRenderer';
 const IIIFBehavior = ({ target, update, labels }) => (
   <EditorConsumer>
     {configuration => {
-      debugger
       const behaviorConfig = configuration.behavior[target.type];
       return behaviorConfig ? (
-        <ConfiguredBehaviorRenderer 
+        <ConfiguredBehaviorRenderers
           groups={behaviorConfig.groups}
           target={target}
           update={update}
