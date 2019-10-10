@@ -9,7 +9,7 @@ storiesOf('SourcePreviewDialog', module)
   .add('SourcePreviewDialogs', () => {
     return (
       <SourcePreviewDialog
-        json={text('json', '{}')}
+        json={object('JSON', {})}
         open={boolean(true, 'Update me')}
         handleClose={() => {}}
       />
