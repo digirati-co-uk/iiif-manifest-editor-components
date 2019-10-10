@@ -9,7 +9,7 @@ storiesOf('IIIFInputField', module)
     return (
       <IIIFInputField
         value={text('A string value', 'A string value')}
-        onChane={() => {}}
+        onChange={() => {}}
       />
     );
   })
